@@ -25,6 +25,7 @@
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
   .academic-gradient { background: linear-gradient(135deg, #002b6b 0%, #004098 100%); }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
 
@@ -44,18 +45,19 @@
   <section class="mb-16 grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
     <div class="md:col-span-8">
       <h1 class="font-headline text-primary text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">업데이트 내역</h1>
-      <p class="font-body text-secondary text-lg max-w-xl leading-relaxed">외대.서버.한국의 발전 기록입니다.</p>
+      <p class="font-body text-secondary text-lg max-w-xl leading-relaxed">외대.서버.한국의 발전 기록입니다. 새로운 건축과 기술적 진보를 통해 더 나은 학문적 가상 세계를 구축해 나갑니다.</p>
     </div>
     <div class="md:col-span-4 flex justify-end">
       <div class="bg-surface-container-low p-6 rounded-lg text-right border-l-4 border-primary">
-        <span class="block text-xs font-label text-secondary uppercase tracking-widest mb-1">현재 버전</span>
+        <span class="block text-xs font-label text-secondary uppercase tracking-widest mb-1">Status</span>
         <span class="text-2xl font-headline font-bold text-primary">v2.4.0 Active</span>
       </div>
     </div>
   </section>
-  <div class="mt-10 bg-surface-container-low p-8 rounded-xl text-center border border-outline-variant/30">
-    <div class="text-2xl font-headline font-extrabold text-primary mb-2">아직 업데이트 내역이 없습니다.</div>
-    <div class="text-secondary font-body text-base">관리자에서 기록을 추가한 뒤 표시됩니다.</div>
+  <div id="updates-list" class="mt-10 space-y-6">
+    <div class="flex items-center justify-center py-16 text-secondary">
+      <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> 불러오는 중...
+    </div>
   </div>
 </main>
 
@@ -68,4 +70,65 @@
   </div>
 </footer>
 
+<script>
+  const SUPABASE_URL = 'https://ggdzsdhpjamgvsrpxspg.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function escHtml(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatDate(str) {
+    if (!str) return '';
+    const d = new Date(str);
+    return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  async function loadUpdates() {
+    const container = document.getElementById('updates-list');
+
+    const { data, error } = await sb
+      .from('updates')
+      .select('*')
+      .order('release_date', { ascending: false });
+
+    if (error) {
+      container.innerHTML = `
+        <div class="bg-surface-container-low p-8 rounded-xl text-center border border-outline-variant/30">
+          <p class="text-secondary">불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.</p>
+        </div>`;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `
+        <div class="bg-surface-container-low p-8 rounded-xl text-center border border-outline-variant/30">
+          <div class="text-2xl font-headline font-extrabold text-primary mb-2">아직 업데이트 내역이 없습니다.</div>
+          <div class="text-secondary font-body text-base">관리자에서 기록을 추가한 뒤 표시됩니다.</div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map((row, i) => `
+      <article class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="inline-flex items-center font-headline font-bold text-sm px-3 py-1 rounded-full bg-primary text-white tracking-wide">
+              ${escHtml(row.version)}
+            </span>
+            ${i === 0 ? '<span class="inline-flex items-center text-xs font-bold px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">최신</span>' : ''}
+          </div>
+          <span class="text-sm text-secondary shrink-0">${formatDate(row.release_date)}</span>
+        </div>
+        <h2 class="font-headline text-xl font-extrabold text-on-surface mb-3">${escHtml(row.title)}</h2>
+        ${row.content ? `<p class="text-secondary leading-relaxed whitespace-pre-line">${escHtml(row.content)}</p>` : ''}
+      </article>
+    `).join('');
+  }
+
+  loadUpdates();
+</script>
 </body></html>

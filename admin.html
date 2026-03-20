@@ -93,19 +93,33 @@
           <div><h2 class="text-2xl font-bold text-primary mb-1">업데이트 로그 관리</h2><p class="text-sm text-secondary">버전 배포와 주요 변경 사항을 기록합니다.</p></div>
           <span class="material-symbols-outlined text-primary text-3xl">history_edu</span>
         </div>
-        <form class="space-y-6" onsubmit="return false;">
+        <form class="space-y-6" onsubmit="submitUpdate(event)">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">버전 태그</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="예: v2.4.0-Release" type="text"/></div>
-            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">배포 날짜</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" type="date"/></div>
+            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">버전 태그</label><input id="input-version" class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="예: v2.4.0-Release" type="text" required/></div>
+            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">배포 날짜</label><input id="input-date" class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" type="date" required/></div>
           </div>
-          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">로그 제목</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="주요 변경 사항 요약" type="text"/></div>
-          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">상세 내용</label><textarea class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface resize-none" placeholder="변경 사항을 상세히 기록해 주세요." rows="6"></textarea></div>
+          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">로그 제목</label><input id="input-title" class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="주요 변경 사항 요약" type="text" required/></div>
+          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">상세 내용</label><textarea id="input-content" class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface resize-none" placeholder="변경 사항을 상세히 기록해 주세요." rows="6"></textarea></div>
+          <div id="submit-msg" class="hidden text-sm font-bold px-4 py-3 rounded-md"></div>
           <div class="flex justify-end pt-4">
-            <button class="bg-primary-container text-on-primary px-10 py-4 rounded-md font-bold hover:bg-primary transition-all flex items-center gap-2 shadow-sm" type="submit">
+            <button id="submit-btn" class="bg-primary-container text-on-primary px-10 py-4 rounded-md font-bold hover:bg-primary transition-all flex items-center gap-2 shadow-sm" type="submit">
               <span class="material-symbols-outlined">publish</span> 변경 게시
             </button>
           </div>
         </form>
+
+        <!-- 기존 로그 목록 -->
+        <div class="mt-10 pt-8 border-t border-surface-container-high">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-primary">게시된 로그</h3>
+            <button onclick="loadAdminLogs()" type="button" class="text-xs text-secondary hover:text-primary flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined" style="font-size:16px;">refresh</span> 새로고침
+            </button>
+          </div>
+          <div id="admin-log-list" class="space-y-3">
+            <p class="text-sm text-secondary">불러오는 중...</p>
+          </div>
+        </div>
       </section>
     </div>
     <div class="lg:col-span-4 space-y-8">
@@ -251,20 +265,95 @@
       renderAdminUI();
     });
 
-    // 다른 탭(또는 홈)에서 값이 바뀌었을 때도 즉시 반영
     window.addEventListener('storage', function (e) {
       if (e.key === STORAGE_SERVER_ENABLED || e.key === STORAGE_PUBLIC_MC_VERSION) {
         renderAdminUI();
       }
     });
-
-    // 인증 상태 변화 반영
-    if (sb?.auth?.onAuthStateChange) {
-      sb.auth.onAuthStateChange(function () {
-        checkAuth();
-      });
-    }
   })();
+
+  // ── 업데이트 로그 게시 ──────────────────────────────
+  async function submitUpdate(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const msg = document.getElementById('submit-msg');
+    const version = document.getElementById('input-version').value.trim();
+    const date    = document.getElementById('input-date').value;
+    const title   = document.getElementById('input-title').value.trim();
+    const content = document.getElementById('input-content').value.trim();
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined">progress_activity</span> 게시 중...';
+
+    const { error } = await sb.from('updates').insert({ version, release_date: date, title, content });
+
+    if (error) {
+      msg.textContent = '❌ 오류: ' + error.message;
+      msg.className = 'text-sm font-bold px-4 py-3 rounded-md bg-red-50 text-red-700';
+    } else {
+      msg.textContent = '✅ 성공적으로 게시되었습니다.';
+      msg.className = 'text-sm font-bold px-4 py-3 rounded-md bg-emerald-50 text-emerald-700';
+      e.target.reset();
+      loadAdminLogs();
+    }
+
+    msg.classList.remove('hidden');
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined">publish</span> 변경 게시';
+    setTimeout(() => msg.classList.add('hidden'), 4000);
+  }
+  window.submitUpdate = submitUpdate;
+
+  // ── 게시된 로그 목록 (관리자용) ──────────────────────
+  async function loadAdminLogs() {
+    const container = document.getElementById('admin-log-list');
+    if (!container) return;
+
+    const { data, error } = await sb
+      .from('updates')
+      .select('*')
+      .order('release_date', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<p class="text-sm text-secondary">게시된 로그가 없습니다.</p>';
+      return;
+    }
+
+    container.innerHTML = data.map(row => `
+      <div class="flex items-start justify-between gap-4 p-4 bg-surface-container-lowest rounded-lg">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">${escHtml(row.version)}</span>
+            <span class="text-xs text-secondary">${row.release_date ?? ''}</span>
+          </div>
+          <p class="font-bold text-sm truncate">${escHtml(row.title)}</p>
+          ${row.content ? `<p class="text-xs text-secondary mt-0.5">${escHtml(row.content)}</p>` : ''}
+        </div>
+        <button onclick="deleteLog('${row.id}')" type="button"
+          class="shrink-0 text-secondary hover:text-error transition-all" title="삭제">
+          <span class="material-symbols-outlined" style="font-size:20px;">delete</span>
+        </button>
+      </div>
+    `).join('');
+  }
+  window.loadAdminLogs = loadAdminLogs;
+
+  async function deleteLog(id) {
+    if (!confirm('이 로그를 삭제할까요?')) return;
+    const { error } = await sb.from('updates').delete().eq('id', id);
+    if (!error) loadAdminLogs();
+  }
+  window.deleteLog = deleteLog;
+
+  function escHtml(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 인증 상태 변화 시 대시보드 & 로그 목록 갱신
+  sb.auth.onAuthStateChange(function(event, session) {
+    checkAuth();
+    if (session) loadAdminLogs();
+  });
 
   checkAuth();
 </script>
