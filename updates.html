@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>업데이트 내역 - 외대.서버.한국</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "inverse-surface": "#2f3130","error-container": "#ffdad6","tertiary-fixed": "#ffdbce","tertiary": "#571b00","on-surface": "#1a1c1b","tertiary-fixed-dim": "#ffb599","secondary-container": "#e1e1c9","on-secondary-container": "#636451","surface-variant": "#e2e3e1","on-secondary": "#ffffff","tertiary-container": "#7c2a00","on-tertiary-container": "#ff986e","surface-container-lowest": "#ffffff","surface-container-high": "#e8e8e6","inverse-on-surface": "#f1f1ef","surface-container": "#eeeeec","surface": "#f9f9f7","primary": "#002b6b","on-primary-fixed-variant": "#04429a","surface-container-low": "#f4f4f2","secondary": "#5e604d","surface-tint": "#2d5bb3","primary-container": "#004098","outline": "#737783","on-primary": "#ffffff","secondary-fixed-dim": "#c8c8b0","error": "#ba1a1a","on-tertiary-fixed": "#370e00","background": "#f9f9f7","on-primary-container": "#91b1ff","on-primary-fixed": "#001945","on-error-container": "#93000a","inverse-primary": "#b0c6ff","outline-variant": "#c3c6d4","on-tertiary": "#ffffff","surface-dim": "#dadad8","on-secondary-fixed": "#1b1d0e","surface-bright": "#f9f9f7","surface-container-highest": "#e2e3e1","on-background": "#1a1c1b","secondary-fixed": "#e4e4cc","on-surface-variant": "#434652","on-secondary-fixed-variant": "#474836"
+        },
+        fontFamily: {"headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"]},
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f9f9f7; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .academic-gradient { background: linear-gradient(135deg, #002b6b 0%, #004098 100%); }
+</style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+
+<!-- TopNavBar -->
+<header class="bg-white/70 backdrop-blur-md border-b border-slate-200/20 shadow-sm fixed top-0 left-0 right-0 z-50">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <a href="index.html" class="text-xl font-black text-[#004098] font-['Manrope'] tracking-tight">외대.서버.한국</a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="index.html">홈</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="mod-setup.html">모드 설정</a>
+      <a class="text-[#004098] border-b-2 border-[#004098] pb-1 font-['Manrope'] font-bold tracking-tight" href="updates.html">업데이트 내역</a>
+    </nav>
+  </div>
+</header>
+
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+  <section class="mb-16 grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+    <div class="md:col-span-8">
+      <h1 class="font-headline text-primary text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">업데이트 내역</h1>
+      <p class="font-body text-secondary text-lg max-w-xl leading-relaxed">외대.서버.한국의 발전 기록입니다.</p>
+    </div>
+    <div class="md:col-span-4 flex justify-end">
+      <div class="bg-surface-container-low p-6 rounded-lg text-right border-l-4 border-primary">
+        <span class="block text-xs font-label text-secondary uppercase tracking-widest mb-1">현재 버전</span>
+        <span class="text-2xl font-headline font-bold text-primary">v2.4.0 Active</span>
+      </div>
+    </div>
+  </section>
+  <div class="mt-10 bg-surface-container-low p-8 rounded-xl text-center border border-outline-variant/30">
+    <div class="text-2xl font-headline font-extrabold text-primary mb-2">아직 업데이트 내역이 없습니다.</div>
+    <div class="text-secondary font-body text-base">관리자에서 기록을 추가한 뒤 표시됩니다.</div>
+  </div>
+</main>
+
+<footer class="bg-[#f4f4f2] w-full py-12 px-8">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+    <div class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</div>
+    <div class="flex gap-6">
+      <a class="text-slate-500 hover:text-primary hover:underline font-['Inter'] text-sm cursor-pointer" href="admin.html">Admin</a>
+    </div>
+  </div>
+</footer>
+
+</body></html>

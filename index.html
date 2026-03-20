@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>외대.서버.한국 - HUFS Minecraft Server</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "inverse-surface": "#2f3130","error-container": "#ffdad6","tertiary-fixed": "#ffdbce","tertiary": "#571b00","on-surface": "#1a1c1b","tertiary-fixed-dim": "#ffb599","secondary-container": "#e1e1c9","on-tertiary-fixed-variant": "#7e2c01","primary-fixed-dim": "#b0c6ff","primary-fixed": "#d9e2ff","on-error": "#ffffff","on-secondary-container": "#636451","surface-variant": "#e2e3e1","on-secondary": "#ffffff","tertiary-container": "#7c2a00","on-tertiary-container": "#ff986e","surface-container-lowest": "#ffffff","surface-container-high": "#e8e8e6","inverse-on-surface": "#f1f1ef","surface-container": "#eeeeec","surface": "#f9f9f7","primary": "#002b6b","on-primary-fixed-variant": "#04429a","surface-container-low": "#f4f4f2","secondary": "#5e604d","surface-tint": "#2d5bb3","primary-container": "#004098","outline": "#737783","on-primary": "#ffffff","secondary-fixed-dim": "#c8c8b0","error": "#ba1a1a","on-tertiary-fixed": "#370e00","background": "#f9f9f7","on-primary-container": "#91b1ff","on-primary-fixed": "#001945","on-error-container": "#93000a","inverse-primary": "#b0c6ff","outline-variant": "#c3c6d4","on-tertiary": "#ffffff","surface-dim": "#dadad8","on-secondary-fixed": "#1b1d0e","surface-bright": "#f9f9f7","surface-container-highest": "#e2e3e1","on-background": "#1a1c1b","secondary-fixed": "#e4e4cc","on-surface-variant": "#434652","on-secondary-fixed-variant": "#474836"
+        },
+        fontFamily: {"headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"]},
+        borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  body { font-family: 'Inter', sans-serif; background-color: #f9f9f7; }
+  .editorial-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2.75rem; }
+</style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+
+<!-- TopNavBar -->
+<nav class="bg-white/70 backdrop-blur-md fixed top-0 z-50 border-b border-slate-200/20 shadow-sm w-full">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <a class="text-xl font-black text-[#004098] font-['Manrope'] tracking-tight" href="index.html">외대.서버.한국</a>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-[#004098] border-b-2 border-[#004098] pb-1 font-['Manrope'] font-bold tracking-tight" href="index.html">홈</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="mod-setup.html">모드 설정</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="updates.html">업데이트 내역</a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+  <!-- Hero Section -->
+  <section class="editorial-grid mb-24">
+    <div class="col-span-12 lg:col-span-8">
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase">
+            <span class="material-symbols-outlined" style="font-size:14px;">dns</span>
+            마인크래프트 서버 주소
+          </span>
+        </div>
+        <h1 class="font-headline text-[3.5rem] lg:text-[5rem] font-extrabold text-primary leading-none tracking-tighter">
+          외대.서버.한국
+        </h1>
+      </div>
+      <div class="inline-flex flex-col items-start bg-surface-container-low p-8 lg:p-12 rounded-xl relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-primary-container"></div>
+        <div class="flex items-center gap-4 mb-2">
+          <span class="relative flex h-4 w-4" aria-hidden="true">
+            <span id="status-dot-ping-on" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="status-dot-ping-off" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden"></span>
+            <span id="status-dot-core-on" class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+            <span id="status-dot-core-off" class="relative inline-flex rounded-full h-4 w-4 bg-red-500 hidden"></span>
+          </span>
+          <span id="server-status-text" class="font-headline font-bold text-2xl lg:text-4xl text-primary-container uppercase tracking-tight">서버 가동 중</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <p class="font-label text-secondary text-lg lg:text-xl font-medium tracking-wide">24시간 운영 | 버전 <span id="server-version-text" class="font-bold text-on-surface">1.21.11</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Cards -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <a class="group block bg-surface-container-low p-10 rounded-xl transition-all hover:bg-surface-container-highest" href="mod-setup.html">
+      <div class="flex justify-between items-start mb-16">
+        <span class="material-symbols-outlined text-4xl text-primary">settings_suggest</span>
+        <span class="material-symbols-outlined text-2xl text-outline-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      </div>
+      <h3 class="font-headline text-2xl font-bold text-primary mb-2">모드 설정</h3>
+      <p class="text-secondary font-body">필요한 클라이언트 모드 및 설정 가이드</p>
+    </a>
+    <a class="group block bg-secondary-fixed p-10 rounded-xl transition-all hover:bg-secondary-container" href="updates.html">
+      <div class="flex justify-between items-start mb-16">
+        <span class="material-symbols-outlined text-4xl text-on-secondary-fixed-variant">history</span>
+        <span class="material-symbols-outlined text-2xl text-on-secondary-fixed-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      </div>
+      <h3 class="font-headline text-2xl font-bold text-on-secondary-fixed mb-2">업데이트 내역</h3>
+      <p class="text-on-secondary-fixed-variant font-body">서버의 주요 변경 사항 및 기록</p>
+    </a>
+  </section>
+</main>
+
+<footer class="bg-[#f4f4f2] w-full py-12 px-8 border-t border-surface-container">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-8 max-w-7xl mx-auto">
+    <div class="flex flex-col gap-2 text-center md:text-left">
+      <p class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</p>
+    </div>
+    <div class="flex items-center gap-6">
+      <a class="text-sm font-bold text-[#004098] hover:underline cursor-pointer transition-all" href="admin.html">Admin</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const STORAGE_SERVER_ENABLED = 'serverEnabled';
+  const STORAGE_PUBLIC_MC_VERSION = 'publicMinecraftVersion';
+  const DEFAULT_SERVER_ENABLED = true;
+  const DEFAULT_PUBLIC_MC_VERSION = '1.21.11';
+
+  function getServerEnabled() {
+    const raw = localStorage.getItem(STORAGE_SERVER_ENABLED);
+    if (raw === null) return DEFAULT_SERVER_ENABLED;
+    return raw === 'true';
+  }
+
+  function getPublicMinecraftVersion() {
+    const raw = localStorage.getItem(STORAGE_PUBLIC_MC_VERSION);
+    return raw ? raw : DEFAULT_PUBLIC_MC_VERSION;
+  }
+
+  function renderServerStatus() {
+    const enabled = getServerEnabled();
+    const statusTextEl = document.getElementById('server-status-text');
+    const versionTextEl = document.getElementById('server-version-text');
+    const pingOnEl = document.getElementById('status-dot-ping-on');
+    const pingOffEl = document.getElementById('status-dot-ping-off');
+    const coreOnEl = document.getElementById('status-dot-core-on');
+    const coreOffEl = document.getElementById('status-dot-core-off');
+
+    if (!statusTextEl || !versionTextEl || !pingOnEl || !pingOffEl || !coreOnEl || !coreOffEl) return;
+
+    versionTextEl.textContent = getPublicMinecraftVersion();
+    if (enabled) {
+      statusTextEl.textContent = '서버 가동 중';
+      pingOnEl.classList.remove('hidden');
+      coreOnEl.classList.remove('hidden');
+      pingOffEl.classList.add('hidden');
+      coreOffEl.classList.add('hidden');
+    } else {
+      statusTextEl.textContent = '서버 점검 중';
+      pingOnEl.classList.add('hidden');
+      coreOnEl.classList.add('hidden');
+      pingOffEl.classList.remove('hidden');
+      coreOffEl.classList.remove('hidden');
+    }
+  }
+
+  renderServerStatus();
+  setInterval(renderServerStatus, 2000);
+</script>
+</body></html>

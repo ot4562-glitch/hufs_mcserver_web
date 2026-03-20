@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>외대.서버.한국 - 관리자 대시보드</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "inverse-surface": "#2f3130","error-container": "#ffdad6","tertiary-fixed": "#ffdbce","tertiary": "#571b00","on-surface": "#1a1c1b","tertiary-fixed-dim": "#ffb599","secondary-container": "#e1e1c9","on-tertiary-fixed-variant": "#7e2c01","primary-fixed-dim": "#b0c6ff","primary-fixed": "#d9e2ff","on-error": "#ffffff","on-secondary-container": "#636451","surface-variant": "#e2e3e1","on-secondary": "#ffffff","tertiary-container": "#7c2a00","on-tertiary-container": "#ff986e","surface-container-lowest": "#ffffff","surface-container-high": "#e8e8e6","inverse-on-surface": "#f1f1ef","surface-container": "#eeeeec","surface": "#f9f9f7","primary": "#002b6b","on-primary-fixed-variant": "#04429a","surface-container-low": "#f4f4f2","secondary": "#5e604d","surface-tint": "#2d5bb3","primary-container": "#004098","outline": "#737783","on-primary": "#ffffff","secondary-fixed-dim": "#c8c8b0","error": "#ba1a1a","on-tertiary-fixed": "#370e00","background": "#f9f9f7","on-primary-container": "#91b1ff","on-primary-fixed": "#001945","on-error-container": "#93000a","inverse-primary": "#b0c6ff","outline-variant": "#c3c6d4","on-tertiary": "#ffffff","surface-dim": "#dadad8","on-secondary-fixed": "#1b1d0e","surface-bright": "#f9f9f7","surface-container-highest": "#e2e3e1","on-background": "#1a1c1b","secondary-fixed": "#e4e4cc","on-surface-variant": "#434652","on-secondary-fixed-variant": "#474836"
+        },
+        fontFamily: {"headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"]},
+        borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- 로그인 화면 -->
+<div id="auth-screen" style="display:none"
+  class="fixed inset-0 z-[200] flex items-center justify-center bg-surface">
+  <div class="bg-white rounded-xl shadow-2xl p-10 w-full max-w-sm text-center">
+    <h2 class="text-2xl font-black text-primary font-['Manrope'] mb-2">관리자 로그인</h2>
+    <p class="text-sm text-secondary mb-8">허가된 계정만 접근 가능합니다.</p>
+    <button onclick="loginWithGoogle()"
+      class="w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-3"
+      type="button">
+      <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.5 26.9 36 24 36c-5.2 0-9.6-2.9-11.3-7.1l-6.5 5C9.8 39.7 16.4 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.4-4.6 5.8l6.2 5.2C40.8 35.7 44 30.3 44 24c0-1.3-.1-2.7-.4-4z"/>
+      </svg>
+      Google 계정으로 로그인
+    </button>
+  </div>
+</div>
+
+<!-- 대시보드 -->
+<div id="dashboard" style="display:none">
+
+<nav class="bg-white/70 backdrop-blur-md border-b border-slate-200/20 shadow-sm fixed top-0 z-50 w-full">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <a href="index.html" class="text-xl font-black text-[#004098] font-['Manrope'] tracking-tight">외대.서버.한국</a>
+    <div class="hidden md:flex items-center space-gap-8 gap-8">
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold" href="index.html">홈</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold" href="mod-setup.html">모드 설정</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold" href="updates.html">업데이트 내역</a>
+      <div class="h-4 w-px bg-outline-variant/30"></div>
+      <div class="flex items-center gap-4">
+        <span class="text-label text-secondary font-medium uppercase tracking-wider text-xs">서버 상태</span>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input id="server-enabled-toggle" class="sr-only peer" type="checkbox"/>
+          <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+          <span id="server-enabled-label" class="ml-3 text-sm font-bold text-primary">가동</span>
+        </label>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        onclick="logout()"
+        class="flex items-center gap-1 text-sm text-secondary hover:text-primary transition-all font-medium"
+      >
+        <span class="material-symbols-outlined" style="font-size:18px;">logout</span> 나가기
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-24 pb-20 max-w-7xl mx-auto px-8">
+  <header class="mb-12">
+    <h1 class="text-[3.5rem] font-extrabold text-primary leading-tight tracking-tight mb-2">관리자 대시보드</h1>
+    <p class="text-secondary text-lg max-w-2xl">서버 환경을 관리합니다.</p>
+  </header>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-8 space-y-8">
+      <section class="bg-surface-container-low p-8 rounded-lg">
+        <div class="flex items-center justify-between mb-8">
+          <div><h2 class="text-2xl font-bold text-primary mb-1">업데이트 로그 관리</h2><p class="text-sm text-secondary">버전 배포와 주요 변경 사항을 기록합니다.</p></div>
+          <span class="material-symbols-outlined text-primary text-3xl">history_edu</span>
+        </div>
+        <form class="space-y-6" onsubmit="return false;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">버전 태그</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="예: v2.4.0-Release" type="text"/></div>
+            <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">배포 날짜</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" type="date"/></div>
+          </div>
+          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">로그 제목</label><input class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface" placeholder="주요 변경 사항 요약" type="text"/></div>
+          <div class="space-y-2"><label class="text-xs font-bold text-secondary uppercase tracking-widest px-1">상세 내용</label><textarea class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface resize-none" placeholder="변경 사항을 상세히 기록해 주세요." rows="6"></textarea></div>
+          <div class="flex justify-end pt-4">
+            <button class="bg-primary-container text-on-primary px-10 py-4 rounded-md font-bold hover:bg-primary transition-all flex items-center gap-2 shadow-sm" type="submit">
+              <span class="material-symbols-outlined">publish</span> 변경 게시
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="lg:col-span-4 space-y-8">
+      <section class="bg-secondary-fixed p-8 rounded-lg h-fit">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="material-symbols-outlined text-on-secondary-fixed-variant">settings_input_component</span>
+          <h2 class="text-xl font-bold text-on-secondary-fixed">환경 설정</h2>
+        </div>
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-on-secondary-fixed-variant uppercase tracking-widest">마크 서버 공개 버전</label>
+            <p class="text-xs text-on-secondary-fixed-variant/70 mb-2">홈 화면에 표시됩니다.</p>
+            <div class="flex gap-3 items-center">
+              <input
+                id="public-mc-version-input"
+                class="w-full bg-surface-container-lowest border-none p-4 rounded-md focus:ring-2 focus:ring-primary text-on-surface font-bold"
+                placeholder="예: 1.21.11"
+                type="text"
+              />
+              <button
+                type="button"
+                onclick="applyPublicMinecraftVersion()"
+                class="whitespace-nowrap px-5 py-4 bg-secondary text-white font-bold rounded-md hover:bg-on-secondary-fixed-variant transition-all shadow-sm"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="space-y-4">
+        <div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm border-l-[3px] border-primary-fixed-dim">
+          <div class="text-sm font-bold text-secondary uppercase tracking-widest mb-1">서버 상태</div>
+          <div id="admin-server-status-text" class="text-4xl font-extrabold text-primary font-['Manrope']">가동</div>
+          <div class="mt-2 text-sm text-secondary">
+            공개 버전: <span id="admin-public-version-text" class="font-bold text-on-surface"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-[#f4f4f2] w-full py-12 px-8">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+    <div class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</div>
+    <div class="flex gap-8"><span class="font-bold text-[#004098] font-['Inter'] text-sm">관리자</span></div>
+  </div>
+</footer>
+ </div>
+<script>
+  // WARNING: 이 키는 프론트엔드에 노출됩니다. 실제 운영에서는 RLS/서버 검증을 꼭 권장합니다.
+  const SUPABASE_URL = 'https://ggdzsdhpjamgvsrpxspg.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+  const ALLOWED_EMAIL = 'ot4562@gmail.com';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function checkAuth() {
+    const authScreen = document.getElementById('auth-screen');
+    const dashboard = document.getElementById('dashboard');
+    if (!authScreen || !dashboard) return;
+
+    const { data: { session } } = await sb.auth.getSession();
+    const email = session?.user?.email;
+    const ok = !!(email && email === ALLOWED_EMAIL);
+
+    authScreen.style.display = ok ? 'none' : 'flex';
+    dashboard.style.display = ok ? 'block' : 'none';
+  }
+
+  async function loginWithGoogle() {
+    await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href }
+    });
+  }
+
+  async function logout() {
+    await sb.auth.signOut();
+    await checkAuth();
+  }
+
+  window.loginWithGoogle = loginWithGoogle;
+  window.logout = logout;
+
+  // 서버 상태/버전 저장 로직(localStorage)
+  const STORAGE_SERVER_ENABLED = 'serverEnabled';
+  const STORAGE_PUBLIC_MC_VERSION = 'publicMinecraftVersion';
+  const DEFAULT_SERVER_ENABLED = true;
+  const DEFAULT_PUBLIC_MC_VERSION = '1.21.11';
+
+  function getServerEnabled() {
+    const raw = localStorage.getItem(STORAGE_SERVER_ENABLED);
+    if (raw === null) return DEFAULT_SERVER_ENABLED;
+    return raw === 'true';
+  }
+
+  function getPublicMinecraftVersion() {
+    const raw = localStorage.getItem(STORAGE_PUBLIC_MC_VERSION);
+    return raw ? raw : DEFAULT_PUBLIC_MC_VERSION;
+  }
+
+  function renderAdminUI() {
+    const enabled = getServerEnabled();
+    const toggle = document.getElementById('server-enabled-toggle');
+    const enabledLabel = document.getElementById('server-enabled-label');
+    const statusText = document.getElementById('admin-server-status-text');
+    const versionInput = document.getElementById('public-mc-version-input');
+    const versionText = document.getElementById('admin-public-version-text');
+
+    if (!toggle || !enabledLabel || !statusText || !versionInput || !versionText) return;
+
+    toggle.checked = enabled;
+    enabledLabel.textContent = enabled ? '가동' : '점검';
+    statusText.textContent = enabled ? '가동' : '점검 중';
+
+    const v = getPublicMinecraftVersion();
+    versionInput.value = v;
+    versionText.textContent = v;
+  }
+
+  window.applyPublicMinecraftVersion = function () {
+    const input = document.getElementById('public-mc-version-input');
+    if (!input) return;
+
+    const v = input.value.trim();
+    if (!v) return;
+
+    localStorage.setItem(STORAGE_PUBLIC_MC_VERSION, v);
+    renderAdminUI();
+  };
+
+  (function init() {
+    const toggle = document.getElementById('server-enabled-toggle');
+    if (!toggle) return;
+
+    renderAdminUI();
+
+    toggle.addEventListener('change', function () {
+      localStorage.setItem(STORAGE_SERVER_ENABLED, this.checked ? 'true' : 'false');
+      renderAdminUI();
+    });
+
+    // 다른 탭(또는 홈)에서 값이 바뀌었을 때도 즉시 반영
+    window.addEventListener('storage', function (e) {
+      if (e.key === STORAGE_SERVER_ENABLED || e.key === STORAGE_PUBLIC_MC_VERSION) {
+        renderAdminUI();
+      }
+    });
+
+    // 인증 상태 변화 반영
+    if (sb?.auth?.onAuthStateChange) {
+      sb.auth.onAuthStateChange(function () {
+        checkAuth();
+      });
+    }
+  })();
+
+  checkAuth();
+</script>
+</body></html>

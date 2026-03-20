@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>모드 설정 - 외대.서버.한국</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          "surface-container-lowest": "#ffffff","surface-container-high": "#e8e8e6","surface-container": "#eeeeec","surface": "#f9f9f7","primary": "#002b6b","surface-container-low": "#f4f4f2","secondary": "#5e604d","primary-container": "#004098","outline": "#737783","on-primary": "#ffffff","secondary-fixed-dim": "#c8c8b0","error": "#ba1a1a","background": "#f9f9f7","on-primary-container": "#91b1ff","inverse-primary": "#b0c6ff","outline-variant": "#c3c6d4","surface-dim": "#dadad8","surface-bright": "#f9f9f7","surface-container-highest": "#e2e3e1","on-background": "#1a1c1b","secondary-fixed": "#e4e4cc","on-surface-variant": "#434652","on-secondary-fixed-variant": "#474836","on-secondary-fixed": "#1b1d0e","on-surface": "#1a1c1b","secondary-container": "#e1e1c9","on-secondary-container": "#636451","primary-fixed-dim": "#b0c6ff","primary-fixed": "#d9e2ff","on-primary-fixed": "#001945"
+        },
+        fontFamily: {"headline": ["Manrope"],"body": ["Inter","Noto Sans KR"],"label": ["Inter"]},
+        borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #f9f9f7; }
+  h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+  #admin-modal { display: none; }
+  #admin-modal.active { display: flex; }
+  .mod-card { transition: transform 0.15s, box-shadow 0.15s; }
+  .mod-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,43,107,0.10); }
+</style>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- Admin 비밀번호 모달 -->
+<div id="admin-modal" class="fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm mx-4">
+    <h2 class="text-xl font-black text-primary font-['Manrope'] mb-1">관리자 로그인</h2>
+    <p class="text-sm text-secondary mb-6">외대.서버.한국 관리자 전용입니다.</p>
+    <input id="pw-input" type="password" placeholder="비밀번호 입력" class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary"/>
+    <p id="pw-error" class="text-error text-xs mb-3 hidden">비밀번호가 틀렸습니다.</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 py-3 rounded-lg bg-surface-container text-secondary font-bold text-sm hover:bg-surface-container-high transition-all">취소</button>
+      <button onclick="checkPassword()" class="flex-1 py-3 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary-container transition-all">진입</button>
+    </div>
+  </div>
+</div>
+
+<!-- TopNavBar — 다른 페이지들과 동일한 구조 -->
+<nav class="bg-white/70 backdrop-blur-md border-b border-slate-200/20 shadow-sm fixed top-0 w-full z-50">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <a href="index.html" class="text-xl font-black text-[#004098] font-['Manrope'] tracking-tight">외대.서버.한국</a>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="index.html">홈</a>
+      <a class="text-[#004098] border-b-2 border-[#004098] pb-1 font-['Manrope'] font-bold tracking-tight" href="mod-setup.html">모드 설정</a>
+      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="updates.html">업데이트 내역</a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto">
+  <header class="mb-16 mt-8">
+    <h1 class="text-6xl font-extrabold text-primary tracking-tighter mb-4 leading-none">Mod Setup Guide</h1>
+    <p class="text-secondary text-lg max-w-2xl leading-relaxed">외대 서버 참여를 위한 최적의 모드 구성 가이드입니다. 초보자도 쉽게 따라 할 수 있도록 단계별로 구성되었습니다.</p>
+    <div class="mt-5 inline-flex items-center gap-2 bg-primary/5 border border-primary/15 px-4 py-2.5 rounded-lg">
+      <span class="material-symbols-outlined text-primary" style="font-size:18px;">folder_open</span>
+      <p class="text-sm text-secondary">마인크래프트 폴더 위치: <kbd class="bg-surface-container-highest px-2 py-0.5 rounded font-mono text-xs text-on-surface">Win+R</kbd> 누르고
+        <code class="bg-surface-container-highest px-2 py-0.5 rounded font-mono text-xs text-on-surface">%appdata%</code> 입력 후 실행 →
+        <code class="bg-surface-container-highest px-2 py-0.5 rounded font-mono text-xs text-on-surface">.minecraft</code> 폴더
+      </p>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+    <!-- Section 1: 필수 -->
+    <section class="md:col-span-12 bg-surface-container-low rounded-xl p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-primary text-3xl">terminal</span>
+        <h2 class="text-3xl font-bold text-on-surface">Section 1: 필수</h2>
+      </div>
+      <p class="text-secondary text-sm mb-6 ml-1">가장 먼저 설치해야 하는 필수 구성 요소입니다. Fabric 로더를 먼저 설치한 후, 나머지는
+        <code class="bg-surface-container-highest px-1.5 py-0.5 rounded text-xs font-mono">mods</code> 폴더에 넣어주세요.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <!-- Fabric -->
+        <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener"
+           class="mod-card bg-surface-container-lowest p-5 rounded-lg shadow-sm border-l-4 border-primary flex items-start gap-4 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-primary">Fabric 설치 프로그램</h3>
+              <span class="material-symbols-outlined text-outline-variant" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-secondary">모드 로더의 근간</p>
+          </div>
+        </a>
+        <!-- Fabric API -->
+        <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener"
+           class="mod-card bg-surface-container-lowest p-5 rounded-lg shadow-sm border-l-4 border-primary flex items-start gap-4 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric API" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-primary">Fabric API</h3>
+              <span class="material-symbols-outlined text-outline-variant" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-secondary">호환성 라이브러리</p>
+            <p class="text-xs text-on-surface-variant mt-1">mods 폴더에 넣기</p>
+          </div>
+        </a>
+        <!-- Iris Shaders -->
+        <a href="https://irisshaders.dev/download" target="_blank" rel="noopener"
+           class="mod-card bg-surface-container-lowest p-5 rounded-lg shadow-sm border-l-4 border-primary flex items-start gap-4 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="Iris Shaders" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-primary">Iris Shaders 설치 프로그램</h3>
+              <span class="material-symbols-outlined text-outline-variant" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-secondary">쉐이더 지원 (Iris + Fabric 통합 설치)</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Fabric 설치 상세 설정 -->
+      <div class="bg-primary/5 border border-primary/15 rounded-xl p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-primary" style="font-size:20px;">info</span>
+          <p class="text-sm font-bold text-primary">Fabric 설치 프로그램 설정값</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-4">
+          <div class="bg-surface-container-lowest rounded-lg p-4">
+            <p class="text-xs text-secondary uppercase tracking-widest font-bold mb-1">Minecraft 버전</p>
+            <p class="font-bold text-on-surface">사용할 버전 선택</p>
+            <p class="text-xs text-secondary mt-1">현재 서버 버전에 맞추세요</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-lg p-4">
+            <p class="text-xs text-secondary uppercase tracking-widest font-bold mb-1">로더 버전</p>
+            <p class="font-bold text-on-surface">최신 버전으로 선택</p>
+            <p class="text-xs text-secondary mt-1">스냅샷 표시는 체크 불필요</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-lg p-4">
+            <p class="text-xs text-secondary uppercase tracking-widest font-bold mb-1">런처 위치</p>
+            <p class="font-bold text-on-surface font-mono text-xs break-all">%AppData%\Roaming\.minecraft</p>
+            <p class="text-xs text-secondary mt-1">기본 마인크래프트 폴더</p>
+          </div>
+        </div>
+        <div class="pt-3 border-t border-primary/10">
+          <p class="text-xs text-secondary leading-relaxed">
+            <span class="font-bold text-on-surface">이 아래로 설치하는 모드 파일들은 따로 압축 해제하거나 실행하지 않습니다.</span>
+            모두 Fabric 기준이므로 다운로드 시 <strong>플랫폼: Fabric</strong>, <strong>버전: 현재 버전</strong>, <strong>채널: 원하시는 대로</strong> 선택하세요.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: 성능 -->
+    <section class="md:col-span-12 bg-primary text-on-primary rounded-xl p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-on-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">speed</span>
+        <h2 class="text-3xl font-bold">Section 2: 성능</h2>
+      </div>
+      <p class="text-on-primary-container text-sm mb-6 ml-1">모두 <code class="bg-white/10 px-1.5 py-0.5 rounded text-xs font-mono">mods</code> 폴더에 넣어주세요.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+
+        <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png" alt="Mod Menu" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Mod Menu</p><p class="text-xs text-on-primary-container mt-0.5">모드 목록 관리</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/sodium" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="Sodium" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Sodium</p><p class="text-xs text-on-primary-container mt-0.5">획기적인 프레임 상승</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/lithium" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp" alt="Lithium" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Lithium</p><p class="text-xs text-on-primary-container mt-0.5">게임 물리 연산 최적화</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/ferrite-core" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/uXXizFIs/222a126f26f8f9ae1eb339f3b767677f18bff31f_96.webp" alt="FerriteCore" class="w-11 h-11 rounded-lg flex-shrink-0 object-cover"/>
+          <div><p class="font-bold text-sm leading-tight">FerriteCore</p><p class="text-xs text-on-primary-container mt-0.5">메모리 사용량 절감</p></div>
+        </a>
+
+        <!-- ImmediatelyFast -->
+        <a href="https://modrinth.com/mod/immediatelyfast" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/5ZwdcRci/e57b6b451425692ac17ad322d5e14bea686a383a_96.webp" alt="ImmediatelyFast" class="w-11 h-11 rounded-lg flex-shrink-0 object-cover"/>
+          <div><p class="font-bold text-sm leading-tight">ImmediatelyFast</p><p class="text-xs text-on-primary-container mt-0.5">렌더링 최적화</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/entityculling" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/NNAgCjsB/icon.png" alt="Entity Culling" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Entity Culling</p><p class="text-xs text-on-primary-container mt-0.5">비가시 엔티티 처리 생략</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/dynamic-fps" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/LQ3K71Q1/icon.png" alt="Dynamic FPS" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Dynamic FPS</p><p class="text-xs text-on-primary-container mt-0.5">백그라운드 FPS 제한</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/sodium-extra" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/PtjYWJkn/icon.png" alt="Sodium Extra" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Sodium Extra</p><p class="text-xs text-on-primary-container mt-0.5">Sodium 추가 옵션</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/reeses-sodium-options" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/Bh37bMuy/icon.png" alt="Reese's Sodium Options" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Reese's Sodium Options</p><p class="text-xs text-on-primary-container mt-0.5">Sodium 설정 UI 개선</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/cloth-config" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/9s6osm5g/icon.png" alt="Cloth Config API" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Cloth Config API</p><p class="text-xs text-on-primary-container mt-0.5">설정 라이브러리</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/architectury-api" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/lhGA9TYQ/icon.png" alt="Architectury API" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">Architectury API</p><p class="text-xs text-on-primary-container mt-0.5">크로스 플랫폼 라이브러리</p></div>
+        </a>
+
+        <a href="https://modrinth.com/mod/c2me-fabric" target="_blank" rel="noopener"
+           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/VSNURh3q/icon.png" alt="C2ME" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div><p class="font-bold text-sm leading-tight">C2ME</p><p class="text-xs text-on-primary-container mt-0.5">청크 병렬 처리 <span class="opacity-60">(불안정시 제거)</span></p></div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Section 3: 편의성 & 디테일 (옵션) -->
+    <section class="md:col-span-6 bg-surface-container-highest rounded-xl p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-secondary text-3xl">tune</span>
+        <h2 class="text-2xl font-bold text-on-surface">Section 3: 편의성 &amp; 디테일</h2>
+      </div>
+      <p class="text-secondary text-sm mb-5">
+        <span class="bg-secondary-fixed-dim text-on-secondary-fixed-variant text-xs font-bold px-2 py-0.5 rounded mr-2">옵션</span>모두
+        <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-xs font-mono">mods</code> 폴더에 넣어주세요.
+      </p>
+      <div class="space-y-3">
+
+        <a href="https://modrinth.com/mod/appleskin" target="_blank" rel="noopener"
+           class="mod-card flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/EsAfCjCV/icon.png" alt="AppleSkin" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
+          <div class="flex-1">
+            <div class="flex items-center gap-1"><span class="font-medium">AppleSkin</span><span class="material-symbols-outlined text-outline-variant" style="font-size:13px;">open_in_new</span></div>
+            <p class="text-xs text-secondary">체력 &amp; 포만감 수치 시각화</p>
+          </div>
+        </a>
+
+        <a href="https://modrinth.com/mod/chat-heads" target="_blank" rel="noopener"
+           class="mod-card flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/Wb5oqrBJ/icon.png" alt="Chat Heads" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
+          <div class="flex-1">
+            <div class="flex items-center gap-1"><span class="font-medium">Chat Heads</span><span class="material-symbols-outlined text-outline-variant" style="font-size:13px;">open_in_new</span></div>
+            <p class="text-xs text-secondary">채팅창에 플레이어 얼굴 표시</p>
+          </div>
+        </a>
+
+        <!-- Shulker Box Tooltip -->
+        <a href="https://modrinth.com/mod/shulkerboxtooltip" target="_blank" rel="noopener"
+           class="mod-card flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/2M01OLQq/bb490716cf2590cf84100a495931c3d4743bce43_96.webp" alt="Shulker Box Tooltip" class="w-10 h-10 rounded-md flex-shrink-0 object-cover"/>
+          <div class="flex-1">
+            <div class="flex items-center gap-1"><span class="font-medium">Shulker Box Tooltip</span><span class="material-symbols-outlined text-outline-variant" style="font-size:13px;">open_in_new</span></div>
+            <p class="text-xs text-secondary">셜커 박스 내용물 미리보기</p>
+          </div>
+        </a>
+
+        <a href="https://modrinth.com/mod/jade" target="_blank" rel="noopener"
+           class="mod-card flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/nvQzSEkH/icon.png" alt="Jade" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
+          <div class="flex-1">
+            <div class="flex items-center gap-1"><span class="font-medium">Jade 🔍</span><span class="material-symbols-outlined text-outline-variant" style="font-size:13px;">open_in_new</span></div>
+            <p class="text-xs text-secondary">블록 &amp; 엔티티 정보 표시</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Section 4: 건축 (옵션) -->
+    <section class="md:col-span-6 bg-secondary-fixed rounded-xl p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-on-secondary-fixed-variant text-3xl">architecture</span>
+        <h2 class="text-2xl font-bold text-on-secondary-fixed">Section 4: 건축</h2>
+      </div>
+      <p class="text-on-secondary-fixed-variant text-sm mb-5">
+        <span class="bg-on-secondary-fixed/10 text-on-secondary-fixed-variant text-xs font-bold px-2 py-0.5 rounded mr-2">옵션</span>모두
+        <code class="bg-black/10 px-1.5 py-0.5 rounded text-xs font-mono">mods</code> 폴더에 넣어주세요.
+      </p>
+      <div class="space-y-5">
+
+        <a href="https://modrinth.com/mod/litematica" target="_blank" rel="noopener"
+           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-secondary cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-lg">Litematica</h3>
+              <span class="material-symbols-outlined text-on-secondary-fixed-variant" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-on-secondary-fixed-variant">건축 청사진 및 가이드. 대규모 건축에 유용합니다. <span class="font-semibold">사용법을 미리 공부해 두세요.</span></p>
+          </div>
+        </a>
+
+        <a href="https://modrinth.com/mod/malilib" target="_blank" rel="noopener"
+           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-secondary cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/GcWjdA9I/a530ae55df5e0c405f5cf1b3e4fd6163a398bdc3.png" alt="MaLiLib" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-lg">MaLiLib</h3>
+              <span class="material-symbols-outlined text-on-secondary-fixed-variant" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-on-secondary-fixed-variant">Litematica 실행을 위한 필수 선행 라이브러리입니다.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Section 5: 시각 효과 (옵션) -->
+    <section class="md:col-span-12 bg-surface-container-low rounded-xl p-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-primary text-3xl">palette</span>
+        <h2 class="text-2xl font-bold text-on-surface">Section 5: 시각 효과</h2>
+      </div>
+      <p class="text-secondary text-sm mb-6">
+        <span class="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded mr-2">옵션</span>리소스팩은
+        <code class="bg-surface-container-highest px-1.5 py-0.5 rounded text-xs font-mono">resourcepacks</code> 폴더,
+        쉐이더팩은 <code class="bg-surface-container-highest px-1.5 py-0.5 rounded text-xs font-mono">shaderpacks</code> 폴더에 넣어주세요.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- 리소스팩 -->
+        <div class="bg-surface-container rounded-xl p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <img src="https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp" alt="리소스팩" class="w-7 h-7 rounded object-cover"/>
+            <h3 class="font-bold text-lg">리소스팩</h3>
+          </div>
+          <div class="space-y-3">
+
+            <!-- Fresh Animations -->
+            <a href="https://modrinth.com/resourcepack/fresh-animations" target="_blank" rel="noopener"
+               class="mod-card flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+              <img src="https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp" alt="Fresh Animations" class="w-10 h-10 rounded-md flex-shrink-0 object-cover"/>
+              <div class="flex-1">
+                <div class="flex items-center gap-1">
+                  <span class="font-medium text-sm">Fresh Animations</span>
+                  <span class="material-symbols-outlined text-outline-variant" style="font-size:13px;">open_in_new</span>
+                </div>
+                <p class="text-xs text-secondary">몬스터 &amp; 동물의 부드러운 움직임 · resourcepacks 폴더</p>
+              </div>
+            </a>
+
+            <div class="pl-2 pt-1">
+              <p class="text-xs text-secondary font-semibold mb-2">↳ Fresh Animations 사용을 위한 모드 (mods 폴더):</p>
+              <div class="space-y-2">
+
+                <!-- ETF -->
+                <a href="https://modrinth.com/mod/entitytexturefeatures" target="_blank" rel="noopener"
+                   class="mod-card flex items-center gap-2 p-2 bg-surface-container-lowest rounded cursor-pointer">
+                  <img src="https://cdn.modrinth.com/data/BVzZfTc1/af683d206d50b05258d865b0d6e4aa2f2cee12f2_96.webp" alt="Entity Texture Features" class="w-9 h-9 rounded flex-shrink-0 object-cover"/>
+                  <div class="flex items-center gap-1 flex-1">
+                    <span class="text-xs font-medium">Entity Texture Features</span>
+                    <span class="material-symbols-outlined text-outline-variant" style="font-size:12px;">open_in_new</span>
+                  </div>
+                </a>
+
+                <!-- EMF -->
+                <a href="https://modrinth.com/mod/entity-model-features" target="_blank" rel="noopener"
+                   class="mod-card flex items-center gap-2 p-2 bg-surface-container-lowest rounded cursor-pointer">
+                  <img src="https://cdn.modrinth.com/data/4I1XuqiY/6e5bbd0d06b1741bfdab6c0cfab6de8fdaf0064c_96.webp" alt="Entity Model Features" class="w-9 h-9 rounded flex-shrink-0 object-cover"/>
+                  <div class="flex items-center gap-1 flex-1">
+                    <span class="text-xs font-medium">Entity Model Features</span>
+                    <span class="material-symbols-outlined text-outline-variant" style="font-size:12px;">open_in_new</span>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 쉐이더팩 -->
+        <div class="bg-surface-container rounded-xl p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="쉐이더팩" class="w-7 h-7 rounded object-cover" onerror="this.style.display='none'"/>
+            <h3 class="font-bold text-lg">쉐이더팩</h3>
+          </div>
+          <a href="https://modrinth.com/shaders" target="_blank" rel="noopener"
+             class="mod-card flex items-start gap-3 p-4 bg-surface-container-lowest rounded-lg shadow-sm cursor-pointer">
+            <span class="material-symbols-outlined text-primary text-3xl mt-0.5">open_in_new</span>
+            <div>
+              <p class="font-bold text-sm text-primary">Modrinth 쉐이더 목록 보기</p>
+              <p class="text-xs text-secondary mt-1">샘플을 확인하고 원하는 쉐이더팩을 골라
+                <code class="bg-surface-container px-1 py-0.5 rounded font-mono">shaderpacks</code> 폴더에 넣어주세요.
+              </p>
+            </div>
+          </a>
+          <p class="text-xs text-secondary mt-4 pl-1">설치 후 비디오 설정 → 쉐이더 팩에서 다운로드한 것을 활성화하세요. 세부 설정에서 안개, 비, 빛 등을 커스텀할 수 있습니다.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 6: 설치 후 과정 -->
+    <section class="md:col-span-12 bg-white rounded-xl p-10 shadow-sm mb-8">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="material-symbols-outlined text-primary text-4xl">settings_input_component</span>
+        <h2 class="text-4xl font-extrabold text-on-surface">Section 6: 설치 후 과정</h2>
+      </div>
+      <div class="flex flex-col md:flex-row gap-12 items-start">
+        <div class="flex-1 space-y-8">
+
+          <div class="flex gap-6">
+            <div class="bg-primary-fixed w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-primary font-black text-xl">1</div>
+            <div>
+              <h3 class="text-xl font-bold mb-2">런처 프로필 선택</h3>
+              <p class="text-secondary leading-relaxed">마인크래프트 런처에서 <strong>Fabric Loader</strong> 프로필을 선택하고 실행하세요.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-6">
+            <div class="bg-primary-fixed w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-primary font-black text-xl">2</div>
+            <div>
+              <h3 class="text-xl font-bold mb-2">단축키 설정</h3>
+              <p class="text-secondary leading-relaxed">메인화면 → 설정 → 조작 → 키 지정에서 붉은색으로 표시된 중복 키를 수정하세요.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-6">
+            <div class="bg-primary-fixed w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-primary font-black text-xl">3</div>
+            <div>
+              <h3 class="text-xl font-bold mb-2">비디오 설정</h3>
+              <p class="text-secondary leading-relaxed">메인화면 → 설정 → 비디오 설정에서 왼쪽 스크롤을 내리며 전체 설정을 확인하세요. PC 사양과 취향에 맞춰 조정하시면 됩니다. <strong>쉐이더 팩 설정에서 다운로드한 것을 반드시 켜주세요.</strong></p>
+            </div>
+          </div>
+
+          <div class="flex gap-6">
+            <div class="bg-primary-fixed w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-primary font-black text-xl">4</div>
+            <div>
+              <h3 class="text-xl font-bold mb-2">리소스팩 활성화</h3>
+              <p class="text-secondary leading-relaxed">메인화면 → 설정 → 리소스 팩에서 다운로드한 팩을 왼쪽 <span class="font-semibold">사용 가능</span> 목록에서 오른쪽 <span class="font-semibold">선택됨</span>으로 이동하세요.</p>
+            </div>
+          </div>
+
+        </div>
+        <div class="flex-1 w-full max-w-md">
+          <div class="bg-surface-container rounded-xl p-6 flex flex-col gap-3">
+            <p class="text-xs uppercase tracking-widest text-secondary font-bold mb-1">설치 체크리스트</p>
+            <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg">
+              <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
+              <span class="text-sm font-medium flex-1">Fabric + Fabric API</span>
+              <span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg">
+              <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="Iris" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
+              <span class="text-sm font-medium flex-1">Iris Shaders</span>
+              <span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg">
+              <img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="Sodium" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
+              <span class="text-sm font-medium flex-1">성능 모드 12종</span>
+              <span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg">
+              <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
+              <span class="text-sm font-medium flex-1">Litematica + MaLiLib</span>
+              <span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg">
+              <img src="https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp" alt="Fresh Animations" class="w-8 h-8 rounded-md object-cover"/>
+              <span class="text-sm font-medium flex-1">리소스팩 / 쉐이더팩</span>
+              <span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+            </div>
+            <div class="mt-1 p-3 bg-primary/5 rounded-lg text-center">
+              <p class="text-primary font-bold text-sm">환경 설정 완료 ✓</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="bg-[#f4f4f2] w-full py-12 px-8">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+    <div class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</div>
+    <div class="flex gap-6">
+      <a class="text-slate-500 hover:text-primary hover:underline font-['Inter'] text-sm cursor-pointer" onclick="openModal()">Admin</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const ADMIN_PASSWORD = 'hufs2024';
+  function openModal() { document.getElementById('admin-modal').classList.add('active'); document.getElementById('pw-input').focus(); }
+  function closeModal() { document.getElementById('admin-modal').classList.remove('active'); document.getElementById('pw-input').value = ''; document.getElementById('pw-error').classList.add('hidden'); }
+  function checkPassword() {
+    if (document.getElementById('pw-input').value === ADMIN_PASSWORD) { window.location.href = 'admin.html'; }
+    else { document.getElementById('pw-error').classList.remove('hidden'); document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
+  }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+  document.getElementById('admin-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+</script>
+</body></html>
