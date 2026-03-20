@@ -349,18 +349,11 @@
     return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // 인증 상태 변화 시 대시보드 & 로그 목록 갱신
-  // OAuth 리다이렉트 후 access_token이 URL 해시에 있을 때,
-  // Supabase가 세션을 처리할 때까지 기다린 후 checkAuth를 호출해야 함
+  // OAuth 리다이렉트 후 Supabase가 URL 해시를 파싱해 세션을 복원하면
+  // onAuthStateChange가 SIGNED_IN 이벤트를 발생 — 여기서만 checkAuth 호출
   sb.auth.onAuthStateChange(function(event, session) {
     checkAuth();
     if (session) loadAdminLogs();
   });
-
-  // onAuthStateChange가 INITIAL_SESSION 이벤트를 통해 초기 상태를 처리하므로
-  // 별도의 즉시 checkAuth() 호출 불필요 — 단, 해시가 없는 일반 방문 시 빠른 렌더를 위해 유지
-  if (!window.location.hash.includes('access_token')) {
-    checkAuth();
-  }
 </script>
 </body></html>
