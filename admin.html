@@ -184,8 +184,8 @@
     const dashboard = document.getElementById('dashboard');
     if (!authScreen || !dashboard) return;
 
-    const { data: { session } } = await sb.auth.getSession();
-    const email = session?.user?.email;
+    const { data: { user } } = await sb.auth.getUser();
+    const email = user?.email;
     const ok = !!(email && email === ALLOWED_EMAIL);
 
     authScreen.style.display = ok ? 'none' : 'flex';
@@ -195,7 +195,7 @@
   async function loginWithGoogle() {
     await sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.href }
+      options: { redirectTo: window.location.origin + '/admin.html' }
     });
   }
 
