@@ -23,27 +23,11 @@
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
   body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #f9f9f7; }
   h1, h2, h3 { font-family: 'Manrope', sans-serif; }
-  #admin-modal { display: none; }
-  #admin-modal.active { display: flex; }
   .mod-card { transition: transform 0.15s, box-shadow 0.15s; }
   .mod-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,43,107,0.10); }
 </style>
 </head>
 <body class="bg-surface text-on-surface">
-
-<!-- Admin 비밀번호 모달 -->
-<div id="admin-modal" class="fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
-  <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm mx-4">
-    <h2 class="text-xl font-black text-primary font-['Manrope'] mb-1">관리자 로그인</h2>
-    <p class="text-sm text-secondary mb-6">외대.서버.한국 관리자 전용입니다.</p>
-    <input id="pw-input" type="password" placeholder="비밀번호 입력" class="w-full border border-outline-variant rounded-lg px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary"/>
-    <p id="pw-error" class="text-error text-xs mb-3 hidden">비밀번호가 틀렸습니다.</p>
-    <div class="flex gap-3">
-      <button onclick="closeModal()" class="flex-1 py-3 rounded-lg bg-surface-container text-secondary font-bold text-sm hover:bg-surface-container-high transition-all">취소</button>
-      <button onclick="checkPassword()" class="flex-1 py-3 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary-container transition-all">진입</button>
-    </div>
-  </div>
-</div>
 
 <!-- TopNavBar — 다른 페이지들과 동일한 구조 -->
 <nav class="bg-white/70 backdrop-blur-md border-b border-slate-200/20 shadow-sm fixed top-0 w-full z-50">
@@ -500,20 +484,11 @@
   <div class="flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
     <div class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</div>
     <div class="flex gap-6">
-      <a class="text-slate-500 hover:text-primary hover:underline font-['Inter'] text-sm cursor-pointer" onclick="openModal()">Admin</a>
+      <a class="text-slate-500 hover:text-primary hover:underline font-['Inter'] text-sm" href="admin.html">Admin</a>
     </div>
   </div>
 </footer>
 
 <script>
-  const ADMIN_PASSWORD = 'hufs2024';
-  function openModal() { document.getElementById('admin-modal').classList.add('active'); document.getElementById('pw-input').focus(); }
-  function closeModal() { document.getElementById('admin-modal').classList.remove('active'); document.getElementById('pw-input').value = ''; document.getElementById('pw-error').classList.add('hidden'); }
-  function checkPassword() {
-    if (document.getElementById('pw-input').value === ADMIN_PASSWORD) { window.location.href = 'admin.html'; }
-    else { document.getElementById('pw-error').classList.remove('hidden'); document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
-  }
-  document.getElementById('pw-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
-  document.getElementById('admin-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 </script>
 </body></html>
