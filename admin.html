@@ -10,16 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          "hufs-navy":  "#003764",
-          "hufs-gold":  "#C4972A",
-          "hufs-gray":  "#9EA2A2",
-          "hufs-light": "#F4F4F4",
-        }
-      }
-    }
+    theme: { extend: { colors: { "hufs-navy":"#003764","hufs-gold":"#C4972A","hufs-gray":"#9EA2A2","hufs-light":"#F4F4F4" } } }
   }
 </script>
 <style>
@@ -28,75 +19,66 @@
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
   h1, h2, h3 { font-family: 'Manrope', sans-serif; }
 
-  /* toggle */
   .toggle-track { width:44px;height:24px;background:#D1D5DB;border-radius:99px;position:relative;transition:background .2s;cursor:pointer; }
   .toggle-track.on { background:#003764; }
   .toggle-thumb { width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.18); }
   .toggle-track.on .toggle-thumb { transform:translateX(20px); }
 
-  @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+  .stoggle { width:34px;height:18px;background:#D1D5DB;border-radius:99px;position:relative;transition:background .2s;cursor:pointer;display:inline-flex;align-items:center;flex-shrink:0; }
+  .stoggle.on { background:#C4972A; }
+  .stoggle-thumb { width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .stoggle.on .stoggle-thumb { transform:translateX(16px); }
 
-  input[type=text], input[type=date], textarea {
+  @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .spin { animation:spin 0.8s linear infinite; display:inline-block; }
+
+  input[type=text], input[type=date], input[type=url], textarea {
     width:100%; background:#F4F4F4; border:1px solid rgba(0,55,100,0.12);
-    padding:0.85rem 1rem; border-radius:8px;
+    padding:0.8rem 1rem; border-radius:8px;
     font-family:'Noto Sans KR',sans-serif; font-size:0.9rem; color:#003764;
     outline:none; transition:border-color .15s, box-shadow .15s;
   }
-  input[type=text]:focus, input[type=date]:focus, textarea:focus {
+  input[type=text]:focus, input[type=date]:focus, input[type=url]:focus, textarea:focus {
     border-color:#003764; box-shadow:0 0 0 3px rgba(0,55,100,0.10);
   }
 
-  /* 반응형 그리드 */
-  .env-row { display:flex; align-items:center; gap:2rem; flex-wrap:wrap; }
-  .version-block { display:flex; align-items:center; gap:0.75rem; flex:0 0 auto; width:320px; }
-  .version-block input[type=text] { width:130px; flex:none; }
-  .main-grid { display:grid; grid-template-columns:1fr 460px; gap:1.5rem; align-items:start; }
-
-  @media (max-width: 960px) {
-    .main-grid { grid-template-columns:1fr; }
-    .version-block { width:100%; }
-    .version-block input[type=text] { flex:1; width:auto; }
+  .tab-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:0.42rem 0.85rem; border-radius:7px; border:none; cursor:pointer;
+    font-family:'Manrope',sans-serif; font-weight:700; font-size:0.78rem;
+    transition:background .15s, color .15s;
+    background:#F4F4F4; color:#9EA2A2;
   }
-  @media (max-width: 640px) {
+  .tab-btn.active { background:#003764; color:#fff; }
+  .tab-btn:not(.active):hover { background:#E5E5E5; color:#003764; }
+
+  .log-item { background:#F4F4F4; border-radius:8px; overflow:hidden; }
+  .log-item-header { display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.8rem 1rem;cursor:pointer;transition:background .15s; }
+  .log-item-header:hover { background:#EAEAEA; }
+  .log-item-body { max-height:0;overflow:hidden;transition:max-height 0.25s ease,padding 0.2s ease;padding:0 1rem;font-size:0.83rem;color:#555;white-space:pre-line;line-height:1.65;border-top:0px solid rgba(0,55,100,0.08); }
+  .log-item.open .log-item-body { max-height:600px;padding:0.75rem 1rem 1rem;border-top-width:1px; }
+  .log-chevron { transition:transform 0.2s;font-size:18px;color:#9EA2A2;flex-shrink:0; }
+  .log-item.open .log-chevron { transform:rotate(180deg); }
+
+  .notice-item { background:#FFF9EC; border:1px solid #E8C96A; border-left:3px solid #C4972A; border-radius:8px; padding:0.8rem 1rem; }
+
+  .env-row { display:flex; align-items:stretch; gap:1rem; flex-wrap:wrap; }
+  .main-grid { display:grid; grid-template-columns:1fr 400px; gap:1.5rem; align-items:start; }
+
+  @media (max-width: 1000px) { .main-grid { grid-template-columns:1fr; } }
+  @media (max-width: 760px) {
+    .env-row { flex-direction:column; }
     main { padding:76px 1rem 3rem !important; }
-    .env-row { flex-direction:column; align-items:stretch; gap:0.9rem; }
-    .version-block { flex-direction:column; align-items:stretch; width:100%; }
-    .version-block input[type=text] { width:100%; }
-    .version-block button { width:100%; padding:0.75rem !important; text-align:center; justify-content:center; }
-    .env-toggle-box { width:100% !important; }
     nav .nav-desktop { display:none !important; }
     nav .nav-mobile-logout { display:flex !important; }
   }
-
-  /* 로그 아코디언 */
-  .log-item { background:#F4F4F4; border-radius:8px; overflow:hidden; }
-  .log-item-header {
-    display:flex; align-items:center; justify-content:space-between;
-    gap:1rem; padding:0.85rem 1rem; cursor:pointer;
-    transition:background .15s;
-  }
-  .log-item-header:hover { background:#EAEAEA; }
-  .log-item-body {
-    max-height:0; overflow:hidden;
-    transition:max-height 0.25s ease, padding 0.2s ease;
-    padding:0 1rem;
-    font-size:0.83rem; color:#555; white-space:pre-line; line-height:1.65;
-    border-top:0px solid rgba(0,55,100,0.08);
-  }
-  .log-item.open .log-item-body {
-    max-height:600px;
-    padding:0.75rem 1rem 1rem;
-    border-top-width:1px;
-  }
-  .log-chevron { transition:transform 0.2s; font-size:18px; color:#9EA2A2; flex-shrink:0; }
-  .log-item.open .log-chevron { transform:rotate(180deg); }
 </style>
 </head>
 <body>
 
-<!-- ── 로그인 화면 ── -->
-<div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:200;background:#F9F9F7;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-top:3px solid #C4972A;border-radius:16px;box-shadow:0 8px 40px rgba(0,55,100,0.12);padding:2.75rem 2.25rem;width:100%;max-width:360px;text-align:center;">
+<div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:200;background:#F9F9F7;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid rgba(0,55,100,0.10);border-top:3px solid #C4972A;border-radius:16px;box-shadow:0 8px 40px rgba(0,55,100,0.12);padding:2.75rem 2.25rem;width:100%;max-width:360px;text-align:center;">
     <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#003764;margin-bottom:1.25rem;">
       <span class="material-symbols-outlined" style="color:#fff;font-size:1.6rem;">admin_panel_settings</span>
     </span>
@@ -111,10 +93,8 @@
   </div>
 </div>
 
-<!-- ── 대시보드 ── -->
 <div id="dashboard" style="display:none;">
 
-<!-- Nav -->
 <nav style="background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
@@ -129,10 +109,8 @@
         <span class="material-symbols-outlined" style="font-size:17px;">logout</span> 나가기
       </button>
     </div>
-    <!-- 모바일: 나가기 버튼만 -->
     <button onclick="logout()" class="nav-mobile-logout"
-      style="display:none;align-items:center;gap:4px;font-size:0.82rem;color:#9EA2A2;background:none;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;"
-      onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
+      style="display:none;align-items:center;gap:4px;font-size:0.82rem;color:#9EA2A2;background:none;border:none;cursor:pointer;">
       <span class="material-symbols-outlined" style="font-size:17px;">logout</span>
     </button>
   </div>
@@ -140,23 +118,22 @@
 
 <main style="max-width:1200px;margin:0 auto;padding:88px 2rem 4rem;">
 
-  <!-- Header -->
   <header style="margin-bottom:2rem;">
     <div style="width:44px;height:3px;background:#C4972A;border-radius:2px;margin-bottom:0.9rem;"></div>
     <h1 style="font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:#003764;margin:0 0 0.25rem;letter-spacing:-0.04em;">관리자 대시보드</h1>
     <p style="color:#9EA2A2;font-size:0.88rem;margin:0;">서버 환경을 관리합니다.</p>
   </header>
 
-  <!-- ── 환경 설정: 상단 가로 배치 ── -->
-  <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #C4972A;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.5rem;">
+  <!-- 환경 설정 (서버상태 + 버전 + 디스코드) -->
+  <section style="background:#fff;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #C4972A;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.5rem;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
       <span class="material-symbols-outlined" style="font-size:1.2rem;color:#C4972A;">settings_input_component</span>
       <h2 style="font-size:1rem;font-weight:800;color:#003764;margin:0;">환경 설정</h2>
     </div>
     <div class="env-row">
 
-      <!-- 서버 상태 토글 -->
-      <div class="env-toggle-box" style="display:flex;align-items:center;gap:1rem;background:#F4F4F4;border-radius:10px;padding:0.85rem 1.25rem;flex-shrink:0;">
+      <!-- 서버 상태 -->
+      <div style="display:flex;align-items:center;gap:1rem;background:#F4F4F4;border-radius:10px;padding:0.85rem 1.25rem;flex-shrink:0;">
         <span style="position:relative;display:inline-flex;width:10px;height:10px;flex-shrink:0;">
           <span id="status-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:0.6;animation:ping 1.4s cubic-bezier(0,0,0.2,1) infinite;"></span>
           <span id="status-core" style="position:relative;z-index:1;border-radius:50%;width:10px;height:10px;background:#22c55e;"></span>
@@ -166,91 +143,175 @@
           <span id="admin-server-status-text" style="font-family:'Manrope',sans-serif;font-size:0.92rem;font-weight:800;color:#003764;">가동</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-left:0.5rem;">
-          <div id="toggle-track" class="toggle-track on" onclick="toggleServer()" style="cursor:pointer;">
-            <div class="toggle-thumb"></div>
-          </div>
+          <div id="toggle-track" class="toggle-track on" onclick="toggleServer()"><div class="toggle-thumb"></div></div>
           <span id="server-enabled-label" style="font-size:0.8rem;font-weight:700;color:#003764;min-width:28px;">가동</span>
         </div>
       </div>
 
-      <!-- 버전 입력 -->
-      <div class="version-block">
-        <div style="flex-shrink:0;">
-          <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;margin-bottom:2px;">마크 서버 버전</span>
+      <!-- 버전 -->
+      <div style="display:flex;align-items:center;gap:0.65rem;flex-shrink:0;">
+        <div style="white-space:nowrap;">
+          <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;margin-bottom:2px;">마크 버전</span>
           <span style="font-size:0.78rem;color:#9EA2A2;">현재: <span id="admin-public-version-text" style="font-weight:700;color:#003764;"></span></span>
         </div>
-        <input id="public-mc-version-input" type="text" placeholder="예: 1.21.11"
-          style="background:#F4F4F4;border:1px solid rgba(0,55,100,0.12);padding:0.7rem 0.9rem;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:#003764;outline:none;transition:border-color .15s,box-shadow .15s;"/>
+        <input id="public-mc-version-input" type="text" placeholder="1.21.11" style="width:110px;flex:none;padding:0.7rem 0.9rem;"/>
         <button onclick="applyPublicMinecraftVersion()" type="button"
-          style="padding:0.7rem 1.1rem;background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;"
+          style="padding:0.7rem 1rem;background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;"
           onmouseover="this.style.background='#a97c20'" onmouseout="this.style.background='#C4972A'">적용</button>
       </div>
 
-    </div>
-  </section>
+      <!-- 구분선 -->
+      <div style="width:1px;background:rgba(0,55,100,0.10);align-self:stretch;flex-shrink:0;"></div>
 
-  <!-- ── 메인 그리드: 로그 작성 + 게시된 로그 ── -->
-  <div class="main-grid">
-
-    <!-- 업데이트 로그 작성 -->
-    <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #003764;border-radius:12px;padding:2rem;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;">
-        <div>
-          <h2 style="font-size:1.15rem;font-weight:800;color:#003764;margin:0 0 4px;">업데이트 로그 작성</h2>
-          <p style="font-size:0.82rem;color:#9EA2A2;margin:0;">버전 배포와 주요 변경 사항을 기록합니다.</p>
+      <!-- 디스코드 -->
+      <div style="display:flex;align-items:center;gap:0.65rem;flex:1;min-width:220px;">
+        <svg width="17" height="17" viewBox="0 0 127.14 96.36" fill="#5865F2" style="flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+        </svg>
+        <div style="white-space:nowrap;flex-shrink:0;">
+          <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;margin-bottom:2px;">디스코드</span>
+          <span id="discord-status-text" style="font-size:0.78rem;color:#9EA2A2;font-weight:600;">미설정</span>
         </div>
-        <span class="material-symbols-outlined" style="font-size:1.6rem;color:#C4972A;">history_edu</span>
-      </div>
-
-      <form onsubmit="submitUpdate(event)" style="display:flex;flex-direction:column;gap:1rem;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div>
-            <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">버전 태그</label>
-            <input id="input-version" type="text" placeholder="예: v 26.3.21" required/>
-          </div>
-          <div>
-            <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">배포 날짜</label>
-            <input id="input-date" type="date" required/>
-          </div>
-        </div>
-        <div>
-          <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">로그 제목</label>
-          <input id="input-title" type="text" placeholder="주요 변경 사항 요약" required/>
-        </div>
-        <div>
-          <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">상세 내용</label>
-          <textarea id="input-content" rows="6" placeholder="변경 사항을 상세히 기록해 주세요."></textarea>
-        </div>
-        <div id="submit-msg" style="display:none;font-size:0.83rem;font-weight:700;padding:0.7rem 1rem;border-radius:8px;"></div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button id="submit-btn" type="submit"
-            style="background:#003764;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;padding:0.75rem 1.75rem;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;"
-            onmouseover="this.style.background='#002549'" onmouseout="this.style.background='#003764'">
-            <span class="material-symbols-outlined" style="font-size:17px;">publish</span> 변경 게시
-          </button>
-        </div>
-      </form>
-    </section>
-
-    <!-- 게시된 로그 목록 -->
-    <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #9EA2A2;border-radius:12px;padding:1.75rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
-        <h2 style="font-size:1rem;font-weight:800;color:#003764;margin:0;">게시된 로그</h2>
-        <button onclick="loadAdminLogs()" type="button"
-          style="font-size:0.75rem;color:#9EA2A2;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
-          onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
-          <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> 새로고침
+        <input id="discord-link-input" type="url" placeholder="https://discord.gg/…" style="flex:1;min-width:0;padding:0.7rem 0.9rem;"/>
+        <button onclick="saveDiscordLink()" type="button"
+          style="padding:0.7rem 0.85rem;background:#5865F2;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;transition:background .15s;display:flex;align-items:center;gap:4px;"
+          onmouseover="this.style.background='#404EED'" onmouseout="this.style.background='#5865F2'">
+          <span class="material-symbols-outlined" style="font-size:15px;">save</span>저장
+        </button>
+        <button onclick="clearDiscordLink()" type="button" title="링크 삭제"
+          style="padding:0.7rem 0.7rem;background:#F4F4F4;color:#9EA2A2;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;transition:background .15s;display:flex;align-items:center;"
+          onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F4F4F4'">
+          <span class="material-symbols-outlined" style="font-size:16px;">link_off</span>
         </button>
       </div>
-      <div id="admin-log-list" style="display:flex;flex-direction:column;gap:0.6rem;">
-        <p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>
+
+    </div>
+    <div id="discord-save-msg" style="display:none;font-size:0.8rem;font-weight:700;padding:0.5rem 0.8rem;border-radius:7px;margin-top:0.75rem;"></div>
+  </section>
+
+  <!-- 메인 그리드 -->
+  <div class="main-grid">
+
+    <!-- 왼쪽: 탭 전환 작성 폼 -->
+    <section style="background:#fff;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #003764;border-radius:12px;padding:2rem;">
+
+      <!-- 탭 헤더 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:0.5rem;">
+        <div style="display:flex;gap:0.4rem;">
+          <button id="tab-update-btn" class="tab-btn active" onclick="switchTab('update')">
+            <span class="material-symbols-outlined" style="font-size:15px;">history_edu</span>업데이트 로그
+          </button>
+          <button id="tab-notice-btn" class="tab-btn" onclick="switchTab('notice')">
+            <span class="material-symbols-outlined" style="font-size:15px;">campaign</span>공지 작성
+          </button>
+        </div>
+        <p id="form-subtitle" style="font-size:0.78rem;color:#9EA2A2;margin:0;">버전 배포와 변경 사항을 기록합니다.</p>
       </div>
+
+      <!-- 업데이트 로그 폼 -->
+      <div id="panel-update">
+        <form onsubmit="submitUpdate(event)" style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+              <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">버전 태그</label>
+              <input id="input-version" type="text" placeholder="예: v 26.3.21" required/>
+            </div>
+            <div>
+              <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">배포 날짜</label>
+              <input id="input-date" type="date" required/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">로그 제목</label>
+            <input id="input-title" type="text" placeholder="주요 변경 사항 요약" required/>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">상세 내용</label>
+            <textarea id="input-content" rows="6" placeholder="변경 사항을 상세히 기록해 주세요."></textarea>
+          </div>
+          <div id="submit-msg" style="display:none;font-size:0.83rem;font-weight:700;padding:0.7rem 1rem;border-radius:8px;"></div>
+          <div style="display:flex;justify-content:flex-end;">
+            <button id="submit-btn" type="submit"
+              style="background:#003764;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;padding:0.75rem 1.75rem;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;"
+              onmouseover="this.style.background='#002549'" onmouseout="this.style.background='#003764'">
+              <span class="material-symbols-outlined" style="font-size:17px;">publish</span>변경 게시
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 공지 작성 폼 -->
+      <div id="panel-notice" style="display:none;">
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">공지 내용</label>
+            <textarea id="notice-content-input" rows="5" placeholder="공지 내용을 입력하세요. 줄바꿈도 적용됩니다." style="resize:vertical;"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#FFF9EC;border:1px solid #E8C96A;border-radius:8px;padding:0.75rem 1rem;">
+            <div>
+              <span style="font-size:0.82rem;font-weight:700;color:#6B4A00;">6시간 후 자동 삭제</span>
+              <span style="display:block;font-size:0.72rem;color:#9EA2A2;margin-top:1px;">끄면 수동 삭제 전까지 계속 표시됩니다</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div id="auto-delete-toggle" class="stoggle" onclick="toggleAutoDelete()"><div class="stoggle-thumb"></div></div>
+              <span id="auto-delete-label" style="font-size:0.78rem;font-weight:700;color:#9EA2A2;min-width:24px;">끔</span>
+            </div>
+          </div>
+          <div id="notice-submit-msg" style="display:none;font-size:0.83rem;font-weight:700;padding:0.7rem 1rem;border-radius:8px;"></div>
+          <div style="display:flex;gap:0.6rem;justify-content:flex-end;">
+            <button id="notice-cancel-btn" onclick="cancelNoticeEdit()" type="button"
+              style="display:none;padding:0.72rem 1.2rem;background:#F4F4F4;color:#9EA2A2;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;border:none;border-radius:8px;cursor:pointer;transition:background .15s;"
+              onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F4F4F4'">취소</button>
+            <button id="notice-submit-btn" onclick="submitNotice()" type="button"
+              style="background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;padding:0.72rem 1.75rem;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;"
+              onmouseover="this.style.background='#a97c20'" onmouseout="this.style.background='#C4972A'">
+              <span class="material-symbols-outlined" style="font-size:17px;">send</span>공지 게시
+            </button>
+          </div>
+        </div>
+      </div>
+
     </section>
 
-  </div>
+    <!-- 오른쪽: 목록 패널 -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <!-- 업데이트 로그 목록 -->
+      <section id="right-panel-update" style="background:#fff;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #9EA2A2;border-radius:12px;padding:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h2 style="font-size:0.95rem;font-weight:800;color:#003764;margin:0;">게시된 로그</h2>
+          <button onclick="loadAdminLogs()" type="button"
+            style="font-size:0.75rem;color:#9EA2A2;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
+            onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
+            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span>새로고침
+          </button>
+        </div>
+        <div id="admin-log-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+          <p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>
+        </div>
+      </section>
+
+      <!-- 공지 목록 -->
+      <section id="right-panel-notice" style="display:none;background:#fff;border:1px solid rgba(196,151,42,0.25);border-top:3px solid #C4972A;border-radius:12px;padding:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h2 style="font-size:0.95rem;font-weight:800;color:#003764;margin:0;">게시된 공지</h2>
+          <button onclick="loadNoticeAdmin()" type="button"
+            style="font-size:0.75rem;color:#9EA2A2;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
+            onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
+            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span>새로고침
+          </button>
+        </div>
+        <div id="admin-notice-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+          <p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>
+        </div>
+      </section>
+
+    </div>
+
+  </div><!-- /main-grid -->
+
 </main>
 
-<!-- Footer -->
 <footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
     <div>
@@ -261,166 +322,240 @@
   </div>
 </footer>
 
-</div><!-- /dashboard -->
+</div>
 
 <script>
-  const SUPABASE_URL = 'https://ggdzsdhpjamgvsrpxspg.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+const{createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-  const S_EN  = 'serverEnabled';
-  const S_VER = 'publicMinecraftVersion';
-  const DEF_EN  = true;
-  const DEF_VER = '1.21.11';
+/* 서버 상태 */
+const S_EN='serverEnabled',S_VER='publicMinecraftVersion';
+function getEnabled(){const v=localStorage.getItem(S_EN);return v===null?true:v==='true';}
+function getVersion(){return localStorage.getItem(S_VER)||'1.21.11';}
+function renderAdminUI(){
+  const on=getEnabled();
+  const track=document.getElementById('toggle-track');if(!track)return;
+  on?track.classList.add('on'):track.classList.remove('on');
+  document.getElementById('server-enabled-label').textContent=on?'가동':'점검';
+  document.getElementById('admin-server-status-text').textContent=on?'가동':'점검 중';
+  document.getElementById('status-ping').style.background=on?'#22c55e':'#ef4444';
+  document.getElementById('status-core').style.background=on?'#22c55e':'#ef4444';
+  const v=getVersion();
+  document.getElementById('public-mc-version-input').value=v;
+  document.getElementById('admin-public-version-text').textContent=v;
+}
+window.toggleServer=function(){localStorage.setItem(S_EN,getEnabled()?'false':'true');renderAdminUI();};
+window.applyPublicMinecraftVersion=function(){
+  const v=document.getElementById('public-mc-version-input').value.trim();if(!v)return;
+  localStorage.setItem(S_VER,v);renderAdminUI();
+};
+window.addEventListener('storage',e=>{if(e.key===S_EN||e.key===S_VER)renderAdminUI();});
 
-  function getEnabled() { const v=localStorage.getItem(S_EN); return v===null?DEF_EN:v==='true'; }
-  function getVersion()  { return localStorage.getItem(S_VER)||DEF_VER; }
-
-  function renderAdminUI() {
-    const on = getEnabled();
-    const track = document.getElementById('toggle-track');
-    const label = document.getElementById('server-enabled-label');
-    const statusText = document.getElementById('admin-server-status-text');
-    const statusPing = document.getElementById('status-ping');
-    const statusCore = document.getElementById('status-core');
-    const vInput = document.getElementById('public-mc-version-input');
-    const vText  = document.getElementById('admin-public-version-text');
-    if (!track) return;
-    if (on) { track.classList.add('on'); } else { track.classList.remove('on'); }
-    if (label) label.textContent = on ? '가동' : '점검';
-    if (statusText) statusText.textContent = on ? '가동' : '점검 중';
-    if (statusPing) statusPing.style.background = on ? '#22c55e' : '#ef4444';
-    if (statusCore) statusCore.style.background = on ? '#22c55e' : '#ef4444';
-    const v = getVersion();
-    if (vInput) vInput.value = v;
-    if (vText)  vText.textContent = v;
-  }
-
-  window.toggleServer = function() {
-    localStorage.setItem(S_EN, getEnabled() ? 'false' : 'true');
-    renderAdminUI();
-  };
-
-  window.applyPublicMinecraftVersion = function() {
-    const v = document.getElementById('public-mc-version-input').value.trim();
-    if (!v) return;
-    localStorage.setItem(S_VER, v);
-    renderAdminUI();
-  };
-
-  window.addEventListener('storage', e => {
-    if (e.key === S_EN || e.key === S_VER) renderAdminUI();
+/* 탭 전환 */
+const TAB_SUB={update:'버전 배포와 변경 사항을 기록합니다.',notice:'홈 화면 상단에 공지를 게시합니다.'};
+window.switchTab=function(tab){
+  ['update','notice'].forEach(t=>{
+    document.getElementById('tab-'+t+'-btn').className='tab-btn'+(tab===t?' active':'');
+    document.getElementById('panel-'+t).style.display=tab===t?'':'none';
+    document.getElementById('right-panel-'+t).style.display=tab===t?'':'none';
   });
+  document.getElementById('form-subtitle').textContent=TAB_SUB[tab];
+  if(tab==='notice')loadNoticeAdmin();
+};
 
-  // ── Auth ──
-  async function checkAuth() {
-    const { data:{ session } } = await sb.auth.getSession();
-    const authEl  = document.getElementById('auth-screen');
-    const dashEl  = document.getElementById('dashboard');
-    if (!authEl || !dashEl) return;
-    if (session) {
-      authEl.style.display = 'none';
-      dashEl.style.display = 'block';
-      renderAdminUI();
-      loadAdminLogs();
-    } else {
-      authEl.style.display = 'flex';
-      dashEl.style.display = 'none';
-    }
-  }
+/* Auth */
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  const authEl=document.getElementById('auth-screen');
+  const dashEl=document.getElementById('dashboard');
+  if(!authEl||!dashEl)return;
+  if(session){
+    authEl.style.display='none';dashEl.style.display='block';
+    renderAdminUI();loadAdminLogs();loadDiscordAdmin();
+  }else{authEl.style.display='flex';dashEl.style.display='none';}
+}
+window.loginWithGoogle=async function(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});};
+window.logout=async function(){await sb.auth.signOut();checkAuth();};
+sb.auth.onAuthStateChange((_e,session)=>{checkAuth();if(session)loadAdminLogs();});
 
-  window.loginWithGoogle = async function() {
-    await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: window.location.href } });
-  };
-  window.logout = async function() {
-    await sb.auth.signOut();
-    checkAuth();
-  };
+/* 공지 */
+let editingNoticeId=null,autoDeleteOn=false;
+function escHtml(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+window.toggleAutoDelete=function(){
+  autoDeleteOn=!autoDeleteOn;
+  const t=document.getElementById('auto-delete-toggle'),l=document.getElementById('auto-delete-label');
+  autoDeleteOn?(t.classList.add('on'),l.textContent='켬',l.style.color='#C4972A'):(t.classList.remove('on'),l.textContent='끔',l.style.color='#9EA2A2');
+};
+function showNoticeMsg(text,ok){
+  const el=document.getElementById('notice-submit-msg');
+  el.textContent=text;el.style.background=ok?'#ECFDF5':'#FEF2F2';el.style.color=ok?'#065F46':'#B91C1C';
+  el.style.display='block';setTimeout(()=>el.style.display='none',3500);
+}
+function fmtTime(iso){return new Date(iso).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function isExpired(row){return row.auto_delete&&(Date.now()-new Date(row.created_at).getTime()>=6*60*60*1000);}
 
-  sb.auth.onAuthStateChange(function(_event, session) {
-    checkAuth();
-    if (session) loadAdminLogs();
-  });
-
-  // ── Update log submit ──
-  async function submitUpdate(e) {
-    e.preventDefault();
-    const btn  = document.getElementById('submit-btn');
-    const msg  = document.getElementById('submit-msg');
-    const version = document.getElementById('input-version').value.trim();
-    const date    = document.getElementById('input-date').value;
-    const title   = document.getElementById('input-title').value.trim();
-    const content = document.getElementById('input-content').value.trim();
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:17px;">progress_activity</span> 게시 중...';
-
-    const { error } = await sb.from('updates').insert({ version, release_date: date, title, content });
-    if (error) {
-      msg.textContent = '❌ 오류: ' + error.message;
-      msg.style.background = '#FEF2F2'; msg.style.color = '#B91C1C';
-    } else {
-      msg.textContent = '✅ 성공적으로 게시되었습니다.';
-      msg.style.background = '#ECFDF5'; msg.style.color = '#065F46';
-      e.target.reset();
-      loadAdminLogs();
-    }
-    msg.style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:17px;">publish</span> 변경 게시';
-    setTimeout(() => { msg.style.display = 'none'; }, 4000);
-  }
-  window.submitUpdate = submitUpdate;
-
-  function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  // ── 아코디언 토글 ──
-  window.toggleLogItem = function(id) {
-    const el = document.getElementById('log-item-' + id);
-    if (!el) return;
-    el.classList.toggle('open');
-  };
-
-  async function loadAdminLogs() {
-    const container = document.getElementById('admin-log-list');
-    if (!container) return;
-    const { data, error } = await sb.from('updates').select('*').order('release_date',{ascending:false});
-    if (error || !data || data.length === 0) {
-      container.innerHTML = '<p style="font-size:0.85rem;color:#9EA2A2;">게시된 로그가 없습니다.</p>';
-      return;
-    }
-    container.innerHTML = data.map(row => `
-      <div class="log-item" id="log-item-${row.id}">
-        <div class="log-item-header" onclick="toggleLogItem('${row.id}')">
-          <div style="flex:1;min-width:0;">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
-              <span style="font-size:0.72rem;font-weight:800;background:#003764;color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;flex-shrink:0;">${escHtml(row.version)}</span>
-              <span style="font-size:0.75rem;color:#9EA2A2;flex-shrink:0;">${row.release_date??''}</span>
-            </div>
-            <p style="font-weight:700;font-size:0.875rem;color:#003764;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(row.title)}</p>
-          </div>
-          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-            <span class="material-symbols-outlined log-chevron">expand_more</span>
-            <button onclick="event.stopPropagation();deleteLog('${row.id}')" type="button"
-              style="background:none;border:none;cursor:pointer;color:#9EA2A2;transition:color .15s;padding:2px;display:flex;align-items:center;"
-              onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'" title="삭제">
-              <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
-            </button>
-          </div>
+async function loadNoticeAdmin(){
+  const c=document.getElementById('admin-notice-list');if(!c)return;
+  c.innerHTML='<p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>';
+  const{data,error}=await sb.from('notices').select('*').order('created_at',{ascending:false});
+  if(error||!data||!data.length){c.innerHTML='<p style="font-size:0.85rem;color:#9EA2A2;">게시된 공지가 없습니다.</p>';return;}
+  const expired=data.filter(r=>isExpired(r));
+  if(expired.length)await sb.from('notices').delete().in('id',expired.map(r=>r.id));
+  const fresh=data.filter(r=>!isExpired(r));
+  if(!fresh.length){c.innerHTML='<p style="font-size:0.85rem;color:#9EA2A2;">게시된 공지가 없습니다.</p>';return;}
+  c.innerHTML=fresh.map((row,i)=>`
+    <div class="notice-item">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.45rem;">
+        <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+          ${i===0?'<span style="font-size:0.63rem;font-weight:800;background:#003764;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">표시 중</span>':''}
+          ${row.auto_delete?'<span style="font-size:0.63rem;font-weight:800;background:#C4972A;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">6시간 자동삭제</span>':'<span style="font-size:0.63rem;font-weight:800;background:#9EA2A2;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">수동삭제</span>'}
         </div>
-        ${row.content ? `<div class="log-item-body">${escHtml(row.content)}</div>` : ''}
+        <div style="display:flex;gap:3px;flex-shrink:0;">
+          <button onclick="editNotice('${row.id}')" type="button" title="수정"
+            style="background:none;border:none;cursor:pointer;color:#9EA2A2;padding:2px;display:flex;align-items:center;transition:color .15s;"
+            onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
+            <span class="material-symbols-outlined" style="font-size:17px;">edit</span>
+          </button>
+          <button onclick="deleteNotice('${row.id}')" type="button" title="삭제"
+            style="background:none;border:none;cursor:pointer;color:#9EA2A2;padding:2px;display:flex;align-items:center;transition:color .15s;"
+            onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'">
+            <span class="material-symbols-outlined" style="font-size:17px;">delete</span>
+          </button>
+        </div>
       </div>
-    `).join('');
-  }
-  window.loadAdminLogs = loadAdminLogs;
+      <p style="font-size:0.84rem;color:#6B4A00;margin:0 0 0.35rem;white-space:pre-line;line-height:1.55;">${escHtml(row.content)}</p>
+      <span style="font-size:0.7rem;color:#9EA2A2;">작성: ${fmtTime(row.created_at)}${row.auto_delete?' · 만료: '+fmtTime(new Date(new Date(row.created_at).getTime()+6*60*60*1000).toISOString()):''}</span>
+    </div>
+  `).join('');
+}
+window.loadNoticeAdmin=loadNoticeAdmin;
 
-  async function deleteLog(id) {
-    if (!confirm('이 로그를 삭제할까요?')) return;
-    const { error } = await sb.from('updates').delete().eq('id', id);
-    if (!error) loadAdminLogs();
+window.editNotice=async function(id){
+  const{data}=await sb.from('notices').select('*').eq('id',id).maybeSingle();if(!data)return;
+  editingNoticeId=id;
+  document.getElementById('notice-content-input').value=data.content;
+  autoDeleteOn=data.auto_delete;
+  const t=document.getElementById('auto-delete-toggle'),l=document.getElementById('auto-delete-label');
+  autoDeleteOn?(t.classList.add('on'),l.textContent='켬',l.style.color='#C4972A'):(t.classList.remove('on'),l.textContent='끔',l.style.color='#9EA2A2');
+  document.getElementById('notice-submit-btn').innerHTML='<span class="material-symbols-outlined" style="font-size:17px;">edit</span>수정 저장';
+  document.getElementById('notice-cancel-btn').style.display='';
+  document.getElementById('notice-content-input').focus();
+};
+window.cancelNoticeEdit=function(){
+  editingNoticeId=null;autoDeleteOn=false;
+  document.getElementById('notice-content-input').value='';
+  const t=document.getElementById('auto-delete-toggle'),l=document.getElementById('auto-delete-label');
+  t.classList.remove('on');l.textContent='끔';l.style.color='#9EA2A2';
+  document.getElementById('notice-submit-btn').innerHTML='<span class="material-symbols-outlined" style="font-size:17px;">send</span>공지 게시';
+  document.getElementById('notice-cancel-btn').style.display='none';
+};
+window.deleteNotice=async function(id){
+  if(!confirm('이 공지를 삭제할까요?'))return;
+  await sb.from('notices').delete().eq('id',id);loadNoticeAdmin();
+};
+window.submitNotice=async function(){
+  const content=document.getElementById('notice-content-input').value.trim();
+  if(!content){showNoticeMsg('공지 내용을 입력해 주세요.',false);return;}
+  const btn=document.getElementById('notice-submit-btn');btn.disabled=true;
+  let error;
+  if(editingNoticeId){
+    ({error}=await sb.from('notices').update({content,auto_delete:autoDeleteOn,created_at:new Date().toISOString()}).eq('id',editingNoticeId));
+  }else{
+    ({error}=await sb.from('notices').insert({content,auto_delete:autoDeleteOn}));
   }
-  window.deleteLog = deleteLog;
+  btn.disabled=false;
+  if(error){showNoticeMsg('❌ 오류: '+error.message,false);return;}
+  showNoticeMsg(editingNoticeId?'✅ 공지가 수정되었습니다.':'✅ 공지가 게시되었습니다.',true);
+  cancelNoticeEdit();loadNoticeAdmin();
+};
+
+/* 디스코드 */
+async function loadDiscordAdmin(){
+  try{
+    const{data}=await sb.from('settings').select('value').eq('key','discord_link').maybeSingle();
+    const s=document.getElementById('discord-status-text');
+    if(data&&data.value){
+      document.getElementById('discord-link-input').value=data.value;
+      if(s){s.textContent='설정됨';s.style.color='#5865F2';}
+    }else if(s){s.textContent='미설정';s.style.color='#9EA2A2';}
+  }catch(e){}
+}
+function showDiscordMsg(text,ok){
+  const el=document.getElementById('discord-save-msg');
+  el.textContent=text;el.style.background=ok?'#ECFDF5':'#FEF2F2';el.style.color=ok?'#065F46':'#B91C1C';
+  el.style.display='block';setTimeout(()=>el.style.display='none',3000);
+}
+window.saveDiscordLink=async function(){
+  const val=document.getElementById('discord-link-input').value.trim();
+  if(!val){showDiscordMsg('링크를 입력해 주세요.',false);return;}
+  const{error}=await sb.from('settings').upsert({key:'discord_link',value:val},{onConflict:'key'});
+  if(error)showDiscordMsg('❌ 오류: '+error.message,false);
+  else{showDiscordMsg('✅ 디스코드 링크가 저장되었습니다.',true);loadDiscordAdmin();}
+};
+window.clearDiscordLink=async function(){
+  if(!confirm('디스코드 링크를 삭제해 홈에서 숨길까요?'))return;
+  await sb.from('settings').delete().eq('key','discord_link');
+  document.getElementById('discord-link-input').value='';
+  const s=document.getElementById('discord-status-text');
+  if(s){s.textContent='미설정';s.style.color='#9EA2A2';}
+  showDiscordMsg('✅ 링크가 삭제되었습니다.',true);
+};
+
+/* 업데이트 로그 */
+async function submitUpdate(e){
+  e.preventDefault();
+  const btn=document.getElementById('submit-btn'),msg=document.getElementById('submit-msg');
+  const version=document.getElementById('input-version').value.trim();
+  const date=document.getElementById('input-date').value;
+  const title=document.getElementById('input-title').value.trim();
+  const content=document.getElementById('input-content').value.trim();
+  btn.disabled=true;
+  btn.innerHTML='<span class="material-symbols-outlined spin" style="font-size:17px;">progress_activity</span>게시 중...';
+  const{error}=await sb.from('updates').insert({version,release_date:date,title,content});
+  if(error){msg.textContent='❌ 오류: '+error.message;msg.style.background='#FEF2F2';msg.style.color='#B91C1C';}
+  else{msg.textContent='✅ 성공적으로 게시되었습니다.';msg.style.background='#ECFDF5';msg.style.color='#065F46';e.target.reset();loadAdminLogs();}
+  msg.style.display='block';btn.disabled=false;
+  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:17px;">publish</span>변경 게시';
+  setTimeout(()=>msg.style.display='none',4000);
+}
+window.submitUpdate=submitUpdate;
+window.toggleLogItem=function(id){const el=document.getElementById('log-item-'+id);if(el)el.classList.toggle('open');};
+async function loadAdminLogs(){
+  const c=document.getElementById('admin-log-list');if(!c)return;
+  const{data,error}=await sb.from('updates').select('*').order('release_date',{ascending:false});
+  if(error||!data||!data.length){c.innerHTML='<p style="font-size:0.85rem;color:#9EA2A2;">게시된 로그가 없습니다.</p>';return;}
+  c.innerHTML=data.map(row=>`
+    <div class="log-item" id="log-item-${row.id}">
+      <div class="log-item-header" onclick="toggleLogItem('${row.id}')">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+            <span style="font-size:0.72rem;font-weight:800;background:#003764;color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;flex-shrink:0;">${escHtml(row.version)}</span>
+            <span style="font-size:0.75rem;color:#9EA2A2;flex-shrink:0;">${row.release_date??''}</span>
+          </div>
+          <p style="font-weight:700;font-size:0.875rem;color:#003764;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(row.title)}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+          <span class="material-symbols-outlined log-chevron">expand_more</span>
+          <button onclick="event.stopPropagation();deleteLog('${row.id}')" type="button"
+            style="background:none;border:none;cursor:pointer;color:#9EA2A2;transition:color .15s;padding:2px;display:flex;align-items:center;"
+            onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'" title="삭제">
+            <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+          </button>
+        </div>
+      </div>
+      ${row.content?`<div class="log-item-body">${escHtml(row.content)}</div>`:''}
+    </div>
+  `).join('');
+}
+window.loadAdminLogs=loadAdminLogs;
+async function deleteLog(id){
+  if(!confirm('이 로그를 삭제할까요?'))return;
+  const{error}=await sb.from('updates').delete().eq('id',id);
+  if(!error)loadAdminLogs();
+}
+window.deleteLog=deleteLog;
 </script>
 </body>
 </html>

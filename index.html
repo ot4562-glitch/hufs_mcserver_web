@@ -7,16 +7,13 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          "hufs-navy":  "#003764",
-          "hufs-gold":  "#C4972A",
-          "hufs-gray":  "#9EA2A2",
-          "hufs-light": "#F4F4F4",
-          "hufs-card":  "#EEEEEC",
+          "hufs-navy":"#003764","hufs-gold":"#C4972A","hufs-gray":"#9EA2A2","hufs-light":"#F4F4F4","hufs-card":"#EEEEEC"
         }
       }
     }
@@ -27,24 +24,60 @@
   body { font-family: 'Noto Sans KR', sans-serif; background: #F9F9F7; margin: 0; min-height: 100vh; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
 
-  /* ping animation — Tailwind CDN animate-ping sometimes stripped, so define manually */
   @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
   .do-ping { animation: ping 1.2s cubic-bezier(0,0,0.2,1) infinite; }
 
-  /* subtle card lift */
+  @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+  .slide-down { animation: slideDown 0.35s both; }
+
   .card-lift { transition: background 0.18s, box-shadow 0.18s, transform 0.18s; }
   .card-lift:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,55,100,0.10); }
-
-  /* arrow nudge */
   .group:hover .arrow-nudge { transform: translateX(4px); }
   .arrow-nudge { transition: transform 0.18s; }
-
-  /* gold accent line */
-  .gold-bar { width: 44px; height: 3px; background: #C4972A; border-radius: 2px; }
 
   .hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:center; }
   .carousel-wrap { position:relative; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,55,100,0.14); height:420px; }
   .nav-links { display:flex; gap:1.75rem; align-items:center; }
+
+  /* 클릭 복사 */
+  .copy-address { cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem; }
+  .copy-address h1 { transition: color 0.15s; }
+  .copy-address:hover h1 { color: #C4972A; }
+  .copy-icon { color:#9EA2A2; font-size:1.35rem !important; transition:color 0.15s, transform 0.15s; }
+  .copy-address:hover .copy-icon { color:#C4972A; transform:scale(1.15); }
+
+  /* 공지 배너 */
+  #notice-banner { max-width:1200px; margin:0 auto; padding:0 2rem; display:none; }
+  .notice-inner {
+    display:flex; align-items:flex-start; gap:0.75rem;
+    background:#FFF9EC; border:1px solid #E8C96A; border-left:4px solid #C4972A;
+    border-radius:10px; padding:0.9rem 1.25rem; font-size:0.875rem; color:#6B4A00; line-height:1.6;
+  }
+  .notice-icon { color:#C4972A; font-size:1.1rem !important; flex-shrink:0; margin-top:1px; }
+  .notice-text { flex:1; font-weight:500; white-space:pre-line; }
+  .notice-time { font-size:0.72rem; color:#9EA2A2; white-space:nowrap; flex-shrink:0; align-self:flex-start; padding-top:2px; }
+
+  /* 디스코드 인라인 배너 */
+  #discord-strip { display:none; }
+  .discord-strip-inner {
+    display:inline-flex; align-items:center; gap:0.6rem;
+    background:#EEF0FE; border:1px solid rgba(88,101,242,0.22);
+    border-radius:8px; padding:0.55rem 1rem;
+    font-size:0.82rem; font-weight:700; color:#404EED;
+    text-decoration:none;
+    transition:background 0.15s, box-shadow 0.15s;
+  }
+  .discord-strip-inner:hover { background:#E3E6FC; box-shadow:0 2px 10px rgba(88,101,242,0.15); }
+
+  /* 복사 토스트 */
+  #copy-toast {
+    position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(10px);
+    background:#003764; color:#fff; font-family:'Manrope',sans-serif; font-weight:700;
+    font-size:0.82rem; padding:0.6rem 1.25rem; border-radius:99px;
+    opacity:0; transition:opacity 0.25s, transform 0.25s; pointer-events:none; z-index:999;
+    display:flex; align-items:center; gap:6px;
+  }
+  #copy-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
   @media (max-width: 768px) {
     .hero-grid { grid-template-columns:1fr; gap:1.75rem; }
@@ -52,7 +85,8 @@
     .nav-links a:not(:last-child):not(:first-child) { display:none; }
   }
   @media (max-width: 640px) {
-    main { padding:72px 1rem 1.5rem !important; gap:1.5rem !important; }
+    main { padding-top:72px !important; gap:1.5rem !important; }
+    #notice-banner { padding:0 1rem; }
     .nav-links { gap:1rem; }
     .nav-links a { font-size:0.78rem !important; }
     .carousel-wrap { height:220px; }
@@ -62,27 +96,31 @@
 </head>
 <body>
 
-<!-- ── Nav ── -->
+<!-- Nav -->
 <nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
     <div class="nav-links">
-      <a href="index.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">홈</a>
-      <a href="mod-setup.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
-      <a href="updates.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
+      <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">홈</a>
+      <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
+      <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
     </div>
   </div>
 </nav>
 
-<!-- ── Main (single viewport) ── -->
-<main style="max-width:1200px;margin:0 auto;padding:80px 2rem 2rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:2.5rem;">
+<!-- 공지 배너 (nav 바로 아래) -->
+<div style="padding-top:60px;">
+  <div id="notice-banner"></div>
+</div>
 
-  <!-- Hero row -->
+<!-- Main -->
+<main style="max-width:1200px;margin:0 auto;padding:1.5rem 2rem 2rem;min-height:calc(100vh - 60px);display:flex;flex-direction:column;justify-content:center;gap:2.5rem;">
+
+  <!-- Hero -->
   <section class="hero-grid">
 
-    <!-- 좌측: 텍스트 + 상태박스 -->
+    <!-- 좌측 -->
     <div>
-      <!-- Badge -->
       <div style="margin-bottom:0.75rem;">
         <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,55,100,0.07);border:1px solid rgba(0,55,100,0.14);color:#003764;font-size:0.68rem;font-weight:800;padding:4px 12px;border-radius:99px;letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif;">
           <span class="material-symbols-outlined" style="font-size:13px;">dns</span>
@@ -90,12 +128,15 @@
         </span>
       </div>
 
-      <!-- Title -->
-      <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.8rem,5vw,5rem);color:#003764;line-height:0.95;letter-spacing:-0.045em;margin:0 0 1.75rem;">
-        외대.서버.한국
-      </h1>
+      <!-- 클릭 복사 타이틀 -->
+      <div class="copy-address" onclick="copyServerAddress()" title="클릭하여 주소 복사">
+        <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.8rem,5vw,5rem);color:#003764;line-height:0.95;letter-spacing:-0.045em;margin:0 0 1.75rem;user-select:none;">
+          외대.서버.한국
+        </h1>
+        <span class="material-symbols-outlined copy-icon" style="margin-bottom:1.75rem;">content_copy</span>
+      </div>
 
-      <!-- Status box -->
+      <!-- 서버 상태 박스 -->
       <div class="status-box" style="display:inline-flex;flex-direction:column;gap:0.5rem;background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:4px solid #C4972A;border-radius:12px;padding:1.4rem 1.75rem;box-shadow:0 2px 12px rgba(0,55,100,0.07);">
         <div style="display:flex;align-items:center;gap:11px;">
           <span style="position:relative;display:inline-flex;width:14px;height:14px;flex-shrink:0;">
@@ -110,18 +151,27 @@
           24시간 운영 &nbsp;·&nbsp; 버전 <span id="server-version-text" style="color:#003764;font-weight:800;">1.21.11</span>
         </p>
       </div>
+
+      <!-- 디스코드 인라인 배너 (서버상태 박스 바로 아래) -->
+      <div id="discord-strip" style="margin-top:0.85rem;">
+        <a id="discord-strip-link" href="#" target="_blank" rel="noopener" class="discord-strip-inner">
+          <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="#5865F2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+          </svg>
+          디스코드 서버 참여하기
+          <span class="material-symbols-outlined" style="font-size:14px;opacity:0.7;">open_in_new</span>
+        </a>
+      </div>
     </div>
 
     <!-- 우측: 캐러셀 -->
     <div class="carousel-wrap">
-      <!-- 이미지 슬라이드 -->
       <div id="slide-seoul" style="position:absolute;inset:0;transition:opacity 0.9s ease;opacity:1;">
         <img src="./설.png" alt="서울캠퍼스" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('div').style.background='#EEEEEC'"/>
       </div>
       <div id="slide-global" style="position:absolute;inset:0;transition:opacity 0.9s ease;opacity:0;">
         <img src="./글.png" alt="글로벌캠퍼스" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('div').style.background='#EEEEEC'"/>
       </div>
-      <!-- 도트 인디케이터 -->
       <div style="position:absolute;bottom:1rem;right:1.25rem;display:flex;gap:5px;z-index:10;">
         <span id="dot-0" style="width:6px;height:6px;border-radius:50%;background:#FFFFFF;opacity:1;transition:opacity 0.3s;"></span>
         <span id="dot-1" style="width:6px;height:6px;border-radius:50%;background:#FFFFFF;opacity:0.4;transition:opacity 0.3s;"></span>
@@ -130,10 +180,9 @@
 
   </section>
 
-  <!-- CTA Cards row -->
-  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;">
+  <!-- CTA 카드 -->
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;">
 
-    <!-- 모드 설정 -->
     <a href="mod-setup.html" class="group card-lift" style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #003764;border-radius:12px;padding:2rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3.5rem;">
         <span class="material-symbols-outlined" style="font-size:1.9rem;color:#003764;">settings_suggest</span>
@@ -143,7 +192,6 @@
       <p style="color:#9EA2A2;font-size:0.875rem;margin:0;">필요한 클라이언트 모드 및 설정 가이드</p>
     </a>
 
-    <!-- 업데이트 내역 -->
     <a href="updates.html" class="group card-lift" style="background:#EEEEEC;border:1px solid rgba(0,55,100,0.07);border-top:3px solid #C4972A;border-radius:12px;padding:2rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3.5rem;">
         <span class="material-symbols-outlined" style="font-size:1.9rem;color:#C4972A;">history</span>
@@ -157,7 +205,7 @@
 
 </main>
 
-<!-- ── Footer ── -->
+<!-- Footer -->
 <footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
     <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
@@ -165,43 +213,93 @@
   </div>
 </footer>
 
+<!-- 복사 토스트 -->
+<div id="copy-toast">
+  <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
+  서버 주소가 복사되었습니다
+</div>
+
 <script>
-  const S_EN  = 'serverEnabled';
-  const S_VER = 'publicMinecraftVersion';
+  const SUPABASE_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+  const{createClient}=supabase;
+  const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-  function getEnabled() {
-    const v = localStorage.getItem(S_EN);
-    return v === null ? true : v === 'true';
+  /* 서버 상태 */
+  const S_EN='serverEnabled',S_VER='publicMinecraftVersion';
+  function getEnabled(){const v=localStorage.getItem(S_EN);return v===null?true:v==='true';}
+  function getVersion(){return localStorage.getItem(S_VER)||'1.21.11';}
+  function renderStatus(){
+    const on=getEnabled();
+    document.getElementById('server-status-text').textContent=on?'서버 가동 중':'서버 점검 중';
+    document.getElementById('server-version-text').textContent=getVersion();
+    const show=(id,v)=>{document.getElementById(id).style.display=v?'':'none';};
+    show('ping-on',on);show('core-on',on);show('ping-off',!on);show('core-off',!on);
   }
-  function getVersion() {
-    return localStorage.getItem(S_VER) || '1.21.11';
-  }
-  function render() {
-    const on = getEnabled();
-    document.getElementById('server-status-text').textContent = on ? '서버 가동 중' : '서버 점검 중';
-    document.getElementById('server-version-text').textContent = getVersion();
+  renderStatus();
+  setInterval(renderStatus,2000);
 
-    const show = (id, visible) => { document.getElementById(id).style.display = visible ? '' : 'none'; };
-    show('ping-on',  on);  show('core-on',  on);
-    show('ping-off', !on); show('core-off', !on);
-  }
-  render();
-  setInterval(render, 2000);
+  /* 복사 */
+  window.copyServerAddress=function(){
+    const toast=document.getElementById('copy-toast');
+    const show=()=>{toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);};
+    navigator.clipboard.writeText('외대.서버.한국').then(show).catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value='외대.서버.한국';ta.style.cssText='position:fixed;opacity:0;';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      show();
+    });
+  };
 
-  // ── 캐러셀 ──
-  let slideIdx = 0;
-  const slides = ['slide-seoul', 'slide-global'];
-  const dots   = ['dot-0', 'dot-1'];
-  function showSlide(i) {
-    slides.forEach((id, j) => {
-      document.getElementById(id).style.opacity = j === i ? '1' : '0';
-      document.getElementById(dots[j]).style.opacity = j === i ? '1' : '0.4';
+  /* 공지 배너 */
+  function timeAgo(iso){
+    const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);
+    if(m<1)return'방금 전';if(m<60)return`${m}분 전`;
+    const h=Math.floor(m/60);if(h<24)return`${h}시간 전`;
+    return`${Math.floor(h/24)}일 전`;
+  }
+  async function loadNotice(){
+    const banner=document.getElementById('notice-banner');
+    try{
+      const{data,error}=await sb.from('notices').select('*').order('created_at',{ascending:false}).limit(1).maybeSingle();
+      if(error||!data){banner.style.display='none';return;}
+      if(data.auto_delete&&Date.now()-new Date(data.created_at).getTime()>=6*60*60*1000){
+        await sb.from('notices').delete().eq('id',data.id);
+        banner.style.display='none';return;
+      }
+      const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      banner.innerHTML=`<div class="notice-inner slide-down" style="margin:0.75rem 0 0;">
+        <span class="material-symbols-outlined notice-icon">campaign</span>
+        <span class="notice-text">${esc(data.content)}</span>
+        <span class="notice-time">${timeAgo(data.created_at)}</span>
+      </div>`;
+      banner.style.display='block';
+    }catch(e){banner.style.display='none';}
+  }
+  loadNotice();
+
+  /* 디스코드 */
+  async function loadDiscord(){
+    try{
+      const{data}=await sb.from('settings').select('value').eq('key','discord_link').maybeSingle();
+      if(data&&data.value){
+        document.getElementById('discord-strip-link').href=data.value;
+        document.getElementById('discord-strip').style.display='block';
+      }
+    }catch(e){}
+  }
+  loadDiscord();
+
+  /* 캐러셀 */
+  let slideIdx=0;
+  const slides=['slide-seoul','slide-global'],dots=['dot-0','dot-1'];
+  function showSlide(i){
+    slides.forEach((id,j)=>{
+      document.getElementById(id).style.opacity=j===i?'1':'0';
+      document.getElementById(dots[j]).style.opacity=j===i?'1':'0.4';
     });
   }
-  setInterval(() => {
-    slideIdx = (slideIdx + 1) % slides.length;
-    showSlide(slideIdx);
-  }, 3500);
+  setInterval(()=>{slideIdx=(slideIdx+1)%slides.length;showSlide(slideIdx);},3500);
 </script>
 </body>
 </html>
