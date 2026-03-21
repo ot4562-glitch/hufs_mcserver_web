@@ -1,155 +1,190 @@
 <!DOCTYPE html>
-<html class="light" lang="ko"><head>
+<html lang="ko">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>외대.서버.한국 - HUFS Minecraft Server</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+<script>
   tailwind.config = {
-    darkMode: "class",
     theme: {
       extend: {
         colors: {
-          "inverse-surface": "#2f3130","error-container": "#ffdad6","tertiary-fixed": "#ffdbce","tertiary": "#571b00","on-surface": "#1a1c1b","tertiary-fixed-dim": "#ffb599","secondary-container": "#e1e1c9","on-tertiary-fixed-variant": "#7e2c01","primary-fixed-dim": "#b0c6ff","primary-fixed": "#d9e2ff","on-error": "#ffffff","on-secondary-container": "#636451","surface-variant": "#e2e3e1","on-secondary": "#ffffff","tertiary-container": "#7c2a00","on-tertiary-container": "#ff986e","surface-container-lowest": "#ffffff","surface-container-high": "#e8e8e6","inverse-on-surface": "#f1f1ef","surface-container": "#eeeeec","surface": "#f9f9f7","primary": "#002b6b","on-primary-fixed-variant": "#04429a","surface-container-low": "#f4f4f2","secondary": "#5e604d","surface-tint": "#2d5bb3","primary-container": "#004098","outline": "#737783","on-primary": "#ffffff","secondary-fixed-dim": "#c8c8b0","error": "#ba1a1a","on-tertiary-fixed": "#370e00","background": "#f9f9f7","on-primary-container": "#91b1ff","on-primary-fixed": "#001945","on-error-container": "#93000a","inverse-primary": "#b0c6ff","outline-variant": "#c3c6d4","on-tertiary": "#ffffff","surface-dim": "#dadad8","on-secondary-fixed": "#1b1d0e","surface-bright": "#f9f9f7","surface-container-highest": "#e2e3e1","on-background": "#1a1c1b","secondary-fixed": "#e4e4cc","on-surface-variant": "#434652","on-secondary-fixed-variant": "#474836"
-        },
-        fontFamily: {"headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"]},
-        borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","full": "0.75rem"},
-      },
-    },
+          "hufs-navy":  "#003764",
+          "hufs-gold":  "#C4972A",
+          "hufs-gray":  "#9EA2A2",
+          "hufs-light": "#F4F4F4",
+          "hufs-card":  "#EEEEEC",
+        }
+      }
+    }
   }
 </script>
 <style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #F9F9F7; margin: 0; min-height: 100vh; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-  body { font-family: 'Inter', sans-serif; background-color: #f9f9f7; }
-  .editorial-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2.75rem; }
+
+  /* ping animation — Tailwind CDN animate-ping sometimes stripped, so define manually */
+  @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+  .do-ping { animation: ping 1.2s cubic-bezier(0,0,0.2,1) infinite; }
+
+  /* subtle card lift */
+  .card-lift { transition: background 0.18s, box-shadow 0.18s, transform 0.18s; }
+  .card-lift:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,55,100,0.10); }
+
+  /* arrow nudge */
+  .group:hover .arrow-nudge { transform: translateX(4px); }
+  .arrow-nudge { transition: transform 0.18s; }
+
+  /* gold accent line */
+  .gold-bar { width: 44px; height: 3px; background: #C4972A; border-radius: 2px; }
 </style>
 </head>
-<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<body>
 
-<!-- TopNavBar -->
-<nav class="bg-white/70 backdrop-blur-md fixed top-0 z-50 border-b border-slate-200/20 shadow-sm w-full">
-  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-    <a class="text-xl font-black text-[#004098] font-['Manrope'] tracking-tight" href="index.html">외대.서버.한국</a>
-    <div class="hidden md:flex items-center gap-8">
-      <a class="text-[#004098] border-b-2 border-[#004098] pb-1 font-['Manrope'] font-bold tracking-tight" href="index.html">홈</a>
-      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="mod-setup.html">모드 설정</a>
-      <a class="text-slate-600 hover:text-[#004098] transition-all font-['Manrope'] font-bold tracking-tight" href="updates.html">업데이트 내역</a>
+<!-- ── Nav ── -->
+<nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
+  <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
+    <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
+    <div style="display:flex;gap:1.75rem;align-items:center;">
+      <a href="index.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">홈</a>
+      <a href="mod-setup.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
+      <a href="updates.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
     </div>
   </div>
 </nav>
 
-<main class="pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
-  <!-- Hero Section -->
-  <section class="editorial-grid mb-24">
-    <div class="col-span-12 lg:col-span-8">
-      <div class="mb-8">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase">
-            <span class="material-symbols-outlined" style="font-size:14px;">dns</span>
-            마인크래프트 서버 주소
-          </span>
-        </div>
-        <h1 class="font-headline text-[3.5rem] lg:text-[5rem] font-extrabold text-primary leading-none tracking-tighter">
-          외대.서버.한국
-        </h1>
+<!-- ── Main (single viewport) ── -->
+<main style="max-width:1200px;margin:0 auto;padding:80px 2rem 2rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:2.5rem;">
+
+  <!-- Hero row -->
+  <section style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:center;">
+
+    <!-- 좌측: 텍스트 + 상태박스 -->
+    <div>
+      <!-- Badge -->
+      <div style="margin-bottom:0.75rem;">
+        <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,55,100,0.07);border:1px solid rgba(0,55,100,0.14);color:#003764;font-size:0.68rem;font-weight:800;padding:4px 12px;border-radius:99px;letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif;">
+          <span class="material-symbols-outlined" style="font-size:13px;">dns</span>
+          마인크래프트 서버 주소
+        </span>
       </div>
-      <div class="inline-flex flex-col items-start bg-surface-container-low p-8 lg:p-12 rounded-xl relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-1.5 h-full bg-primary-container"></div>
-        <div class="flex items-center gap-4 mb-2">
-          <span class="relative flex h-4 w-4" aria-hidden="true">
-            <span id="status-dot-ping-on" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span id="status-dot-ping-off" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden"></span>
-            <span id="status-dot-core-on" class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
-            <span id="status-dot-core-off" class="relative inline-flex rounded-full h-4 w-4 bg-red-500 hidden"></span>
+
+      <!-- Title -->
+      <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.8rem,5vw,5rem);color:#003764;line-height:0.95;letter-spacing:-0.045em;margin:0 0 1.75rem;">
+        외대.서버.한국
+      </h1>
+
+      <!-- Status box -->
+      <div style="display:inline-flex;flex-direction:column;gap:0.5rem;background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:4px solid #C4972A;border-radius:12px;padding:1.4rem 1.75rem;box-shadow:0 2px 12px rgba(0,55,100,0.07);">
+        <div style="display:flex;align-items:center;gap:11px;">
+          <span style="position:relative;display:inline-flex;width:14px;height:14px;flex-shrink:0;">
+            <span id="ping-on" class="do-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:0.7;"></span>
+            <span id="core-on"                 style="position:relative;z-index:1;border-radius:50%;width:14px;height:14px;background:#22c55e;"></span>
+            <span id="ping-off" class="do-ping" style="position:absolute;inset:0;border-radius:50%;background:#ef4444;opacity:0.7;display:none;"></span>
+            <span id="core-off"                 style="position:relative;z-index:1;border-radius:50%;width:14px;height:14px;background:#ef4444;display:none;"></span>
           </span>
-          <span id="server-status-text" class="font-headline font-bold text-2xl lg:text-4xl text-primary-container uppercase tracking-tight">서버 가동 중</span>
+          <span id="server-status-text" style="font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.3rem,2vw,1.9rem);color:#003764;letter-spacing:-0.025em;text-transform:uppercase;">서버 가동 중</span>
         </div>
-        <div class="flex flex-col gap-1">
-          <p class="font-label text-secondary text-lg lg:text-xl font-medium tracking-wide">24시간 운영 | 버전 <span id="server-version-text" class="font-bold text-on-surface">1.21.11</span></p>
-        </div>
+        <p style="color:#9EA2A2;font-size:0.9rem;font-weight:500;margin:0;">
+          24시간 운영 &nbsp;·&nbsp; 버전 <span id="server-version-text" style="color:#003764;font-weight:800;">1.21.11</span>
+        </p>
       </div>
     </div>
+
+    <!-- 우측: 캐러셀 -->
+    <div style="position:relative;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,55,100,0.14);height:420px;">
+      <!-- 이미지 슬라이드 -->
+      <div id="slide-seoul" style="position:absolute;inset:0;transition:opacity 0.9s ease;opacity:1;">
+        <img src="./설.png" alt="서울캠퍼스" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('div').style.background='#EEEEEC'"/>
+      </div>
+      <div id="slide-global" style="position:absolute;inset:0;transition:opacity 0.9s ease;opacity:0;">
+        <img src="./글.png" alt="글로벌캠퍼스" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('div').style.background='#EEEEEC'"/>
+      </div>
+      <!-- 도트 인디케이터 -->
+      <div style="position:absolute;bottom:1rem;right:1.25rem;display:flex;gap:5px;z-index:10;">
+        <span id="dot-0" style="width:6px;height:6px;border-radius:50%;background:#FFFFFF;opacity:1;transition:opacity 0.3s;"></span>
+        <span id="dot-1" style="width:6px;height:6px;border-radius:50%;background:#FFFFFF;opacity:0.4;transition:opacity 0.3s;"></span>
+      </div>
+    </div>
+
   </section>
 
-  <!-- CTA Cards -->
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-12">
-    <a class="group block bg-surface-container-low p-10 rounded-xl transition-all hover:bg-surface-container-highest" href="mod-setup.html">
-      <div class="flex justify-between items-start mb-16">
-        <span class="material-symbols-outlined text-4xl text-primary">settings_suggest</span>
-        <span class="material-symbols-outlined text-2xl text-outline-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+  <!-- CTA Cards row -->
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;">
+
+    <!-- 모드 설정 -->
+    <a href="mod-setup.html" class="group card-lift" style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #003764;border-radius:12px;padding:2rem;text-decoration:none;display:block;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.9rem;color:#003764;">settings_suggest</span>
+        <span class="material-symbols-outlined arrow-nudge" style="font-size:1.2rem;color:#9EA2A2;">arrow_forward</span>
       </div>
-      <h3 class="font-headline text-2xl font-bold text-primary mb-2">모드 설정</h3>
-      <p class="text-secondary font-body">필요한 클라이언트 모드 및 설정 가이드</p>
+      <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#003764;margin:0 0 0.35rem;letter-spacing:-0.02em;">모드 설정</h3>
+      <p style="color:#9EA2A2;font-size:0.875rem;margin:0;">필요한 클라이언트 모드 및 설정 가이드</p>
     </a>
-    <a class="group block bg-secondary-fixed p-10 rounded-xl transition-all hover:bg-secondary-container" href="updates.html">
-      <div class="flex justify-between items-start mb-16">
-        <span class="material-symbols-outlined text-4xl text-on-secondary-fixed-variant">history</span>
-        <span class="material-symbols-outlined text-2xl text-on-secondary-fixed-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+
+    <!-- 업데이트 내역 -->
+    <a href="updates.html" class="group card-lift" style="background:#EEEEEC;border:1px solid rgba(0,55,100,0.07);border-top:3px solid #C4972A;border-radius:12px;padding:2rem;text-decoration:none;display:block;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.9rem;color:#C4972A;">history</span>
+        <span class="material-symbols-outlined arrow-nudge" style="font-size:1.2rem;color:#9EA2A2;">arrow_forward</span>
       </div>
-      <h3 class="font-headline text-2xl font-bold text-on-secondary-fixed mb-2">업데이트 내역</h3>
-      <p class="text-on-secondary-fixed-variant font-body">서버의 주요 변경 사항 및 기록</p>
+      <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#003764;margin:0 0 0.35rem;letter-spacing:-0.02em;">업데이트 내역</h3>
+      <p style="color:#9EA2A2;font-size:0.875rem;margin:0;">서버의 주요 변경 사항 및 기록</p>
     </a>
+
   </section>
+
 </main>
 
-<footer class="bg-[#f4f4f2] w-full py-12 px-8 border-t border-surface-container">
-  <div class="flex flex-col md:flex-row justify-between items-center gap-8 max-w-7xl mx-auto">
-    <div class="flex flex-col gap-2 text-center md:text-left">
-      <p class="font-['Inter'] text-sm text-slate-500">© 2024 외대.서버.한국. All rights reserved.</p>
-    </div>
-    <div class="flex items-center gap-6">
-      <a class="text-sm font-bold text-[#004098] hover:underline cursor-pointer transition-all" href="admin.html">Admin</a>
-    </div>
+<!-- ── Footer ── -->
+<footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
+    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
   </div>
 </footer>
 
 <script>
-  const STORAGE_SERVER_ENABLED = 'serverEnabled';
-  const STORAGE_PUBLIC_MC_VERSION = 'publicMinecraftVersion';
-  const DEFAULT_SERVER_ENABLED = true;
-  const DEFAULT_PUBLIC_MC_VERSION = '1.21.11';
+  const S_EN  = 'serverEnabled';
+  const S_VER = 'publicMinecraftVersion';
 
-  function getServerEnabled() {
-    const raw = localStorage.getItem(STORAGE_SERVER_ENABLED);
-    if (raw === null) return DEFAULT_SERVER_ENABLED;
-    return raw === 'true';
+  function getEnabled() {
+    const v = localStorage.getItem(S_EN);
+    return v === null ? true : v === 'true';
   }
-
-  function getPublicMinecraftVersion() {
-    const raw = localStorage.getItem(STORAGE_PUBLIC_MC_VERSION);
-    return raw ? raw : DEFAULT_PUBLIC_MC_VERSION;
+  function getVersion() {
+    return localStorage.getItem(S_VER) || '1.21.11';
   }
+  function render() {
+    const on = getEnabled();
+    document.getElementById('server-status-text').textContent = on ? '서버 가동 중' : '서버 점검 중';
+    document.getElementById('server-version-text').textContent = getVersion();
 
-  function renderServerStatus() {
-    const enabled = getServerEnabled();
-    const statusTextEl = document.getElementById('server-status-text');
-    const versionTextEl = document.getElementById('server-version-text');
-    const pingOnEl = document.getElementById('status-dot-ping-on');
-    const pingOffEl = document.getElementById('status-dot-ping-off');
-    const coreOnEl = document.getElementById('status-dot-core-on');
-    const coreOffEl = document.getElementById('status-dot-core-off');
-
-    if (!statusTextEl || !versionTextEl || !pingOnEl || !pingOffEl || !coreOnEl || !coreOffEl) return;
-
-    versionTextEl.textContent = getPublicMinecraftVersion();
-    if (enabled) {
-      statusTextEl.textContent = '서버 가동 중';
-      pingOnEl.classList.remove('hidden');
-      coreOnEl.classList.remove('hidden');
-      pingOffEl.classList.add('hidden');
-      coreOffEl.classList.add('hidden');
-    } else {
-      statusTextEl.textContent = '서버 점검 중';
-      pingOnEl.classList.add('hidden');
-      coreOnEl.classList.add('hidden');
-      pingOffEl.classList.remove('hidden');
-      coreOffEl.classList.remove('hidden');
-    }
+    const show = (id, visible) => { document.getElementById(id).style.display = visible ? '' : 'none'; };
+    show('ping-on',  on);  show('core-on',  on);
+    show('ping-off', !on); show('core-off', !on);
   }
+  render();
+  setInterval(render, 2000);
 
-  renderServerStatus();
-  setInterval(renderServerStatus, 2000);
+  // ── 캐러셀 ──
+  let slideIdx = 0;
+  const slides = ['slide-seoul', 'slide-global'];
+  const dots   = ['dot-0', 'dot-1'];
+  function showSlide(i) {
+    slides.forEach((id, j) => {
+      document.getElementById(id).style.opacity = j === i ? '1' : '0';
+      document.getElementById(dots[j]).style.opacity = j === i ? '1' : '0.4';
+    });
+  }
+  setInterval(() => {
+    slideIdx = (slideIdx + 1) % slides.length;
+    showSlide(slideIdx);
+  }, 3500);
 </script>
-</body></html>
+</body>
+</html>
