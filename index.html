@@ -41,6 +41,23 @@
 
   /* gold accent line */
   .gold-bar { width: 44px; height: 3px; background: #C4972A; border-radius: 2px; }
+
+  .hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:center; }
+  .carousel-wrap { position:relative; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,55,100,0.14); height:420px; }
+  .nav-links { display:flex; gap:1.75rem; align-items:center; }
+
+  @media (max-width: 768px) {
+    .hero-grid { grid-template-columns:1fr; gap:1.75rem; }
+    .carousel-wrap { height:260px; border-radius:12px; }
+    .nav-links a:not(:last-child):not(:first-child) { display:none; }
+  }
+  @media (max-width: 640px) {
+    main { padding:72px 1rem 1.5rem !important; gap:1.5rem !important; }
+    .nav-links { gap:1rem; }
+    .nav-links a { font-size:0.78rem !important; }
+    .carousel-wrap { height:220px; }
+    .status-box { width:100%; }
+  }
 </style>
 </head>
 <body>
@@ -49,7 +66,7 @@
 <nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
-    <div style="display:flex;gap:1.75rem;align-items:center;">
+    <div class="nav-links">
       <a href="index.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">홈</a>
       <a href="mod-setup.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
       <a href="updates.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
@@ -61,7 +78,7 @@
 <main style="max-width:1200px;margin:0 auto;padding:80px 2rem 2rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:2.5rem;">
 
   <!-- Hero row -->
-  <section style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:center;">
+  <section class="hero-grid">
 
     <!-- 좌측: 텍스트 + 상태박스 -->
     <div>
@@ -79,7 +96,7 @@
       </h1>
 
       <!-- Status box -->
-      <div style="display:inline-flex;flex-direction:column;gap:0.5rem;background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:4px solid #C4972A;border-radius:12px;padding:1.4rem 1.75rem;box-shadow:0 2px 12px rgba(0,55,100,0.07);">
+      <div class="status-box" style="display:inline-flex;flex-direction:column;gap:0.5rem;background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:4px solid #C4972A;border-radius:12px;padding:1.4rem 1.75rem;box-shadow:0 2px 12px rgba(0,55,100,0.07);">
         <div style="display:flex;align-items:center;gap:11px;">
           <span style="position:relative;display:inline-flex;width:14px;height:14px;flex-shrink:0;">
             <span id="ping-on" class="do-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:0.7;"></span>
@@ -96,7 +113,7 @@
     </div>
 
     <!-- 우측: 캐러셀 -->
-    <div style="position:relative;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,55,100,0.14);height:420px;">
+    <div class="carousel-wrap">
       <!-- 이미지 슬라이드 -->
       <div id="slide-seoul" style="position:absolute;inset:0;transition:opacity 0.9s ease;opacity:1;">
         <img src="./설.png" alt="서울캠퍼스" loading="eager" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('div').style.background='#EEEEEC'"/>

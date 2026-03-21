@@ -32,6 +32,18 @@
   .update-card.latest {
     border-left-color: #003764;
   }
+
+  .nav-links { display:flex; gap:1.75rem; align-items:center; }
+  .page-header-grid { display:grid; grid-template-columns:1fr auto; align-items:flex-end; gap:2rem; }
+
+  @media (max-width: 640px) {
+    .nav-links a:not(:last-child):not(:first-child) { display:none; }
+    .nav-links { gap:1rem; }
+    main { padding:80px 1rem 3rem !important; }
+    .page-header-grid { grid-template-columns:1fr; }
+    .version-badge { align-self:flex-start; text-align:left !important; }
+    .update-card { padding:1.25rem 1.25rem !important; }
+  }
 </style>
 </head>
 <body>
@@ -40,7 +52,7 @@
 <nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
-    <div style="display:flex;gap:1.75rem;align-items:center;">
+    <div class="nav-links">
       <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">홈</a>
       <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
       <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">업데이트 내역</a>
@@ -51,14 +63,14 @@
 <main style="max-width:1200px;margin:0 auto;padding:100px 2rem 5rem;">
 
   <!-- Page header -->
-  <section style="margin-bottom:2.5rem;display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:2rem;flex-wrap:wrap;">
+  <section class="page-header-grid" style="margin-bottom:2.5rem;">
     <div>
       <div style="width:44px;height:3px;background:#C4972A;border-radius:2px;margin-bottom:0.9rem;"></div>
       <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.2rem,4.5vw,3.2rem);color:#003764;margin:0 0 0.75rem;letter-spacing:-0.04em;line-height:1.05;">업데이트 내역</h1>
       <p style="color:#9EA2A2;font-size:0.92rem;margin:0;max-width:480px;line-height:1.65;">외대.서버.한국의 기능 발전 기록입니다. 새롭게 추가된 기능과 개선 사항들을 버전별로 확인하실 수 있습니다.</p>
     </div>
     <!-- Version badge -->
-    <div style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:3px solid #003764;border-radius:10px;padding:1rem 1.5rem;text-align:right;flex-shrink:0;">
+    <div class="version-badge" style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:3px solid #003764;border-radius:10px;padding:1rem 1.5rem;text-align:right;flex-shrink:0;">
       <span style="display:block;font-size:0.66rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">현재 서버 버전</span>
       <span id="current-version" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.6rem;color:#003764;letter-spacing:-0.03em;">—</span>
     </div>

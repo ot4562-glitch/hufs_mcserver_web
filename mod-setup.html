@@ -32,6 +32,33 @@
   h1, h2, h3 { font-family: 'Manrope', sans-serif; }
   .mod-card { transition: transform 0.15s, box-shadow 0.15s; }
   .mod-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,55,100,0.12); }
+
+  .nav-links { display:flex; gap:1.75rem; align-items:center; }
+
+  @media (max-width: 768px) {
+    .nav-links a:not(.nav-active) { display:none; }
+    .nav-links { gap:1rem; }
+    main { padding-top:5rem !important; padding-left:1rem !important; padding-right:1rem !important; }
+    /* 헤더 배너 */
+    .mod-hero { padding:1.75rem !important; }
+    .mod-hero h1 { font-size:2rem !important; }
+    /* 그리드 강제 1컬럼 */
+    .grid.grid-cols-1.sm\:grid-cols-3 { grid-template-columns:1fr !important; }
+    .grid.grid-cols-1.sm\:grid-cols-2 { grid-template-columns:1fr !important; }
+    .grid.md\:grid-cols-12 { grid-template-columns:1fr !important; }
+    /* 설치 후 과정 섹션 */
+    .after-install-flex { flex-direction:column !important; }
+    /* 카드 패딩 */
+    section.md\:col-span-12 { padding:1.5rem !important; }
+  }
+  @media (max-width: 480px) {
+    .mod-hero { padding:1.25rem !important; }
+    .mod-hero h1 { font-size:1.6rem !important; }
+    .mod-hero p { font-size:0.85rem !important; }
+    section.md\:col-span-12 { padding:1.25rem !important; border-radius:1rem !important; }
+    /* 모드 카드 미니 그리드 */
+    .mini-mod-grid { grid-template-columns:1fr 1fr !important; }
+  }
 </style>
 </head>
 <body class="bg-hufs-light text-hufs-navy">
@@ -40,9 +67,9 @@
 <nav style="background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
-    <div style="display:flex;gap:1.75rem;align-items:center;">
+    <div class="nav-links">
       <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">홈</a>
-      <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">모드 설정</a>
+      <a href="mod-setup.html" class="nav-active" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">모드 설정</a>
       <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
     </div>
   </div>
@@ -52,7 +79,7 @@
 
   <!-- 페이지 헤더 -->
   <header class="mb-12 mt-4">
-    <div class="relative overflow-hidden bg-hufs-navy rounded-2xl px-10 py-12 lg:px-14 lg:py-14 mb-8">
+    <div class="mod-hero relative overflow-hidden bg-hufs-navy rounded-2xl px-10 py-12 lg:px-14 lg:py-14 mb-8">
       <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
       <div class="absolute -right-12 -top-12 w-56 h-56 rounded-full bg-hufs-green opacity-10 blur-3xl pointer-events-none"></div>
       <div class="relative z-10 flex items-center justify-between gap-8">
@@ -425,7 +452,7 @@
         <span class="material-symbols-outlined text-hufs-gold text-4xl">settings_input_component</span>
         <h2 class="text-4xl font-extrabold text-white">Section 6: 설치 후 과정</h2>
       </div>
-      <div class="flex flex-col md:flex-row gap-12 items-start relative z-10">
+      <div class="after-install-flex flex flex-col md:flex-row gap-12 items-start relative z-10">
         <div class="flex-1 space-y-8">
 
           <div class="flex gap-6">
