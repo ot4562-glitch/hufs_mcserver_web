@@ -35,6 +35,8 @@
   .toggle-track.on .toggle-thumb { transform:translateX(20px); }
 
   @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+
+  input[type=text], input[type=date], textarea {
     width:100%; background:#F4F4F4; border:1px solid rgba(0,55,100,0.12);
     padding:0.85rem 1rem; border-radius:8px;
     font-family:'Noto Sans KR',sans-serif; font-size:0.9rem; color:#003764;
@@ -43,6 +45,29 @@
   input[type=text]:focus, input[type=date]:focus, textarea:focus {
     border-color:#003764; box-shadow:0 0 0 3px rgba(0,55,100,0.10);
   }
+
+  /* 로그 아코디언 */
+  .log-item { background:#F4F4F4; border-radius:8px; overflow:hidden; }
+  .log-item-header {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:0.85rem 1rem; cursor:pointer;
+    transition:background .15s;
+  }
+  .log-item-header:hover { background:#EAEAEA; }
+  .log-item-body {
+    max-height:0; overflow:hidden;
+    transition:max-height 0.25s ease, padding 0.2s ease;
+    padding:0 1rem;
+    font-size:0.83rem; color:#555; white-space:pre-line; line-height:1.65;
+    border-top:0px solid rgba(0,55,100,0.08);
+  }
+  .log-item.open .log-item-body {
+    max-height:600px;
+    padding:0.75rem 1rem 1rem;
+    border-top-width:1px;
+  }
+  .log-chevron { transition:transform 0.2s; font-size:18px; color:#9EA2A2; flex-shrink:0; }
+  .log-item.open .log-chevron { transform:rotate(180deg); }
 </style>
 </head>
 <body>
@@ -76,7 +101,6 @@
       <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
       <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
       <span style="width:1px;height:16px;background:rgba(0,55,100,0.15);"></span>
-      <!-- logout -->
       <button onclick="logout()" type="button"
         style="display:flex;align-items:center;gap:4px;font-size:0.82rem;color:#9EA2A2;background:none;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
         onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
@@ -95,13 +119,56 @@
     <p style="color:#9EA2A2;font-size:0.88rem;margin:0;">서버 환경을 관리합니다.</p>
   </header>
 
-  <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;">
+  <!-- ── 환경 설정: 상단 가로 배치 ── -->
+  <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #C4972A;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+      <span class="material-symbols-outlined" style="font-size:1.2rem;color:#C4972A;">settings_input_component</span>
+      <h2 style="font-size:1rem;font-weight:800;color:#003764;margin:0;">환경 설정</h2>
+    </div>
+    <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
 
-    <!-- 메인: 업데이트 로그 -->
+      <!-- 서버 상태 토글 -->
+      <div style="display:flex;align-items:center;gap:1rem;background:#F4F4F4;border-radius:10px;padding:0.85rem 1.25rem;flex-shrink:0;">
+        <span style="position:relative;display:inline-flex;width:10px;height:10px;flex-shrink:0;">
+          <span id="status-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:0.6;animation:ping 1.4s cubic-bezier(0,0,0.2,1) infinite;"></span>
+          <span id="status-core" style="position:relative;z-index:1;border-radius:50%;width:10px;height:10px;background:#22c55e;"></span>
+        </span>
+        <div>
+          <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;margin-bottom:2px;">서버 상태</span>
+          <span id="admin-server-status-text" style="font-family:'Manrope',sans-serif;font-size:0.92rem;font-weight:800;color:#003764;">가동</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:0.5rem;">
+          <div id="toggle-track" class="toggle-track on" onclick="toggleServer()" style="cursor:pointer;">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span id="server-enabled-label" style="font-size:0.8rem;font-weight:700;color:#003764;min-width:28px;">가동</span>
+        </div>
+      </div>
+
+      <!-- 버전 입력 -->
+      <div style="display:flex;align-items:center;gap:0.75rem;flex:1;min-width:260px;">
+        <div style="flex-shrink:0;">
+          <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;margin-bottom:2px;">마크 서버 버전</span>
+          <span style="font-size:0.78rem;color:#9EA2A2;">현재: <span id="admin-public-version-text" style="font-weight:700;color:#003764;"></span></span>
+        </div>
+        <input id="public-mc-version-input" type="text" placeholder="예: 1.21.11"
+          style="flex:1;background:#F4F4F4;border:1px solid rgba(0,55,100,0.12);padding:0.7rem 0.9rem;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:0.9rem;color:#003764;outline:none;transition:border-color .15s,box-shadow .15s;width:auto;"/>
+        <button onclick="applyPublicMinecraftVersion()" type="button"
+          style="padding:0.7rem 1.1rem;background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;"
+          onmouseover="this.style.background='#a97c20'" onmouseout="this.style.background='#C4972A'">적용</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 메인 그리드: 로그 작성 + 게시된 로그 ── -->
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:1.5rem;align-items:start;">
+
+    <!-- 업데이트 로그 작성 -->
     <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #003764;border-radius:12px;padding:2rem;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;">
         <div>
-          <h2 style="font-size:1.15rem;font-weight:800;color:#003764;margin:0 0 4px;">업데이트 로그 관리</h2>
+          <h2 style="font-size:1.15rem;font-weight:800;color:#003764;margin:0 0 4px;">업데이트 로그 작성</h2>
           <p style="font-size:0.82rem;color:#9EA2A2;margin:0;">버전 배포와 주요 변경 사항을 기록합니다.</p>
         </div>
         <span class="material-symbols-outlined" style="font-size:1.6rem;color:#C4972A;">history_edu</span>
@@ -124,7 +191,7 @@
         </div>
         <div>
           <label style="display:block;font-size:0.7rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">상세 내용</label>
-          <textarea id="input-content" rows="5" placeholder="변경 사항을 상세히 기록해 주세요."></textarea>
+          <textarea id="input-content" rows="6" placeholder="변경 사항을 상세히 기록해 주세요."></textarea>
         </div>
         <div id="submit-msg" style="display:none;font-size:0.83rem;font-weight:700;padding:0.7rem 1rem;border-radius:8px;"></div>
         <div style="display:flex;justify-content:flex-end;">
@@ -135,74 +202,23 @@
           </button>
         </div>
       </form>
+    </section>
 
-      <!-- 게시된 로그 목록 -->
-      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(0,55,100,0.08);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-          <h3 style="font-size:0.95rem;font-weight:800;color:#003764;margin:0;">게시된 로그</h3>
-          <button onclick="loadAdminLogs()" type="button"
-            style="font-size:0.75rem;color:#9EA2A2;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
-            onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
-            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> 새로고침
-          </button>
-        </div>
-        <div id="admin-log-list" style="display:flex;flex-direction:column;gap:0.6rem;">
-          <p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>
-        </div>
+    <!-- 게시된 로그 목록 -->
+    <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #9EA2A2;border-radius:12px;padding:1.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <h2 style="font-size:1rem;font-weight:800;color:#003764;margin:0;">게시된 로그</h2>
+        <button onclick="loadAdminLogs()" type="button"
+          style="font-size:0.75rem;color:#9EA2A2;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;"
+          onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
+          <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> 새로고침
+        </button>
+      </div>
+      <div id="admin-log-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+        <p style="font-size:0.85rem;color:#9EA2A2;">불러오는 중...</p>
       </div>
     </section>
 
-    <!-- 사이드 -->
-    <div style="display:flex;flex-direction:column;gap:1.25rem;">
-
-      <!-- 환경 설정 (서버 상태 토글 통합) -->
-      <section style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.09);border-top:3px solid #C4972A;border-radius:12px;padding:1.75rem;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;">
-          <span class="material-symbols-outlined" style="font-size:1.2rem;color:#C4972A;">settings_input_component</span>
-          <h2 style="font-size:1rem;font-weight:800;color:#003764;margin:0;">환경 설정</h2>
-        </div>
-
-        <!-- 통합: 서버 상태 + 공개 버전 -->
-        <div style="background:#F4F4F4;border-radius:10px;overflow:hidden;">
-
-          <!-- 상태 행 -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,55,100,0.08);">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span style="position:relative;display:inline-flex;width:10px;height:10px;flex-shrink:0;">
-                <span id="status-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:0.6;animation:ping 1.4s cubic-bezier(0,0,0.2,1) infinite;"></span>
-                <span id="status-core" style="position:relative;z-index:1;border-radius:50%;width:10px;height:10px;background:#22c55e;"></span>
-              </span>
-              <div>
-                <span style="display:block;font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;line-height:1;">서버 상태</span>
-                <span id="admin-server-status-text" style="font-family:'Manrope',sans-serif;font-size:0.92rem;font-weight:800;color:#003764;">가동</span>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div id="toggle-track" class="toggle-track on" onclick="toggleServer()" style="cursor:pointer;">
-                <div class="toggle-thumb"></div>
-              </div>
-              <span id="server-enabled-label" style="font-size:0.8rem;font-weight:700;color:#003764;min-width:28px;">가동</span>
-            </div>
-          </div>
-
-          <!-- 버전 행 -->
-          <div style="padding:0.85rem 1rem;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
-              <span style="font-size:0.65rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.09em;">마크 서버 버전</span>
-              <span style="font-size:0.72rem;color:#9EA2A2;">현재: <span id="admin-public-version-text" style="font-weight:700;color:#003764;"></span></span>
-            </div>
-            <div style="display:flex;gap:8px;">
-              <input id="public-mc-version-input" type="text" placeholder="예: 1.21.11" style="flex:1;background:#fff;"/>
-              <button onclick="applyPublicMinecraftVersion()" type="button"
-                style="padding:0.6rem 0.9rem;background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.8rem;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .15s;"
-                onmouseover="this.style.background='#a97c20'" onmouseout="this.style.background='#C4972A'">적용</button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-    </div>
   </div>
 </main>
 
@@ -331,6 +347,13 @@
 
   function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  // ── 아코디언 토글 ──
+  window.toggleLogItem = function(id) {
+    const el = document.getElementById('log-item-' + id);
+    if (!el) return;
+    el.classList.toggle('open');
+  };
+
   async function loadAdminLogs() {
     const container = document.getElementById('admin-log-list');
     if (!container) return;
@@ -340,19 +363,25 @@
       return;
     }
     container.innerHTML = data.map(row => `
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:0.85rem 1rem;background:#F4F4F4;border-radius:8px;">
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
-            <span style="font-size:0.72rem;font-weight:800;background:#003764;color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;">${escHtml(row.version)}</span>
-            <span style="font-size:0.75rem;color:#9EA2A2;">${row.release_date??''}</span>
+      <div class="log-item" id="log-item-${row.id}">
+        <div class="log-item-header" onclick="toggleLogItem('${row.id}')">
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+              <span style="font-size:0.72rem;font-weight:800;background:#003764;color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;flex-shrink:0;">${escHtml(row.version)}</span>
+              <span style="font-size:0.75rem;color:#9EA2A2;flex-shrink:0;">${row.release_date??''}</span>
+            </div>
+            <p style="font-weight:700;font-size:0.875rem;color:#003764;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(row.title)}</p>
           </div>
-          <p style="font-weight:700;font-size:0.875rem;color:#003764;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(row.title)}</p>
+          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+            <span class="material-symbols-outlined log-chevron">expand_more</span>
+            <button onclick="event.stopPropagation();deleteLog('${row.id}')" type="button"
+              style="background:none;border:none;cursor:pointer;color:#9EA2A2;transition:color .15s;padding:2px;display:flex;align-items:center;"
+              onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'" title="삭제">
+              <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+            </button>
+          </div>
         </div>
-        <button onclick="deleteLog('${row.id}')" type="button"
-          style="background:none;border:none;cursor:pointer;color:#9EA2A2;flex-shrink:0;transition:color .15s;padding:2px;"
-          onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'" title="삭제">
-          <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
-        </button>
+        ${row.content ? `<div class="log-item-body">${escHtml(row.content)}</div>` : ''}
       </div>
     `).join('');
   }
