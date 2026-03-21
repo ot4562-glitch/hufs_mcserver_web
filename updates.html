@@ -36,20 +36,20 @@
   .nav-links { display:flex; gap:1.75rem; align-items:center; }
   .page-header-grid { display:grid; grid-template-columns:1fr auto; align-items:flex-end; gap:2rem; }
 
-  @media (max-width: 640px) {
-    .nav-links a:not(:last-child):not(:first-child) { display:none; }
+  @media (max-width: 540px) {
+    .nav-links a:not([style*="border-bottom"]) { display:none; }
     .nav-links { gap:1rem; }
-    main { padding:80px 1rem 3rem !important; }
-    .page-header-grid { grid-template-columns:1fr; }
+    main { padding:1.5rem 1rem 3rem !important; }
+    .page-header-grid { grid-template-columns:1fr; gap:1rem; }
     .version-badge { align-self:flex-start; text-align:left !important; }
-    .update-card { padding:1.25rem 1.25rem !important; }
+    .update-card { padding:1.1rem 1rem !important; border-radius:10px !important; }
   }
 </style>
 </head>
 <body>
 
 <!-- Nav -->
-<nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
+<nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:sticky;top:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
   <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
     <div class="nav-links">
@@ -60,7 +60,7 @@
   </div>
 </nav>
 
-<main style="max-width:1200px;margin:0 auto;padding:100px 2rem 5rem;">
+<main style="max-width:1200px;margin:0 auto;padding:2rem 1.25rem 4rem;">
 
   <!-- Page header -->
   <section class="page-header-grid" style="margin-bottom:2.5rem;">
