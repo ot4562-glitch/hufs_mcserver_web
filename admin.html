@@ -346,7 +346,7 @@ let _serverOn=true,_serverVer='1.21.11';
 async function loadServerSettings(){
   try{
     const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
-    if(data){data.forEach(r=>{if(r.key==='serverEnabled')_serverOn=r.value!=='false';if(r.key==='publicMinecraftVersion')_serverVer=r.value||'1.21.11';});}
+    if(data&&data.length>0){data.forEach(r=>{if(r.key==='serverEnabled')_serverOn=(r.value==='true');if(r.key==='publicMinecraftVersion'&&r.value)_serverVer=r.value;});}
   }catch(e){}
   renderAdminUI();
 }
@@ -359,17 +359,43 @@ function renderAdminUI(){
   g('st-core').style.background=on?'#22c55e':'#ef4444';
   g('ver-input').value=_serverVer;g('ver-txt').textContent=_serverVer;
 }
+async function sbSet(key,value){
+  // 먼저 해당 key가 있는지 확인
+  const{data:existing}=await sb.from('settings').select('id').eq('key',key).maybeSingle();
+  if(existing){
+    const{error}=await sb.from('settings').update({value}).eq('key',key);
+    if(error)console.error('settings update error:',key,error.message);
+    return error;
+  }else{
+    const{error}=await sb.from('settings').insert({key,value});
+    if(error)console.error('settings insert error:',key,error.message);
+    return error;
+  }
+}
+
 window.toggleServer=async function(){
   _serverOn=!_serverOn;
-  await sb.from('settings').upsert({key:'serverEnabled',value:String(_serverOn)},{onConflict:'key'});
   renderAdminUI();
+  const err=await sbSet('serverEnabled',String(_serverOn));
+  if(err){_serverOn=!_serverOn;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
+  else{showEnvMsg('✅ 서버 상태가 저장되었습니다.');}
 };
 window.applyVer=async function(){
   const v=g('ver-input').value.trim();if(!v)return;
-  _serverVer=v;
-  await sb.from('settings').upsert({key:'publicMinecraftVersion',value:v},{onConflict:'key'});
-  renderAdminUI();
+  const prev=_serverVer;
+  _serverVer=v;renderAdminUI();
+  const err=await sbSet('publicMinecraftVersion',v);
+  if(err){_serverVer=prev;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
+  else{showEnvMsg('✅ 버전이 저장되었습니다.');}
 };
+function showEnvMsg(msg){
+  let el=g('env-msg');
+  if(!el){el=document.createElement('div');el.id='env-msg';el.style.cssText='font-size:.8rem;font-weight:700;padding:.45rem .85rem;border-radius:7px;margin-top:.65rem;';g('toggle-track').closest('section').appendChild(el);}
+  const ok=msg.startsWith('✅');
+  el.style.background=ok?'#f0fdf4':'#fef2f2';el.style.color=ok?'#166534':'#991b1b';
+  el.textContent=msg;el.style.display='block';
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';},3000);
+}
 
 /* 탭 전환 */
 const TAB_SUB={update:'버전 배포와 변경 사항을 기록합니다.',notice:'홈 화면 상단에 공지를 게시합니다.',gallery:'홈 화면 갤러리 이미지를 관리합니다.'};
