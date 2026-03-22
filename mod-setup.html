@@ -35,29 +35,46 @@
 
   .nav-links { display:flex; gap:1.75rem; align-items:center; }
 
+  /* 폴더 경로 박스: 모바일에서 줄바꿈 허용 */
+  .folder-hint { display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; }
+  .folder-hint p { margin:0; line-height:1.7; }
+
   @media (max-width: 768px) {
     .nav-links a:not(.nav-active) { display:none; }
     .nav-links { gap:1rem; }
-    main { padding-top:5rem !important; padding-left:1rem !important; padding-right:1rem !important; }
+    main { padding-top:1.5rem !important; padding-left:1rem !important; padding-right:1rem !important; padding-bottom:3rem !important; }
     /* 헤더 배너 */
-    .mod-hero { padding:1.75rem !important; }
-    .mod-hero h1 { font-size:2rem !important; }
+    .mod-hero { padding:1.5rem !important; }
+    .mod-hero h1 { font-size:1.9rem !important; }
+    /* 상단 헤더 mb 줄이기 */
+    header.mb-12 { margin-bottom:1.5rem !important; }
+    /* 섹션 3~4 나란히 → 각자 full width */
+    .md\:col-span-6 { grid-column: span 12 / span 12 !important; }
     /* 그리드 강제 1컬럼 */
     .grid.grid-cols-1.sm\:grid-cols-3 { grid-template-columns:1fr !important; }
     .grid.grid-cols-1.sm\:grid-cols-2 { grid-template-columns:1fr !important; }
     .grid.md\:grid-cols-12 { grid-template-columns:1fr !important; }
     /* 설치 후 과정 섹션 */
     .after-install-flex { flex-direction:column !important; }
-    /* 카드 패딩 */
-    section.md\:col-span-12 { padding:1.5rem !important; }
+    /* 섹션 패딩 */
+    section.md\:col-span-12, section.md\:col-span-6 { padding:1.25rem !important; }
+    /* 섹션2 모드 카드 2열 유지 */
+    .grid.grid-cols-2.sm\:grid-cols-3.lg\:grid-cols-4 { grid-template-columns: repeat(2,1fr) !important; }
+    /* 섹션6 스텝 간격 줄이기 */
+    .space-y-8 > * + * { margin-top:1.5rem !important; }
+    .flex.gap-6 { gap:1rem !important; }
+    /* 섹션6 체크리스트 max-width 해제 */
+    .flex-1.w-full.max-w-md { max-width:100% !important; }
   }
   @media (max-width: 480px) {
-    .mod-hero { padding:1.25rem !important; }
-    .mod-hero h1 { font-size:1.6rem !important; }
-    .mod-hero p { font-size:0.85rem !important; }
-    section.md\:col-span-12 { padding:1.25rem !important; border-radius:1rem !important; }
-    /* 모드 카드 미니 그리드 */
-    .mini-mod-grid { grid-template-columns:1fr 1fr !important; }
+    .mod-hero { padding:1.1rem !important; }
+    .mod-hero h1 { font-size:1.55rem !important; }
+    .mod-hero p { font-size:0.83rem !important; }
+    section.md\:col-span-12, section.md\:col-span-6 { padding:1rem !important; border-radius:1rem !important; }
+    /* 섹션2 모드 카드: 아이콘 숨기고 텍스트만 */
+    .grid.grid-cols-2.sm\:grid-cols-3.lg\:grid-cols-4 { grid-template-columns: repeat(2,1fr) !important; }
+    /* 섹션6 스텝 번호 크기 줄이기 */
+    .bg-hufs-green.w-12.h-12 { width:2.25rem !important; height:2.25rem !important; font-size:1rem !important; flex-shrink:0; }
   }
 </style>
 </head>
@@ -84,14 +101,14 @@
       <div class="absolute -right-12 -top-12 w-56 h-56 rounded-full bg-hufs-green opacity-10 blur-3xl pointer-events-none"></div>
       <div class="relative z-10 flex items-center justify-between gap-8">
         <div class="flex-1">
-          <h1 class="text-4xl lg:text-5xl font-extrabold text-white tracking-tighter mb-3 leading-none">Mod Setup Guide</h1>
-          <p class="text-white/60 text-base max-w-2xl leading-relaxed">모드는 <strong class="text-white font-bold">선택적으로 설치</strong>하시면 됩니다. 처음 접속하시는 분들도 쉽게 따라하실 수 있도록 단계별로 구성되어 있습니다.</p>
+          <h1 class="text-4xl lg:text-5xl font-extrabold text-white tracking-tighter mb-3 leading-tight">Mod Setup Guide</h1>
+          <p class="text-white/60 text-base max-w-2xl leading-relaxed">모드는 <strong class="text-white font-bold">선택적으로 설치</strong>하시면 됩니다.<br>처음 접속하시는 분들도 단계별로 쉽게 따라하실 수 있습니다.</p>
         </div>
       </div>
     </div>
 
-    <div class="inline-flex items-center gap-2 bg-white border border-hufs-gray/20 px-5 py-3 rounded-xl">
-      <span class="material-symbols-outlined text-hufs-green" style="font-size:18px;">folder_open</span>
+    <div class="folder-hint bg-white border border-hufs-gray/20 px-4 py-3 rounded-xl">
+      <span class="material-symbols-outlined text-hufs-green flex-shrink-0" style="font-size:18px;margin-top:2px;">folder_open</span>
       <p class="text-sm text-hufs-gray">마인크래프트 폴더 위치: <kbd class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">Win+R</kbd> 누르고
         <code class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">%appdata%</code> 입력 후 실행 →
         <code class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">.minecraft</code> 폴더
@@ -322,7 +339,7 @@
     </section>
 
     <!-- Section 4: 건축 (옵션) -->
-    <section class="md:col-span-6 bg-white rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
+    <section class="md:col-span-6 bg-hufs-light rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
       <div class="flex items-center gap-3 mb-2">
         <span class="material-symbols-outlined text-hufs-gold text-3xl">architecture</span>
@@ -332,25 +349,31 @@
         <span class="bg-hufs-gold text-white text-xs font-bold px-2 py-0.5 rounded">옵션</span>
       </div>
       <p class="text-hufs-gray text-sm mb-5">모두
-        <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">mods</code> 폴더에 넣어주세요.
+        <code class="bg-white border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">mods</code> 폴더에 넣어주세요.
       </p>
-      <div class="space-y-3">
+      <div class="space-y-5">
 
         <a href="https://modrinth.com/mod/litematica" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">Litematica</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">건축 청사진 및 가이드. 대규모 건축에 유용합니다. <span class="font-semibold text-hufs-navy">사용법을 미리 공부해 두세요.</span></p>
+           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-hufs-gold cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-lg text-hufs-navy">Litematica</h3>
+              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-hufs-gray">건축 청사진 및 가이드. 대규모 건축에 유용합니다. <span class="font-semibold text-hufs-navy">사용법을 미리 공부해 두세요.</span></p>
           </div>
         </a>
 
         <a href="https://modrinth.com/mod/malilib" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/GcWjdA9I/a530ae55df5e0c405f5cf1b3e4fd6163a398bdc3.png" alt="MaLiLib" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">MaLiLib</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">Litematica 실행을 위한 필수 선행 라이브러리입니다.</p>
+           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-hufs-gold cursor-pointer">
+          <img src="https://cdn.modrinth.com/data/GcWjdA9I/a530ae55df5e0c405f5cf1b3e4fd6163a398bdc3.png" alt="MaLiLib" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
+          <div>
+            <div class="flex items-center gap-1 mb-0.5">
+              <h3 class="font-bold text-lg text-hufs-navy">MaLiLib</h3>
+              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
+            </div>
+            <p class="text-sm text-hufs-gray">Litematica 실행을 위한 필수 선행 라이브러리입니다.</p>
           </div>
         </a>
 
@@ -469,7 +492,7 @@
             <div class="bg-hufs-green w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white font-black text-xl">3</div>
             <div>
               <h3 class="text-xl font-bold mb-2 text-white">비디오 설정</h3>
-              <p class="text-white/60 leading-relaxed">메인화면 → 설정 → 비디오 설정에서 왼쪽 스크롤을 내리며 전체 설정을 확인하세요. PC 사양과 취향에 맞춰 조정하시면 됩니다. <strong class="text-white">쉐이더 팩 설정에서 다운로드한 것을 반드시 켜주세요.</strong></p>
+              <p class="text-white/60 leading-relaxed">메인화면 → 설정 → 비디오 설정에서 왼쪽 스크롤을 내리며 전체 설정을 확인하세요. PC 사양과 취향에 맞춰 조정하시면 됩니다.<br><strong class="text-white">쉐이더 팩 설정에서 다운로드한 것을 반드시 켜주세요.</strong></p>
             </div>
           </div>
 
@@ -523,7 +546,7 @@
 
 <footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
-    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
+    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
     <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
   </div>
 </footer>

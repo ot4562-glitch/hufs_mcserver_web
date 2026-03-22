@@ -39,10 +39,13 @@
   @media (max-width: 540px) {
     .nav-links a:not([style*="border-bottom"]) { display:none; }
     .nav-links { gap:1rem; }
-    main { padding:1.5rem 1rem 3rem !important; }
-    .page-header-grid { grid-template-columns:1fr; gap:1rem; }
-    .version-badge { align-self:flex-start; text-align:left !important; }
-    .update-card { padding:1.1rem 1rem !important; border-radius:10px !important; }
+    main { padding:1.25rem 1rem 3rem !important; }
+    .page-header-grid { grid-template-columns:1fr; gap:.75rem; }
+    .version-badge { align-self:flex-start; text-align:left !important; padding:.75rem 1rem !important; }
+    .version-badge span:last-child { font-size:1.3rem !important; }
+    h1 { font-size:clamp(1.8rem,7vw,2.6rem) !important; }
+    .update-card { padding:1rem !important; border-radius:10px !important; }
+    .update-card h2 { font-size:.95rem !important; }
   }
 </style>
 </head>
@@ -71,7 +74,7 @@
     </div>
     <!-- Version badge -->
     <div class="version-badge" style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:3px solid #003764;border-radius:10px;padding:1rem 1.5rem;text-align:right;flex-shrink:0;">
-      <span style="display:block;font-size:0.66rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">현재 서버 기능 버전</span>
+      <span style="display:block;font-size:0.66rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">현재 서버 버전</span>
       <span id="current-version" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.6rem;color:#003764;letter-spacing:-0.03em;">—</span>
     </div>
   </section>
@@ -87,7 +90,7 @@
 <!-- Footer -->
 <footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
-    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
+    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
     <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
   </div>
 </footer>
