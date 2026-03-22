@@ -360,8 +360,9 @@ function renderAdminUI(){
   g('ver-input').value=_serverVer;g('ver-txt').textContent=_serverVer;
 }
 async function sbSet(key,value){
-  // 먼저 해당 key가 있는지 확인
-  const{data:existing}=await sb.from('settings').select('id').eq('key',key).maybeSingle();
+  // key 컬럼이 PK이므로 select('key')로 존재 확인
+  const{data:existing,error:selErr}=await sb.from('settings').select('key').eq('key',key).maybeSingle();
+  if(selErr){console.error('settings select error:',key,selErr.message);return selErr;}
   if(existing){
     const{error}=await sb.from('settings').update({value}).eq('key',key);
     if(error)console.error('settings update error:',key,error.message);
