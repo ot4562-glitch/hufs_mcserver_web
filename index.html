@@ -166,8 +166,8 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
         <i class="msym" style="font-size:1.65rem;color:#003764;">settings_suggest</i>
         <i class="msym arr" style="font-size:1.05rem;color:#9EA2A2;">arrow_forward</i>
       </div>
-      <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.95rem;color:#003764;margin:0 0 .28rem;letter-spacing:-.02em;">커스텀 모드 설정</h3>
-      <p style="color:#9EA2A2;font-size:.8rem;margin:0;">최적화 및 편의 기능 모드 설정 가이드</p>
+      <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.95rem;color:#003764;margin:0 0 .28rem;letter-spacing:-.02em;">모드 설정</h3>
+      <p style="color:#9EA2A2;font-size:.8rem;margin:0;">필요한 클라이언트 모드 및 설정 가이드</p>
     </a>
     <a href="updates.html" class="cta card-lift" style="background:#EEEEEC;border:1px solid rgba(0,55,100,.07);border-top:3px solid #C4972A;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.2rem;">
@@ -205,7 +205,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
 
 <footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,.08);padding:1.75rem 1.25rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem;">
-    <p style="color:#9EA2A2;font-size:.76rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
+    <p style="color:#9EA2A2;font-size:.76rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
     <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
   </div>
 </footer>
@@ -226,16 +226,24 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 /* 상태 */
 const g=id=>document.getElementById(id);
-function getE(){const v=localStorage.getItem('serverEnabled');return v===null?true:v==='true';}
-function getV(){return localStorage.getItem('publicMinecraftVersion')||'1.21.11';}
-function renderSt(){
-  const on=getE();
+function applyServerState(on, ver){
   g('st-text').textContent=on?'서버 가동 중':'서버 점검 중';
-  g('st-ver').textContent=getV();
+  g('st-ver').textContent=ver||'1.21.11';
   const s=(id,v)=>g(id).style.display=v?'':'none';
   s('p-on',on);s('c-on',on);s('p-off',!on);s('c-off',!on);
 }
-renderSt(); setInterval(renderSt,2000);
+async function fetchServerState(){
+  try{
+    const{data}=await sb.from('settings').select('key,value').in('key',['server_enabled','server_version']);
+    const map={};
+    if(data)data.forEach(r=>map[r.key]=r.value);
+    const on=(map['server_enabled']??'true')==='true';
+    const ver=map['server_version']||'1.21.11';
+    applyServerState(on,ver);
+  }catch(e){ applyServerState(true,'1.21.11'); }
+}
+fetchServerState();
+setInterval(fetchServerState,10000);
 
 /* 복사 */
 window.copyAddr=function(){

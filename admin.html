@@ -320,7 +320,7 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem;">
     <div>
       <p style="font-family:'Manrope',sans-serif;font-weight:800;color:#003764;font-size:.88rem;margin:0 0 2px;">외대.서버.한국</p>
-      <p style="color:#9EA2A2;font-size:.76rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
+      <p style="color:#9EA2A2;font-size:.76rem;margin:0;">© 2024 외대.서버.한국. All rights reserved.</p>
     </div>
     <span style="font-family:'Manrope',sans-serif;font-size:.78rem;font-weight:700;color:#C4972A;">관리자</span>
   </div>
@@ -334,21 +334,38 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const g=id=>document.getElementById(id);
 
-/* 서버 상태 */
-function getE(){const v=localStorage.getItem('serverEnabled');return v===null?true:v==='true';}
-function getV(){return localStorage.getItem('publicMinecraftVersion')||'1.21.11';}
-function renderAdminUI(){
-  const on=getE(),track=g('toggle-track');if(!track)return;
+/* 서버 상태 — Supabase settings */
+async function fetchAdminState(){
+  try{
+    const{data}=await sb.from('settings').select('key,value').in('key',['server_enabled','server_version']);
+    const map={};
+    if(data)data.forEach(r=>map[r.key]=r.value);
+    const on=(map['server_enabled']??'true')==='true';
+    const ver=map['server_version']||'1.21.11';
+    applyAdminUI(on,ver);
+  }catch(e){ applyAdminUI(true,'1.21.11'); }
+}
+function applyAdminUI(on,ver){
+  const track=g('toggle-track');if(!track)return;
   on?track.classList.add('on'):track.classList.remove('on');
   g('tog-lbl').textContent=on?'가동':'점검';
   g('st-label').textContent=on?'가동':'점검 중';
   g('st-ping').style.background=on?'#22c55e':'#ef4444';
   g('st-core').style.background=on?'#22c55e':'#ef4444';
-  const v=getV();g('ver-input').value=v;g('ver-txt').textContent=v;
+  g('ver-input').value=ver;g('ver-txt').textContent=ver;
 }
-window.toggleServer=function(){localStorage.setItem('serverEnabled',getE()?'false':'true');renderAdminUI();};
-window.applyVer=function(){const v=g('ver-input').value.trim();if(!v)return;localStorage.setItem('publicMinecraftVersion',v);renderAdminUI();};
-window.addEventListener('storage',e=>{if(e.key==='serverEnabled'||e.key==='publicMinecraftVersion')renderAdminUI();});
+function renderAdminUI(){ fetchAdminState(); }
+window.toggleServer=async function(){
+  const{data}=await sb.from('settings').select('value').eq('key','server_enabled').maybeSingle();
+  const cur=(data?.value??'true')==='true';
+  await sb.from('settings').upsert({key:'server_enabled',value:cur?'false':'true'},{onConflict:'key'});
+  fetchAdminState();
+};
+window.applyVer=async function(){
+  const v=g('ver-input').value.trim();if(!v)return;
+  await sb.from('settings').upsert({key:'server_version',value:v},{onConflict:'key'});
+  fetchAdminState();
+};
 
 /* 탭 전환 */
 const TAB_SUB={update:'버전 배포와 변경 사항을 기록합니다.',notice:'홈 화면 상단에 공지를 게시합니다.',gallery:'홈 화면 갤러리 이미지를 관리합니다.'};
