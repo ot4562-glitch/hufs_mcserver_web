@@ -345,8 +345,8 @@ const g=id=>document.getElementById(id);
 let _serverOn=true,_serverVer='1.21.11';
 async function loadServerSettings(){
   try{
-    const{data}=await sb.from('settings').select('key,value').in('key',['server_enabled','server_version']);
-    if(data&&data.length>0){data.forEach(r=>{if(r.key==='server_enabled')_serverOn=(r.value==='true');if(r.key==='server_version'&&r.value)_serverVer=r.value;});}
+    const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
+    if(data&&data.length>0){data.forEach(r=>{if(r.key==='serverEnabled')_serverOn=(r.value==='true');if(r.key==='publicMinecraftVersion'&&r.value)_serverVer=r.value;});}
   }catch(e){}
   renderAdminUI();
 }
@@ -376,7 +376,7 @@ async function sbSet(key,value){
 window.toggleServer=async function(){
   _serverOn=!_serverOn;
   renderAdminUI();
-  const err=await sbSet('server_enabled',String(_serverOn));
+  const err=await sbSet('serverEnabled',String(_serverOn));
   if(err){_serverOn=!_serverOn;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
   else{showEnvMsg('✅ 서버 상태가 저장되었습니다.');}
 };
@@ -384,7 +384,7 @@ window.applyVer=async function(){
   const v=g('ver-input').value.trim();if(!v)return;
   const prev=_serverVer;
   _serverVer=v;renderAdminUI();
-  const err=await sbSet('server_version',v);
+  const err=await sbSet('publicMinecraftVersion',v);
   if(err){_serverVer=prev;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
   else{showEnvMsg('✅ 버전이 저장되었습니다.');}
 };
