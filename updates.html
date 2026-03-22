@@ -108,6 +108,14 @@
 
   async function loadUpdates() {
     const el = document.getElementById('updates-list');
+
+    // 서버 버전을 settings에서 가져오기
+    try {
+      const { data: sv } = await sb.from('settings').select('value').eq('key','server_version').maybeSingle();
+      const verEl = document.getElementById('current-version');
+      if (verEl && sv?.value) verEl.textContent = sv.value;
+    } catch(e) {}
+
     const { data, error } = await sb.from('updates').select('*').order('release_date', { ascending: false });
 
     if (error) {
@@ -123,7 +131,7 @@
     }
 
     const verEl = document.getElementById('current-version');
-    if (verEl) verEl.textContent = data[0].version;
+    // 버전은 settings에서 이미 로드됨 — 여기서 덮어쓰지 않음
 
     el.innerHTML = `<div style="display:flex;flex-direction:column;gap:1rem;">` +
       data.map((row, i) => `
