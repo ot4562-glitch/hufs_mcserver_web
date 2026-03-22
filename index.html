@@ -231,16 +231,18 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 /* 상태 */
 const g=id=>document.getElementById(id);
-function getE(){const v=localStorage.getItem('serverEnabled');return v===null?true:v==='true';}
-function getV(){return localStorage.getItem('publicMinecraftVersion')||'1.21.11';}
-function renderSt(){
-  const on=getE();
-  g('st-text').textContent=on?'서버 가동 중':'서버 점검 중';
-  g('st-ver').textContent=getV();
-  const s=(id,v)=>g(id).style.display=v?'':'none';
-  s('p-on',on);s('c-on',on);s('p-off',!on);s('c-off',!on);
+async function loadServerStatus(){
+  try{
+    const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
+    let on=true,ver='1.21.11';
+    if(data){data.forEach(r=>{if(r.key==='serverEnabled')on=r.value!=='false';if(r.key==='publicMinecraftVersion')ver=r.value||'1.21.11';});}
+    g('st-text').textContent=on?'서버 가동 중':'서버 점검 중';
+    g('st-ver').textContent=ver;
+    const s=(id,v)=>g(id).style.display=v?'':'none';
+    s('p-on',on);s('c-on',on);s('p-off',!on);s('c-off',!on);
+  }catch(e){}
 }
-renderSt(); setInterval(renderSt,2000);
+loadServerStatus();
 
 /* 복사 */
 window.copyAddr=function(){

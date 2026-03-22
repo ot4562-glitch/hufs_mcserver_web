@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { box-sizing:border-box; }
-body { font-family:'Noto Sans KR',sans-serif; background:#F9F9F7; margin:0; }
+body { font-family:'Noto Sans KR',sans-serif; background:#F9F9F7; margin:0; overflow-x:hidden; }
 .msym { font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-style:normal;line-height:1;display:inline-block; }
 h1,h2,h3 { font-family:'Manrope',sans-serif; }
 
@@ -75,11 +75,16 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
   .gallery-admin-grid { grid-template-columns:repeat(2,1fr); }
   nav .nav-d { display:none !important; }
   nav .nav-m { display:flex !important; }
+  .main-grid { grid-template-columns:1fr !important; }
+  .main-grid > * { min-width:0; max-width:100%; }
+  .tab-btn-row { flex-wrap:wrap; gap:.3rem !important; }
 }
 @media(max-width:540px){
   .gallery-admin-grid { grid-template-columns:repeat(2,1fr); gap:.6rem; }
   .ver-date-grid { grid-template-columns:1fr !important; }
   .tab-btn { font-size:.72rem; padding:.38rem .7rem; }
+  .env-row > div { min-width:0; max-width:100%; overflow:hidden; }
+  input[type=text],input[type=date],input[type=url] { font-size:.85rem; }
 }
 </style>
 </head>
@@ -198,7 +203,7 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
 
       <!-- 탭 헤더 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.65rem;flex-wrap:wrap;gap:.5rem;">
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+        <div class="tab-btn-row" style="display:flex;gap:.4rem;flex-wrap:wrap;">
           <button id="tab-update-btn" class="tab-btn active" onclick="switchTab('update')"><i class="msym" style="font-size:14px;">history_edu</i>업데이트 로그</button>
           <button id="tab-notice-btn" class="tab-btn" onclick="switchTab('notice')"><i class="msym" style="font-size:14px;">campaign</i>공지 작성</button>
           <button id="tab-gallery-btn" class="tab-btn" onclick="switchTab('gallery')"><i class="msym" style="font-size:14px;">photo_library</i>갤러리</button>
@@ -337,20 +342,34 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 const g=id=>document.getElementById(id);
 
 /* 서버 상태 */
-function getE(){const v=localStorage.getItem('serverEnabled');return v===null?true:v==='true';}
-function getV(){return localStorage.getItem('publicMinecraftVersion')||'1.21.11';}
+let _serverOn=true,_serverVer='1.21.11';
+async function loadServerSettings(){
+  try{
+    const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
+    if(data){data.forEach(r=>{if(r.key==='serverEnabled')_serverOn=r.value!=='false';if(r.key==='publicMinecraftVersion')_serverVer=r.value||'1.21.11';});}
+  }catch(e){}
+  renderAdminUI();
+}
 function renderAdminUI(){
-  const on=getE(),track=g('toggle-track');if(!track)return;
+  const on=_serverOn,track=g('toggle-track');if(!track)return;
   on?track.classList.add('on'):track.classList.remove('on');
   g('tog-lbl').textContent=on?'가동':'점검';
   g('st-label').textContent=on?'가동':'점검 중';
   g('st-ping').style.background=on?'#22c55e':'#ef4444';
   g('st-core').style.background=on?'#22c55e':'#ef4444';
-  const v=getV();g('ver-input').value=v;g('ver-txt').textContent=v;
+  g('ver-input').value=_serverVer;g('ver-txt').textContent=_serverVer;
 }
-window.toggleServer=function(){localStorage.setItem('serverEnabled',getE()?'false':'true');renderAdminUI();};
-window.applyVer=function(){const v=g('ver-input').value.trim();if(!v)return;localStorage.setItem('publicMinecraftVersion',v);renderAdminUI();};
-window.addEventListener('storage',e=>{if(e.key==='serverEnabled'||e.key==='publicMinecraftVersion')renderAdminUI();});
+window.toggleServer=async function(){
+  _serverOn=!_serverOn;
+  await sb.from('settings').upsert({key:'serverEnabled',value:String(_serverOn)},{onConflict:'key'});
+  renderAdminUI();
+};
+window.applyVer=async function(){
+  const v=g('ver-input').value.trim();if(!v)return;
+  _serverVer=v;
+  await sb.from('settings').upsert({key:'publicMinecraftVersion',value:v},{onConflict:'key'});
+  renderAdminUI();
+};
 
 /* 탭 전환 */
 const TAB_SUB={update:'버전 배포와 변경 사항을 기록합니다.',notice:'홈 화면 상단에 공지를 게시합니다.',gallery:'홈 화면 갤러리 이미지를 관리합니다.'};
@@ -372,7 +391,7 @@ async function checkAuth(){
   if(!ae||!de)return;
   if(session){
     ae.style.display='none';de.style.display='block';
-    renderAdminUI();loadAdminLogs();loadDcAdmin();
+    loadServerSettings();loadAdminLogs();loadDcAdmin();
   }else{ae.style.display='flex';de.style.display='none';}
 }
 window.loginWithGoogle=async function(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});};
