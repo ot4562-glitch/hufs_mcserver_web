@@ -30,8 +30,11 @@
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
   body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #F4F4F4; overflow-x:hidden; }
   h1, h2, h3 { font-family: 'Manrope', sans-serif; }
-  .mod-card { transition: transform 0.15s, box-shadow 0.15s; }
-  .mod-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,55,100,0.12); }
+  :root { --hover-shadow:0 10px 25px rgba(0,0,0,0.08); --transition-base:all .2s ease; }
+  .mod-card { transition: var(--transition-base); box-shadow:none; }
+  .mod-card:hover { transform: translateY(-2px); box-shadow: var(--hover-shadow); border-color:rgba(196,151,42,.5); }
+  section h2 { display:inline-block; position:relative; }
+  section h2::after { content:''; display:block; height:2px; margin-top:.25rem; background:linear-gradient(90deg,#C4972A,rgba(196,151,42,.2)); }
 
   .nav-links { display:flex; gap:1.75rem; align-items:center; }
 
@@ -93,7 +96,7 @@
   </div>
 </nav>
 
-<main style="max-width:1200px;margin:0 auto;padding:1.75rem 1.25rem 4rem;overflow-x:hidden;">
+<main style="max-width:1200px;margin:0 auto;padding:2.4rem 1.25rem 4rem;overflow-x:hidden;">
 
   <!-- 페이지 헤더 -->
   <header class="mb-12 mt-4">
@@ -103,7 +106,7 @@
       <div class="relative z-10 flex items-center justify-between gap-8">
         <div class="flex-1">
           <h1 class="text-4xl lg:text-5xl font-extrabold text-white tracking-tighter mb-3 leading-tight">Mod Setup Guide</h1>
-          <p class="text-white/60 text-base max-w-2xl leading-relaxed">모드는 <strong class="text-white font-bold">선택적으로 설치</strong>하시면 됩니다. 처음 접속하시는 분들도 단계별로 쉽게 따라하실 수 있습니다.</p>
+          <p class="text-white/60 text-base max-w-[600px] leading-relaxed">모드는 <strong class="text-white font-bold">선택적으로 설치</strong>하시면 됩니다. 처음 접속하시는 분들도 단계별로 쉽게 따라하실 수 있습니다.</p>
         </div>
       </div>
     </div>

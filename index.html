@@ -9,15 +9,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root {
+  --hufs-navy:#003764;
+  --hufs-gold:#C4972A;
+  --hufs-text:#9EA2A2;
+  --hufs-radius:12px;
+  --hover-shadow:0 10px 25px rgba(0,0,0,0.08);
+  --transition-base:all .2s ease;
+}
 * { box-sizing: border-box; }
 body { font-family: 'Noto Sans KR', sans-serif; background: #F9F9F7; margin: 0; }
 .msym { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; font-style: normal; line-height: 1; display: inline-block; }
+
+.hero-shell { padding-block: 2.6rem 2rem; }
+.max-readable { max-width: 600px; }
+.section-title { position:relative; display:inline-block; }
+.section-title::after { content:''; display:block; width:100%; height:2px; margin-top:.35rem; background:linear-gradient(90deg,var(--hufs-gold),rgba(196,151,42,.25)); }
 
 @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
 .do-ping { animation: ping 1.2s cubic-bezier(0,0,0.2,1) infinite; }
 @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation: fadeUp 0.45s both; }
+
+.card-level-primary,.card-level-secondary,.card-level-tertiary { transition: var(--transition-base); border-radius: var(--hufs-radius); }
+.card-level-primary { border:1px solid rgba(196,151,42,.65) !important; box-shadow:0 4px 16px rgba(0,55,100,.12); }
+.card-level-primary:hover { transform:translateY(-2px); box-shadow:var(--hover-shadow); }
+.card-level-secondary { border:1px solid rgba(0,55,100,.10) !important; box-shadow:none; }
+.card-level-secondary:hover { transform:translateY(-2px); border-color:rgba(196,151,42,.65) !important; box-shadow:var(--hover-shadow); }
+.card-level-tertiary { border:1px solid rgba(0,55,100,.06) !important; box-shadow:none; }
+.card-level-tertiary:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,55,100,.08); }
+.cta, .arr, .notice-bar, .dc-link, .g-item, .copy-title, .copy-ic, #lb-x { transition: var(--transition-base); }
 
 .card-lift { transition: box-shadow .18s, transform .18s; }
 .card-lift:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,55,100,.10); }
@@ -83,6 +105,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
 @media(max-width:540px){
   .nav-links .nl-def { display:none; }
   .hero-grid { gap:1.25rem; }
+  .hero-shell { padding-block:1.25rem 1rem; }
   .carousel-wrap { height:190px; }
   .cta-grid { grid-template-columns:1fr 1fr !important; }
   .gallery-grid { grid-template-columns:repeat(2,1fr); gap:.5rem; }
@@ -129,7 +152,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
 <main style="max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 3rem;display:flex;flex-direction:column;gap:2.25rem;">
 
   <!-- 히어로 -->
-  <section class="hero-grid">
+  <section class="hero-grid hero-shell">
     <div style="display:flex;flex-direction:column;">
       <div style="margin-bottom:.65rem;">
         <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,55,100,.07);border:1px solid rgba(0,55,100,.14);color:#003764;font-size:.66rem;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;font-family:'Manrope',sans-serif;">
@@ -153,7 +176,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
           </span>
           <span id="st-text" style="font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1rem,3vw,1.6rem);color:#003764;letter-spacing:-.025em;text-transform:uppercase;">서버 가동 중</span>
         </div>
-        <p style="color:#9EA2A2;font-size:.83rem;font-weight:500;margin:0;">24시간 운영 &nbsp;·&nbsp; 버전 <span id="st-ver" style="color:#003764;font-weight:800;visibility:hidden;">—</span></p>
+        <p class="max-readable" style="color:#9EA2A2;font-size:.83rem;font-weight:500;margin:0;">24시간 운영 &nbsp;·&nbsp; 버전 <span id="st-ver" style="color:#003764;font-weight:800;visibility:hidden;">—</span></p>
       </div>
 
       <!-- 디스코드 -->
@@ -179,7 +202,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
 
   <!-- CTA 카드 -->
   <section class="cta-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-    <a href="mod-setup.html" class="cta card-lift" style="background:#fff;border:1px solid rgba(0,55,100,.09);border-top:3px solid #003764;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
+    <a href="mod-setup.html" class="cta card-lift card-level-secondary" style="background:#fff;border-top:3px solid #003764;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.2rem;">
         <i class="msym" style="font-size:1.65rem;color:#003764;">settings_suggest</i>
         <i class="msym arr" style="font-size:1.05rem;color:#9EA2A2;">arrow_forward</i>
@@ -187,7 +210,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
       <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.95rem;color:#003764;margin:0 0 .28rem;letter-spacing:-.02em;">커스텀 모드 설정</h3>
       <p style="color:#9EA2A2;font-size:.8rem;margin:0;">최적화 및 편의 기능 모드 설정 가이드</p>
     </a>
-    <a href="updates.html" class="cta card-lift" style="background:#EEEEEC;border:1px solid rgba(0,55,100,.07);border-top:3px solid #C4972A;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
+    <a href="updates.html" class="cta card-lift card-level-secondary" style="background:#EEEEEC;border-top:3px solid #C4972A;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.2rem;">
         <i class="msym" style="font-size:1.65rem;color:#C4972A;">history</i>
         <i class="msym arr" style="font-size:1.05rem;color:#9EA2A2;">arrow_forward</i>
@@ -195,7 +218,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
       <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.95rem;color:#003764;margin:0 0 .28rem;letter-spacing:-.02em;">업데이트 내역</h3>
       <p style="color:#9EA2A2;font-size:.8rem;margin:0;">서버의 주요 변경 사항 및 기록</p>
     </a>
-    <a href="notices.html" id="notices-cta" class="cta card-lift" style="background:#FFF9EC;border:1px solid #E8C96A;border-top:3px solid #C4972A;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
+    <a href="notices.html" id="notices-cta" class="cta card-lift card-level-primary" style="background:#FFF9EC;border-top:3px solid #C4972A;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.2rem;">
         <i class="msym" style="font-size:1.65rem;color:#C4972A;">campaign</i>
         <i class="msym arr" style="font-size:1.05rem;color:#9EA2A2;">arrow_forward</i>
@@ -203,7 +226,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
       <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.95rem;color:#003764;margin:0 0 .28rem;letter-spacing:-.02em;">공지사항</h3>
       <p style="color:#9EA2A2;font-size:.8rem;margin:0;" id="notices-cta-sub">서버 운영 관련 공지 확인</p>
     </a>
-    <a href="map.html" class="cta card-lift" style="background:#fff;border:1px solid rgba(0,55,100,.09);border-top:3px solid #003764;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
+    <a href="map.html" class="cta card-lift card-level-tertiary" style="background:#fff;border-top:3px solid #003764;border-radius:12px;padding:1.6rem;text-decoration:none;display:block;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.2rem;">
         <i class="msym" style="font-size:1.65rem;color:#003764;">map</i>
         <i class="msym arr" style="font-size:1.05rem;color:#9EA2A2;">arrow_forward</i>
@@ -219,7 +242,7 @@ nav { background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdro
       <div style="flex:1;height:1px;background:rgba(0,55,100,.08);"></div>
       <div style="display:flex;align-items:center;gap:.45rem;flex-shrink:0;">
         <i class="msym" style="font-size:.95rem;color:#C4972A;">photo_library</i>
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.74rem;color:#9EA2A2;text-transform:uppercase;letter-spacing:.1em;">서버 갤러리</span>
+        <span class="section-title" style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.74rem;color:#9EA2A2;text-transform:uppercase;letter-spacing:.1em;">서버 갤러리</span>
       </div>
       <div style="flex:1;height:1px;background:rgba(0,55,100,.08);"></div>
     </div>
