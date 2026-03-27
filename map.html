@@ -8,7 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <style>
+:root {
+  --color-bg: #F9F9F7;
+  --color-navy: #003764;
+  --color-gold: #C4972A;
+  --color-gray: #9EA2A2;
+  --transition-base: all 0.2s ease;
+  --hover-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+:root { --hover-shadow:0 10px 25px rgba(0,0,0,0.08); --transition-base:all .2s ease; }
 * { box-sizing: border-box; }
+a, button { transition: var(--transition-base); }
 body { font-family: 'Noto Sans KR', sans-serif; background: #F9F9F7; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
 .msym { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; font-style: normal; line-height: 1; display: inline-block; }
 
@@ -17,18 +28,19 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
 .nav-links { display: flex; gap: 1.5rem; align-items: center; }
 .nl { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .875rem; text-decoration: none; transition: color .15s; }
 .nl-act { color: #003764; border-bottom: 2px solid #003764; padding-bottom: 1px; }
-.nl-def { color: #6b7280; }
+.nl-def { color: #9EA2A2; }
 .nl-def:hover { color: #003764; }
 
 /* 지도 컨테이너 */
 .map-wrap {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 2rem;
+  padding: 2.4rem 1.25rem 2rem;
   gap: 1rem;
 }
 
@@ -52,7 +64,7 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
   min-height: 560px;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0,55,100,.12);
+  box-shadow: 0 4px 16px rgba(0,55,100,.10);
   border: 1px solid rgba(0,55,100,.08);
   background: #1a2a3a;
 }
@@ -97,10 +109,10 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
   border-radius: 8px;
   padding: .45rem .9rem;
   cursor: pointer;
-  transition: background .15s, transform .1s;
+  transition: var(--transition-base);
   text-decoration: none;
 }
-.btn-fullscreen:hover { background: #004d8c; transform: translateY(-1px); }
+.btn-fullscreen:hover { background: #004d8c; transform: translateY(-2px); box-shadow:var(--hover-shadow); }
 
 /* 정보 배지 */
 .info-badge {
@@ -108,12 +120,12 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
   align-items: center;
   gap: .4rem;
   background: rgba(0,55,100,.06);
-  border: 1px solid rgba(0,55,100,.11);
+  border: 1px solid rgba(196,151,42,.45);
   border-radius: 8px;
   padding: .35rem .75rem;
   font-size: .76rem;
   font-weight: 600;
-  color: #4b5563;
+  color: #003764;
 }
 
 @media (max-width: 860px) {
@@ -122,7 +134,7 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
 @media (max-width: 540px) {
   .nl-def:not(.keep) { display: none; }
   .nl-act.keep { display: inline !important; }
-  .map-wrap { padding: 1rem 1rem 1.5rem; }
+  .map-wrap { padding: 1.2rem 1rem 1.5rem; }
   .map-frame-wrap, #map-iframe { min-height: 340px; border-radius: 10px; }
   .map-header { flex-direction: column; align-items: flex-start; }
 }
@@ -147,6 +159,7 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
 
   <!-- 헤더 -->
   <div class="map-header">
+    <div style="position:absolute;left:0;right:0;top:-.9rem;height:1px;background:linear-gradient(90deg,rgba(196,151,42,.1),#C4972A,rgba(196,151,42,.1));"></div>
     <div class="map-title-group">
       <div style="width:3px;height:28px;background:#C4972A;border-radius:2px;flex-shrink:0;"></div>
       <div>
@@ -196,7 +209,7 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
 
 </div>
 
-<footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,.08);padding:1.75rem 1.25rem;">
+<footer style="background:#F9F9F7;border-top:1px solid rgba(0,55,100,.08);padding:1.75rem 1.25rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem;">
     <p style="color:#9EA2A2;font-size:.76rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
     <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
