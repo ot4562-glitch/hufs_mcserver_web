@@ -9,6 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root {
+  --color-bg: #F9F9F7;
+  --color-navy: #003764;
+  --color-gold: #C4972A;
+  --color-gray: #9EA2A2;
+  --transition-base: all 0.2s ease;
+  --hover-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
 * { box-sizing:border-box; }
 body { font-family:'Noto Sans KR',sans-serif; background:#F9F9F7; margin:0; overflow-x:hidden; }
 .msym { font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-style:normal;line-height:1;display:inline-block; }
@@ -29,21 +38,21 @@ h1,h2,h3 { font-family:'Manrope',sans-serif; }
 .spin { animation:spin .8s linear infinite;display:inline-block; }
 
 input[type=text],input[type=date],input[type=url],textarea {
-  width:100%;background:#F4F4F4;border:1px solid rgba(0,55,100,.12);
+  width:100%;background:#F9F9F7;border:1px solid rgba(0,55,100,.12);
   padding:.8rem 1rem;border-radius:8px;
   font-family:'Noto Sans KR',sans-serif;font-size:.9rem;color:#003764;
   outline:none;transition:border-color .15s,box-shadow .15s;
 }
 input:focus,textarea:focus { border-color:#003764;box-shadow:0 0 0 3px rgba(0,55,100,.10); }
 
-.tab-btn { display:inline-flex;align-items:center;gap:5px;padding:.42rem .85rem;border-radius:7px;border:none;cursor:pointer;font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;transition:background .15s,color .15s;background:#F4F4F4;color:#9EA2A2; }
+.tab-btn { display:inline-flex;align-items:center;gap:5px;padding:.42rem .85rem;border-radius:7px;border:none;cursor:pointer;font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;transition:background .15s,color .15s;background:#F9F9F7;color:#9EA2A2; }
 .tab-btn.active { background:#003764;color:#fff; }
 .tab-btn:not(.active):hover { background:#E5E5E5;color:#003764; }
 
-.log-item { background:#F4F4F4;border-radius:8px;overflow:hidden; }
+.log-item { background:#F9F9F7;border-radius:8px;overflow:hidden; }
 .log-hd { display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;cursor:pointer;transition:background .15s; }
 .log-hd:hover { background:#EAEAEA; }
-.log-bd { max-height:0;overflow:hidden;transition:max-height .25s ease,padding .2s ease;padding:0 1rem;font-size:.83rem;color:#555;white-space:pre-line;line-height:1.65;border-top:0px solid rgba(0,55,100,.08); }
+.log-bd { max-height:0;overflow:hidden;transition:max-height .25s ease,padding .2s ease;padding:0 1rem;font-size:.83rem;color:#9EA2A2;white-space:pre-line;line-height:1.65;border-top:0px solid rgba(0,55,100,.08); }
 .log-item.open .log-bd { max-height:600px;padding:.75rem 1rem 1rem;border-top-width:1px; }
 .lchev { transition:transform .2s;font-size:18px;color:#9EA2A2;flex-shrink:0; }
 .log-item.open .lchev { transform:rotate(180deg); }
@@ -51,7 +60,7 @@ input:focus,textarea:focus { border-color:#003764;box-shadow:0 0 0 3px rgba(0,55
 .notice-item { background:#FFF9EC;border:1px solid #E8C96A;border-left:3px solid #C4972A;border-radius:8px;padding:.8rem 1rem; }
 
 /* 갤러리 슬롯 */
-.g-slot { position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;background:#F4F4F4;border:1.5px dashed rgba(0,55,100,.18);transition:border-color .15s; }
+.g-slot { position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;background:#F9F9F7;border:1.5px dashed rgba(0,55,100,.18);transition:border-color .15s; }
 .g-slot.has-img { border-style:solid;border-color:rgba(0,55,100,.12); }
 .g-slot img { width:100%;height:100%;object-fit:cover;display:block; }
 .g-slot .g-overlay { position:absolute;inset:0;background:rgba(0,0,0,.52);display:none;align-items:center;justify-content:center;gap:.5rem; }
@@ -113,11 +122,11 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
   <div class="nav-i">
     <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1rem;color:#003764;text-decoration:none;letter-spacing:-.03em;">외대.서버.한국</a>
     <div style="display:flex;gap:1.5rem;align-items:center;" class="nav-d">
-      <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">홈</a>
-      <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
-      <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
-      <a href="notices.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">공지사항</a>
-      <a href="map.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">서버 지도</a>
+      <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">홈</a>
+      <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">모드 설정</a>
+      <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">업데이트 내역</a>
+      <a href="notices.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">공지사항</a>
+      <a href="map.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">서버 지도</a>
       <span style="width:1px;height:16px;background:rgba(0,55,100,.15);"></span>
       <button onclick="logout()" type="button" style="display:flex;align-items:center;gap:4px;font-size:.82rem;color:#9EA2A2;background:none;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
         <i class="msym" style="font-size:17px;">logout</i> 나가기
@@ -145,7 +154,7 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
     </div>
     <div class="env-row">
       <!-- 서버 상태 -->
-      <div style="display:flex;align-items:center;gap:.9rem;background:#F4F4F4;border-radius:10px;padding:.82rem 1.15rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:.9rem;background:#F9F9F7;border-radius:10px;padding:.82rem 1.15rem;flex-shrink:0;">
         <span style="position:relative;display:inline-flex;width:10px;height:10px;flex-shrink:0;">
           <span id="st-ping" style="position:absolute;inset:0;border-radius:50%;background:#22c55e;opacity:.6;animation:ping 1.4s cubic-bezier(0,0,.2,1) infinite;"></span>
           <span id="st-core" style="position:relative;z-index:1;border-radius:50%;width:10px;height:10px;background:#22c55e;"></span>
@@ -188,8 +197,8 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
           <i class="msym" style="font-size:15px;">save</i>저장
         </button>
         <button onclick="clearDc()" type="button" title="삭제"
-          style="padding:.68rem .68rem;background:#F4F4F4;color:#9EA2A2;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;transition:background .15s;display:flex;align-items:center;"
-          onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F4F4F4'">
+          style="padding:.68rem .68rem;background:#F9F9F7;color:#9EA2A2;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;transition:background .15s;display:flex;align-items:center;"
+          onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F9F9F7'">
           <i class="msym" style="font-size:15px;">link_off</i>
         </button>
       </div>
@@ -260,7 +269,7 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
             <label style="display:block;font-size:.68rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;">공지 내용</label>
             <textarea id="notice-inp" rows="5" placeholder="공지 내용을 입력하세요. 줄바꿈도 적용됩니다." style="resize:vertical;"></textarea>
           </div>
-          <div style="display:flex;align-items:center;gap:.65rem;background:#F4F4F4;border-radius:8px;padding:.72rem 1rem;">
+          <div style="display:flex;align-items:center;gap:.65rem;background:#F9F9F7;border-radius:8px;padding:.72rem 1rem;">
             <input id="notice-pinned-inp" type="checkbox" style="width:16px;height:16px;accent-color:#003764;cursor:pointer;flex-shrink:0;"/>
             <div>
               <span style="font-size:.82rem;font-weight:700;color:#003764;">홈 상단 순환 표시</span>
@@ -270,8 +279,8 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
           <div id="notice-msg" style="display:none;font-size:.83rem;font-weight:700;padding:.7rem 1rem;border-radius:8px;"></div>
           <div style="display:flex;gap:.55rem;justify-content:flex-end;">
             <button id="notice-cancel-btn" onclick="cancelNoticeEdit()" type="button"
-              style="display:none;padding:.7rem 1.15rem;background:#F4F4F4;color:#9EA2A2;font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;border:none;border-radius:8px;cursor:pointer;transition:background .15s;"
-              onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F4F4F4'">취소</button>
+              style="display:none;padding:.7rem 1.15rem;background:#F9F9F7;color:#9EA2A2;font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;border:none;border-radius:8px;cursor:pointer;transition:background .15s;"
+              onmouseover="this.style.background='#E5E5E5'" onmouseout="this.style.background='#F9F9F7'">취소</button>
             <button id="notice-btn" onclick="submitNotice()" type="button"
               style="background:#C4972A;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;padding:.7rem 1.65rem;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;"
               onmouseover="this.style.background='#a97c20'" onmouseout="this.style.background='#C4972A'">
@@ -330,7 +339,7 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
 
 </main>
 
-<footer style="background:#F4F4F2;border-top:1px solid rgba(0,55,100,.08);padding:2rem 1.5rem;">
+<footer style="background:#F9F9F7;border-top:1px solid rgba(0,55,100,.08);padding:2rem 1.5rem;">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem;">
     <div>
       <p style="font-family:'Manrope',sans-serif;font-weight:800;color:#003764;font-size:.88rem;margin:0 0 2px;">외대.서버.한국</p>
