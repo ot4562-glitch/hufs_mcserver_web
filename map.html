@@ -138,6 +138,18 @@ nav { background: rgba(255,255,255,.9); backdrop-filter: blur(16px); -webkit-bac
   .map-frame-wrap, #map-iframe { min-height: 340px; border-radius: 10px; }
   .map-header { flex-direction: column; align-items: flex-start; }
 }
+
+/* ===== 2026 portfolio redesign overrides ===== */
+:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2}
+body,footer,nav{background:var(--bg)!important}
+nav{box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
+.map-wrap{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 4rem!important;gap:2rem!important}
+.map-header{padding-bottom:2rem;border-bottom:1px solid rgba(0,55,100,.2)}
+.map-frame-wrap{border-radius:0!important;box-shadow:none!important;border:1px solid rgba(0,55,100,.22)!important}
+.btn-fullscreen,.info-badge{border-radius:0!important;box-shadow:none!important;background:transparent!important;color:var(--navy)!important;border:1px solid rgba(0,55,100,.22)!important}
+.btn-fullscreen:hover{color:var(--gold)!important;transform:none!important}
+h1{font-size:clamp(3rem,7vw,5rem)!important;line-height:.9!important}
+
 </style>
 </head>
 <body>

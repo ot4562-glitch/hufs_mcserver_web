@@ -61,6 +61,19 @@ a, button { transition: var(--transition-base); }
     .update-card { padding:1rem !important; border-radius:10px !important; }
     .update-card h2 { font-size:.95rem !important; }
   }
+
+/* ===== 2026 portfolio redesign overrides ===== */
+:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2}
+body,footer,nav{background:var(--bg)!important}
+nav{box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
+main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
+h1{font-size:clamp(3rem,8vw,6rem)!important;line-height:.9!important;margin-bottom:1rem!important}
+.gold-divider{height:1px!important;background:var(--navy)!important;opacity:.22!important;margin:0 0 3rem!important}
+.update-card{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;border-left:none!important;border-right:none!important;border-radius:0!important;box-shadow:none!important;padding:1.5rem 0!important}
+.update-card+ .update-card{margin-top:0!important}
+.update-card *{border-radius:0!important}
+a:hover,.nl-def:hover{color:var(--gold)!important}
+
 </style>
 </head>
 <body>
