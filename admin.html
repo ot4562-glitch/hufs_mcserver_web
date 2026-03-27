@@ -116,6 +116,8 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
       <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">홈</a>
       <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">모드 설정</a>
       <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">업데이트 내역</a>
+      <a href="notices.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">공지사항</a>
+      <a href="map.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.875rem;color:#6b7280;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#6b7280'">서버 지도</a>
       <span style="width:1px;height:16px;background:rgba(0,55,100,.15);"></span>
       <button onclick="logout()" type="button" style="display:flex;align-items:center;gap:4px;font-size:.82rem;color:#9EA2A2;background:none;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">
         <i class="msym" style="font-size:17px;">logout</i> 나가기
@@ -247,17 +249,22 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
       <div id="panel-notice" style="display:none;">
         <div style="display:flex;flex-direction:column;gap:.95rem;">
           <div>
+            <label style="display:block;font-size:.68rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;">공지 제목</label>
+            <input id="notice-title-inp" type="text" placeholder="공지 제목을 입력하세요."/>
+          </div>
+          <div>
+            <label style="display:block;font-size:.68rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;">공지 날짜</label>
+            <input id="notice-date-inp" type="date"/>
+          </div>
+          <div>
             <label style="display:block;font-size:.68rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;">공지 내용</label>
             <textarea id="notice-inp" rows="5" placeholder="공지 내용을 입력하세요. 줄바꿈도 적용됩니다." style="resize:vertical;"></textarea>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;background:#FFF9EC;border:1px solid #E8C96A;border-radius:8px;padding:.72rem 1rem;">
+          <div style="display:flex;align-items:center;gap:.65rem;background:#F4F4F4;border-radius:8px;padding:.72rem 1rem;">
+            <input id="notice-pinned-inp" type="checkbox" style="width:16px;height:16px;accent-color:#003764;cursor:pointer;flex-shrink:0;"/>
             <div>
-              <span style="font-size:.82rem;font-weight:700;color:#6B4A00;">6시간 후 자동 삭제</span>
-              <span style="display:block;font-size:.7rem;color:#9EA2A2;margin-top:1px;">끄면 수동 삭제 전까지 계속 표시됩니다</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:7px;">
-              <div id="auto-del-tog" class="stoggle" onclick="toggleAutoDel()"><div class="stoggle-thumb"></div></div>
-              <span id="auto-del-lbl" style="font-size:.78rem;font-weight:700;color:#9EA2A2;min-width:24px;">끔</span>
+              <span style="font-size:.82rem;font-weight:700;color:#003764;">홈 상단 순환 표시</span>
+              <span style="display:block;font-size:.7rem;color:#9EA2A2;margin-top:1px;">체크하면 홈 화면 상단 공지 배너에 순환 표시됩니다</span>
             </div>
           </div>
           <div id="notice-msg" style="display:none;font-size:.83rem;font-weight:700;padding:.7rem 1rem;border-radius:8px;"></div>
@@ -407,7 +414,7 @@ window.switchTab=function(tab){
     g('right-'+t).style.display=tab===t?'':'none';
   });
   g('form-sub').textContent=TAB_SUB[tab];
-  if(tab==='notice')loadNoticeAdmin();
+  if(tab==='notice'){loadNoticeAdmin();setDateDefault();}
   if(tab==='gallery')renderGalleryAdmin();
 };
 
@@ -426,61 +433,75 @@ window.logout=async function(){await sb.auth.signOut();checkAuth();};
 sb.auth.onAuthStateChange((_,s)=>{checkAuth();if(s)loadAdminLogs();});
 
 /* 공지 */
-let editNId=null,autoDelOn=false;
+let editNId=null;
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-window.toggleAutoDel=function(){
-  autoDelOn=!autoDelOn;
-  const t=g('auto-del-tog'),l=g('auto-del-lbl');
-  autoDelOn?(t.classList.add('on'),l.textContent='켬',l.style.color='#C4972A'):(t.classList.remove('on'),l.textContent='끔',l.style.color='#9EA2A2');
-};
 function showMsg(elId,text,ok){
   const el=g(elId);el.textContent=text;el.style.background=ok?'#ECFDF5':'#FEF2F2';el.style.color=ok?'#065F46':'#B91C1C';
   el.style.display='block';setTimeout(()=>el.style.display='none',3500);
 }
 function fmtT(iso){return new Date(iso).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
-function isExp(r){return r.auto_delete&&(Date.now()-new Date(r.created_at).getTime()>=21600000);}
+function fmtDateKo(iso){
+  if(!iso)return'';
+  // YYYY-MM-DD 형식이면 직접 파싱
+  if(/^\d{4}-\d{2}-\d{2}$/.test(iso)){
+    const[y,m,d]=iso.split('-');
+    return y+'년 '+Number(m)+'월 '+Number(d)+'일';
+  }
+  return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+}
+
+// 오늘 날짜를 date input 기본값으로 세팅
+function setDateDefault(){
+  const el=g('notice-date-inp');
+  if(el&&!el.value){
+    const now=new Date();
+    el.value=now.toISOString().slice(0,10);
+  }
+}
 
 async function loadNoticeAdmin(){
   const c=g('notice-list');if(!c)return;
   c.innerHTML='<p style="font-size:.84rem;color:#9EA2A2;">불러오는 중...</p>';
   const{data}=await sb.from('notices').select('*').order('created_at',{ascending:false});
   if(!data||!data.length){c.innerHTML='<p style="font-size:.84rem;color:#9EA2A2;">게시된 공지가 없습니다.</p>';return;}
-  const exp=data.filter(r=>isExp(r));
-  if(exp.length)await sb.from('notices').delete().in('id',exp.map(r=>r.id));
-  const fresh=data.filter(r=>!isExp(r));
-  if(!fresh.length){c.innerHTML='<p style="font-size:.84rem;color:#9EA2A2;">게시된 공지가 없습니다.</p>';return;}
-  c.innerHTML=fresh.map((r,i)=>`
+  c.innerHTML=data.map((r,i)=>`
     <div class="notice-item">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;">
         <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
-          ${i===0?'<span style="font-size:.62rem;font-weight:800;background:#003764;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">표시 중</span>':''}
-          ${r.auto_delete?'<span style="font-size:.62rem;font-weight:800;background:#C4972A;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">6시간 자동삭제</span>':'<span style="font-size:.62rem;font-weight:800;background:#9EA2A2;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">수동삭제</span>'}
+          ${i===0?'<span style="font-size:.62rem;font-weight:800;background:#003764;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">최신</span>':''}
+          ${r.pinned?'<span style="font-size:.62rem;font-weight:800;background:#22c55e;color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">홈 표시</span>':''}
         </div>
         <div style="display:flex;gap:2px;flex-shrink:0;">
           <button onclick="editNotice('${r.id}')" type="button" style="background:none;border:none;cursor:pointer;color:#9EA2A2;padding:2px;display:flex;align-items:center;transition:color .15s;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'"><i class="msym" style="font-size:16px;">edit</i></button>
           <button onclick="delNotice('${r.id}')" type="button" style="background:none;border:none;cursor:pointer;color:#9EA2A2;padding:2px;display:flex;align-items:center;transition:color .15s;" onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#9EA2A2'"><i class="msym" style="font-size:16px;">delete</i></button>
         </div>
       </div>
+      ${r.title?`<p style="font-size:.86rem;font-weight:800;color:#003764;margin:0 0 .2rem;font-family:'Manrope',sans-serif;">${esc(r.title)}</p>`:''}
       <p style="font-size:.83rem;color:#6B4A00;margin:0 0 .3rem;white-space:pre-line;line-height:1.55;">${esc(r.content)}</p>
-      <span style="font-size:.68rem;color:#9EA2A2;">작성: ${fmtT(r.created_at)}${r.auto_delete?' · 만료: '+fmtT(new Date(new Date(r.created_at).getTime()+21600000).toISOString()):''}</span>
+      <span style="font-size:.68rem;color:#9EA2A2;">
+        ${r.notice_date?'📅 '+fmtDateKo(r.notice_date)+' · ':''}작성: ${fmtT(r.created_at)}
+      </span>
     </div>`).join('');
 }
 window.loadNoticeAdmin=loadNoticeAdmin;
 
 window.editNotice=async function(id){
   const{data}=await sb.from('notices').select('*').eq('id',id).maybeSingle();if(!data)return;
-  editNId=id;g('notice-inp').value=data.content;
-  autoDelOn=data.auto_delete;
-  const t=g('auto-del-tog'),l=g('auto-del-lbl');
-  autoDelOn?(t.classList.add('on'),l.textContent='켬',l.style.color='#C4972A'):(t.classList.remove('on'),l.textContent='끔',l.style.color='#9EA2A2');
+  editNId=id;
+  g('notice-title-inp').value=data.title||'';
+  g('notice-inp').value=data.content;
+  g('notice-date-inp').value=data.notice_date||new Date().toISOString().slice(0,10);
+  g('notice-pinned-inp').checked=data.pinned||false;
   g('notice-btn').innerHTML='<i class="msym" style="font-size:16px;">edit</i>수정 저장';
   g('notice-cancel-btn').style.display='';
-  g('notice-inp').focus();
+  g('notice-title-inp').focus();
 };
 window.cancelNoticeEdit=function(){
-  editNId=null;autoDelOn=false;g('notice-inp').value='';
-  const t=g('auto-del-tog'),l=g('auto-del-lbl');
-  t.classList.remove('on');l.textContent='끔';l.style.color='#9EA2A2';
+  editNId=null;
+  g('notice-title-inp').value='';
+  g('notice-inp').value='';
+  g('notice-pinned-inp').checked=false;
+  setDateDefault();
   g('notice-btn').innerHTML='<i class="msym" style="font-size:16px;">send</i>공지 게시';
   g('notice-cancel-btn').style.display='none';
 };
@@ -489,12 +510,18 @@ window.delNotice=async function(id){
   await sb.from('notices').delete().eq('id',id);loadNoticeAdmin();
 };
 window.submitNotice=async function(){
+  const title=g('notice-title-inp').value.trim();
   const content=g('notice-inp').value.trim();
+  const notice_date=g('notice-date-inp').value||null;
+  const pinned=g('notice-pinned-inp').checked;
   if(!content){showMsg('notice-msg','공지 내용을 입력해 주세요.',false);return;}
   const btn=g('notice-btn');btn.disabled=true;
   let error;
-  if(editNId){({error}=await sb.from('notices').update({content,auto_delete:autoDelOn,created_at:new Date().toISOString()}).eq('id',editNId));}
-  else{({error}=await sb.from('notices').insert({content,auto_delete:autoDelOn}));}
+  if(editNId){
+    ({error}=await sb.from('notices').update({title,content,notice_date,pinned,created_at:new Date().toISOString()}).eq('id',editNId));
+  }else{
+    ({error}=await sb.from('notices').insert({title,content,notice_date,pinned}));
+  }
   btn.disabled=false;
   if(error){showMsg('notice-msg','❌ 오류: '+error.message,false);return;}
   showMsg('notice-msg',editNId?'✅ 공지가 수정되었습니다.':'✅ 공지가 게시되었습니다.',true);
