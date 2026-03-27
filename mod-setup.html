@@ -88,6 +88,28 @@
     /* 섹션6 스텝 번호 크기 줄이기 */
     .bg-hufs-green.w-12.h-12 { width:2.25rem !important; height:2.25rem !important; font-size:1rem !important; flex-shrink:0; }
   }
+
+/* ===== 2026 portfolio redesign overrides ===== */
+:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2;--radius:4px;--space:88px}
+*{border-radius:0!important}
+body{background:var(--bg)!important;color:var(--navy)!important}
+nav{background:var(--bg)!important;box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
+main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
+main>header,main>section:first-of-type{margin-bottom:var(--space)!important}
+section{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;padding:clamp(1.2rem,2vw,2rem)!important;box-shadow:none!important}
+section+section{margin-top:var(--space)!important}
+section [class*="absolute"], section [style*="background:#16a34a"], section [style*="#22c55e"]{display:none!important}
+h1{font-size:clamp(3rem,8vw,6rem)!important;line-height:.9!important;letter-spacing:-.04em!important}
+h2{font-size:clamp(1.6rem,3vw,2.8rem)!important;letter-spacing:-.02em!important}
+p,li,span{color:var(--gray)!important}
+a,.material-symbols-outlined{color:var(--navy)!important}
+a:hover{color:var(--gold)!important;background:transparent!important}
+.mod-card{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;box-shadow:none!important;transform:none!important;padding:.9rem!important}
+.mod-card:hover{border-color:var(--gold)!important}
+[class*="bg-hufs-green"],[class*="text-hufs-green"],[style*="hufs-green"],[style*="#00743A"],[style*="#5865F2"],[style*="#16a34a"],[style*="#22c55e"]{background:transparent!important;color:var(--navy)!important;border-color:rgba(0,55,100,.2)!important}
+[style*="border-top"], .absolute.top-0.left-0.w-full.h-1{display:none!important}
+@media(max-width:900px){section+section{margin-top:64px!important}}
+
 </style>
 </head>
 <body class="bg-hufs-light text-hufs-navy">

@@ -95,6 +95,20 @@ nav { background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:
   .env-row > div { min-width:0; max-width:100%; overflow:hidden; }
   input[type=text],input[type=date],input[type=url] { font-size:.85rem; }
 }
+
+/* ===== 2026 portfolio redesign overrides ===== */
+:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2}
+body,nav,footer{background:var(--bg)!important}
+nav{box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
+main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
+section,[id^="right-"],#auth-screen>div,#dashboard section, .log-item,.notice-item,.g-slot{border-radius:0!important;box-shadow:none!important}
+section{border:1px solid rgba(0,55,100,.2)!important}
+[style*="border-top:3px"],[style*="border-left:3px"],[style*="border-left:4px"]{border-top:none!important;border-left:none!important}
+.tab-btn.active{background:var(--navy)!important;color:var(--bg)!important}
+.tab-btn:not(.active):hover,.tab-btn:hover{color:var(--gold)!important}
+button:hover,a:hover{opacity:.86}
+h1{font-size:clamp(3rem,8vw,5.5rem)!important;line-height:.9!important}
+
 </style>
 </head>
 <body>

@@ -91,6 +91,19 @@ main { flex: 1; }
   .notice-body { padding: 0 1.1rem !important; font-size: .83rem !important; }
   .notice-item.open .notice-body { padding: .75rem 1.1rem 1.1rem !important; }
 }
+
+/* ===== 2026 portfolio redesign overrides ===== */
+:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2}
+body,footer,nav{background:var(--bg)!important}
+nav{box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
+main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
+h1{font-size:clamp(3rem,8vw,6rem)!important;line-height:.9!important}
+.notice-item{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;border-radius:0!important;box-shadow:none!important}
+.notice-item:hover{transform:none!important;border-color:var(--gold)!important}
+.notice-hd:hover{background:rgba(0,55,100,.03)!important}
+.notice-body{color:var(--gray)!important}
+a:hover,.nl-def:hover{color:var(--gold)!important}
+
 </style>
 </head>
 <body>
