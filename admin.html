@@ -368,8 +368,16 @@ h1{font-size:clamp(3rem,8vw,5.5rem)!important;line-height:.9!important}
 <script>
 const SB_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+const ADMIN_EMAIL='ot4562@gmail.com';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const g=id=>document.getElementById(id);
+const isAdminUser=user=>Boolean(user&&user.email===ADMIN_EMAIL);
+async function requireAdmin(showAlert=true){
+  const{data:{user}}=await sb.auth.getUser();
+  if(isAdminUser(user))return true;
+  if(showAlert)alert('권한 없음');
+  return false;
+}
 
 /* 서버 상태 */
 let _serverOn=true,_serverVer='1.21.11';
@@ -405,6 +413,7 @@ async function sbSet(key,value){
 }
 
 window.toggleServer=async function(){
+  if(!await requireAdmin())return;
   _serverOn=!_serverOn;
   renderAdminUI();
   const err=await sbSet('serverEnabled',String(_serverOn));
@@ -412,6 +421,7 @@ window.toggleServer=async function(){
   else{showEnvMsg('✅ 서버 상태가 저장되었습니다.');}
 };
 window.applyVer=async function(){
+  if(!await requireAdmin())return;
   const v=g('ver-input').value.trim();if(!v)return;
   const prev=_serverVer;
   _serverVer=v;renderAdminUI();
@@ -446,14 +456,23 @@ async function checkAuth(){
   const{data:{session}}=await sb.auth.getSession();
   const ae=g('auth-screen'),de=g('dashboard');
   if(!ae||!de)return;
-  if(session){
-    ae.style.display='none';de.style.display='block';
-    loadServerSettings();loadAdminLogs();loadDcAdmin();
-  }else{ae.style.display='flex';de.style.display='none';}
+  if(!session){
+    ae.style.display='flex';de.style.display='none';
+    return;
+  }
+  const user=session.user;
+  if(!isAdminUser(user)){
+    alert('관리자만 접근 가능합니다.');
+    await sb.auth.signOut();
+    ae.style.display='flex';de.style.display='none';
+    return;
+  }
+  ae.style.display='none';de.style.display='block';
+  loadServerSettings();loadAdminLogs();loadDcAdmin();
 }
 window.loginWithGoogle=async function(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});};
 window.logout=async function(){await sb.auth.signOut();checkAuth();};
-sb.auth.onAuthStateChange((_,s)=>{checkAuth();if(s)loadAdminLogs();});
+sb.auth.onAuthStateChange(()=>{checkAuth();});
 
 /* 공지 */
 let editNId=null;
@@ -529,10 +548,12 @@ window.cancelNoticeEdit=function(){
   g('notice-cancel-btn').style.display='none';
 };
 window.delNotice=async function(id){
+  if(!await requireAdmin())return;
   if(!confirm('이 공지를 삭제할까요?'))return;
   await sb.from('notices').delete().eq('id',id);loadNoticeAdmin();
 };
 window.submitNotice=async function(){
+  if(!await requireAdmin())return;
   const title=g('notice-title-inp').value.trim();
   const content=g('notice-inp').value.trim();
   const notice_date=g('notice-date-inp').value||null;
@@ -561,6 +582,7 @@ async function loadDcAdmin(){
   }catch(e){}
 }
 window.saveDc=async function(){
+  if(!await requireAdmin())return;
   const val=g('dc-input').value.trim();
   if(!val){showMsg('dc-msg','링크를 입력해 주세요.',false);return;}
   const{error}=await sb.from('settings').upsert({key:'discord_link',value:val},{onConflict:'key'});
@@ -568,6 +590,7 @@ window.saveDc=async function(){
   else{showMsg('dc-msg','✅ 저장되었습니다.',true);loadDcAdmin();}
 };
 window.clearDc=async function(){
+  if(!await requireAdmin())return;
   if(!confirm('디스코드 링크를 삭제할까요?'))return;
   await sb.from('settings').delete().eq('key','discord_link');
   g('dc-input').value='';const s=g('dc-st');
@@ -578,6 +601,7 @@ window.clearDc=async function(){
 /* 업데이트 로그 */
 async function submitUpdate(e){
   e.preventDefault();
+  if(!await requireAdmin())return;
   const btn=g('upd-btn'),msg=g('upd-msg');
   const version=g('inp-ver').value.trim(),date=g('inp-date').value,title=g('inp-title').value.trim(),content=g('inp-content').value.trim();
   btn.disabled=true;
@@ -617,6 +641,7 @@ async function loadAdminLogs(){
 }
 window.loadAdminLogs=loadAdminLogs;
 async function delLog(id){
+  if(!await requireAdmin())return;
   if(!confirm('이 로그를 삭제할까요?'))return;
   const{error}=await sb.from('updates').delete().eq('id',id);
   if(!error)loadAdminLogs();
@@ -673,6 +698,7 @@ window.triggerUpload=function(slot){
 };
 
 window.handleGalleryUpload=async function(e,slot){
+  if(!await requireAdmin())return;
   const file=e.target.files[0];
   if(!file)return;
   if(file.size>3*1024*1024){showMsg('g-msg','❌ 파일 크기가 3MB를 초과합니다.',false);return;}
@@ -706,6 +732,7 @@ window.handleGalleryUpload=async function(e,slot){
 };
 
 window.delGallerySlot=async function(slot){
+  if(!await requireAdmin())return;
   if(!confirm('슬롯 '+slot+' 이미지를 삭제할까요?'))return;
   const row=galleryCache[slot];
   if(row){
