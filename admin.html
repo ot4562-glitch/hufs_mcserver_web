@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="site.css"/>
+<!-- ★ FIX: defer 없이 동기 로드 (index.html과 동일) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -61,7 +62,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 
 .adm-notice-item { background:var(--primary-soft);border:1px solid var(--border-layer);border-left:3px solid var(--accent);border-radius:12px;padding:.8rem 1rem;color:var(--adm-ink); }
 
-/* 갤러리 슬롯 */
 .g-slot { position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;background:var(--surface);border:1.5px dashed var(--adm-bdr);transition:border-color .15s; }
 .g-slot.has-img { border-style:solid;border-color:var(--adm-bdr); }
 .g-slot img { width:100%;height:100%;object-fit:cover;display:block; }
@@ -76,7 +76,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 .main-grid { display:grid;grid-template-columns:1fr 390px;gap:1.5rem;align-items:start; }
 .gallery-admin-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem; }
 
-/* ── admin nav: index.html과 동일하게 ── */
 #dashboard .site-nav { top:3px; }
 
 @media(max-width:1020px){ .main-grid { grid-template-columns:1fr; } }
@@ -106,7 +105,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 
 <!-- 로그인 -->
 <div id="auth-screen" style="display:flex;position:fixed;inset:0;z-index:200;background:rgba(248,250,252,.96);backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);align-items:center;justify-content:center;">
-  <!-- 로그인 패널 -->
   <div id="login-panel" style="background:#fff;border:1px solid rgba(0,45,86,.1);border-radius:16px;box-shadow:0 24px 64px rgba(0,45,86,.1);padding:2.75rem 2.25rem;width:100%;max-width:360px;text-align:center;">
     <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:var(--accent-soft);margin-bottom:1.25rem;border:1px solid rgba(141,113,80,.25);">
       <i class="msym" style="color:var(--hufs-gold);font-size:1.6rem;">admin_panel_settings</i>
@@ -122,7 +120,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
     <p style="margin:1.25rem 0 0;font-size:.74rem;color:#aaa;">허가된 관리자 계정만 접근 가능합니다</p>
   </div>
 
-  <!-- 권한 없음 패널 -->
   <div id="denied-panel" style="display:none;background:#fff;border:1px solid rgba(185,28,28,.2);border-radius:16px;box-shadow:0 24px 64px rgba(0,45,86,.1);padding:2.75rem 2.25rem;width:100%;max-width:360px;text-align:center;">
     <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#fef2f2;margin-bottom:1.25rem;border:1px solid rgba(185,28,28,.2);">
       <i class="msym" style="color:#B91C1C;font-size:1.6rem;">lock</i>
@@ -141,7 +138,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 
 <div id="dashboard" style="display:none;">
 
-<!-- ── index.html과 동일한 구조의 nav ── -->
 <nav id="mnav" class="site-nav">
   <div class="nav-i">
     <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
@@ -154,7 +150,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
       <a href="updates.html" class="nl">업데이트 내역</a>
       <a href="notices.html" class="nl">공지사항</a>
       <a href="map.html" class="nl">서버 지도</a>
-      <!-- 나가기: <a> 태그로 변경하여 nav 닫기 로직 정상 작동 -->
       <a href="#" id="logout-link" class="nl" style="color:#B91C1C!important;">
         <i class="msym" style="font-size:17px;vertical-align:middle;">logout</i> 나가기
       </a>
@@ -236,7 +231,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
     <!-- 왼쪽: 탭 전환 작성 폼 -->
     <section style="border-top:3px solid var(--silver-mid);padding:1.75rem;">
 
-      <!-- 탭 헤더 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.65rem;flex-wrap:wrap;gap:.5rem;">
         <div class="tab-btn-row" style="display:flex;gap:.4rem;flex-wrap:wrap;">
           <button id="tab-update-btn" class="tab-btn active" onclick="switchTab('update')"><i class="msym" style="font-size:14px;">history_edu</i>업데이트 로그</button>
@@ -378,24 +372,28 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 ───────────────────────────────── */
 const SB_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
-const ADMIN_EMAIL='ot4562@gmail.com'; // Cloudflare 난독화 방지: 문자열 직접 기록
+const ADMIN_EMAIL='ot4562@gmail.com';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const g=id=>document.getElementById(id);
 const isAdminUser=user=>Boolean(user&&user.email===ADMIN_EMAIL);
 
+/* ★ FIX: requireAdmin은 캐시된 세션 사용 (getUser() API 호출 제거)
+   → 페이지 재진입 시 race condition 방지 */
+let _cachedUser=null;
 async function requireAdmin(showAlert=true){
-  const{data:{user}}=await sb.auth.getUser();
-  if(isAdminUser(user))return true;
+  // 캐시 우선 사용, 없으면 getSession으로 확인
+  if(_cachedUser&&isAdminUser(_cachedUser))return true;
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    _cachedUser=session?.user||null;
+    if(isAdminUser(_cachedUser))return true;
+  }catch(e){}
   if(showAlert)alert('권한 없음');
   return false;
 }
 
-/* ─────────────────────────────────
-   Nav: index.html과 동일한 로직
-   + 나가기 링크(#logout-link) 클릭 처리
-───────────────────────────────── */
+/* ── Nav ── */
 (function(){
-  // 스크롤 시 nav scrolled 클래스
   const mnav=g('mnav');
   window.addEventListener('scroll',()=>{
     if(mnav)mnav.classList.toggle('scrolled',scrollY>16);
@@ -419,26 +417,23 @@ async function requireAdmin(showAlert=true){
     document.body.classList.toggle('nav-open',o);
   });
 
-  // a 태그 + logout-link 모두 클릭 시 nav 닫기
   links.querySelectorAll('a').forEach(a=>{
     a.addEventListener('click',()=>closeNav());
   });
 
-  // 나가기 링크: 기본 href="#" 방지 후 로그아웃
   const logoutLink=g('logout-link');
   if(logoutLink){
     logoutLink.addEventListener('click',async(e)=>{
       e.preventDefault();
       closeNav();
+      _cachedUser=null;
       await sb.auth.signOut();
       showLoginPanel();
     });
   }
 })();
 
-/* ─────────────────────────────────
-   Auth
-───────────────────────────────── */
+/* ── Auth UI helpers ── */
 function showLoginPanel(){
   const ae=g('auth-screen'),de=g('dashboard');
   if(ae){ae.style.display='flex';g('login-panel').style.display='block';g('denied-panel').style.display='none';}
@@ -456,18 +451,33 @@ function showDeniedPanel(email){
   if(de)de.style.display='none';
 }
 
-async function applyAuthState(session){
+/* ★ FIX: 대시보드 진입 시 모든 데이터 한 번에 로드
+   탭 클릭 의존 구조 제거 → 페이지 진입 즉시 전체 로드 */
+async function showDashboard(user){
+  _cachedUser=user;
+  const ae=g('auth-screen'),de=g('dashboard');
+  if(ae)ae.style.display='none';
+  if(de){de.style.display='flex';de.style.flexDirection='column';}
+  // 모든 섹션 병렬 로드
+  await Promise.all([
+    loadServerSettings(),
+    loadAdminLogs(),
+    loadNoticeAdmin(),
+    loadDcAdmin(),
+    renderGalleryAdmin()
+  ]);
+}
+
+/* ★ FIX: applyAuthState — getSession 기반으로 통일 */
+async function applyAuthState(user){
   const ae=g('auth-screen'),de=g('dashboard');
   if(!ae||!de)return false;
-  const user=session?.user;
   if(user&&isAdminUser(user)){
-    ae.style.display='none';
-    de.style.display='flex';
-    de.style.flexDirection='column';
-    await Promise.all([loadServerSettings(),loadAdminLogs(),loadDcAdmin()]);
+    await showDashboard(user);
     return true;
   }
   if(user&&!isAdminUser(user)){
+    _cachedUser=null;
     await sb.auth.signOut();
     showDeniedPanel(user.email);
     return false;
@@ -476,21 +486,32 @@ async function applyAuthState(session){
   return false;
 }
 
-// ★ 핵심 수정: 페이지 로드 시 getSession()으로 즉시 세션 확인
-// onAuthStateChange만으로는 OAuth redirect 후 세션 복원이 늦어져 대시보드가 표시 안 됨
+/* ★ FIX: 페이지 로드 시 getSession() 우선 → OAuth redirect 후 세션 즉시 복원 */
 (async()=>{
-  const{data:{session}}=await sb.auth.getSession();
-  await applyAuthState(session);
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    await applyAuthState(session?.user||null);
+  }catch(e){
+    showLoginPanel();
+  }
 })();
 
-// 이후 상태 변화 감지 (로그인/로그아웃 실시간 반응)
+/* ★ FIX: onAuthStateChange — INITIAL_SESSION 포함 처리, 중복 방지 플래그 */
+let _authInitDone=false;
 sb.auth.onAuthStateChange(async(event,session)=>{
-  // INITIAL_SESSION은 위에서 이미 처리했으므로 중복 방지
-  if(event==='INITIAL_SESSION')return;
-  await applyAuthState(session);
+  if(event==='INITIAL_SESSION'){
+    // getSession()이 이미 처리했으므로 스킵
+    _authInitDone=true;
+    return;
+  }
+  // SIGNED_IN: OAuth redirect 후 복귀 처리
+  if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='SIGNED_OUT'){
+    _cachedUser=session?.user||null;
+    await applyAuthState(_cachedUser);
+  }
 });
 
-// 버튼 이벤트 (onclick 인라인 대신 안전하게 addEventListener)
+/* ── 버튼 이벤트 ── */
 const googleBtn=g('google-login-btn');
 if(googleBtn){
   googleBtn.addEventListener('click',async()=>{
@@ -503,6 +524,7 @@ if(googleBtn){
 const deniedBtn=g('denied-logout-btn');
 if(deniedBtn){
   deniedBtn.addEventListener('click',async()=>{
+    _cachedUser=null;
     await sb.auth.signOut();
     showLoginPanel();
   });
@@ -587,11 +609,15 @@ const TAB_SUB={
 };
 window.switchTab=function(tab){
   ['update','notice','gallery'].forEach(t=>{
-    g('tab-'+t+'-btn').className='tab-btn'+(tab===t?' active':'');
-    g('panel-'+t).style.display=tab===t?'':'none';
-    g('right-'+t).style.display=tab===t?'':'none';
+    const btn=g('tab-'+t+'-btn');
+    const panel=g('panel-'+t);
+    const right=g('right-'+t);
+    if(btn)btn.className='tab-btn'+(tab===t?' active':'');
+    if(panel)panel.style.display=tab===t?'':'none';
+    if(right)right.style.display=tab===t?'':'none';
   });
   g('form-sub').textContent=TAB_SUB[tab];
+  // ★ FIX: 탭 클릭 시에도 최신 데이터 재로드
   if(tab==='notice'){loadNoticeAdmin();setDateDefault();}
   if(tab==='gallery')renderGalleryAdmin();
 };
@@ -663,6 +689,8 @@ window.editNotice=async function(id){
   g('notice-btn').innerHTML='<i class="msym" style="font-size:16px;">edit</i>수정 저장';
   g('notice-cancel-btn').style.display='';
   g('notice-title-inp').focus();
+  // 공지 탭이 아닐 경우 탭 전환
+  switchTab('notice');
 };
 window.cancelNoticeEdit=function(){
   editNId=null;
