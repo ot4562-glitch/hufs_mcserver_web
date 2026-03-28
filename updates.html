@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="site.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <style>
 main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5rem) 5rem;width:100%;position:relative;z-index:1;}
 body{display:flex;flex-direction:column;min-height:100vh;}
@@ -44,10 +45,6 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 .ver-pill{display:inline-flex;align-items:center;background:var(--primary-soft);color:var(--primary);font-family:'Manrope',sans-serif;font-weight:800;font-size:.72rem;padding:5px 14px;border-radius:99px;letter-spacing:-.01em;border:1px solid var(--border-strong);}
 .latest-badge{background:var(--success-soft);color:#15803d;font-size:.62rem;font-weight:800;padding:4px 10px;border-radius:99px;letter-spacing:.04em;font-family:'Manrope',sans-serif;border:1px solid rgba(34,197,94,.35);}
 .date-line{font-size:.68rem;color:var(--text-dim);font-weight:700;font-family:'Manrope',sans-serif;white-space:nowrap;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.spin{animation:spin .9s linear infinite;display:inline-block;}
-.fu{animation:fadeUp .42s both;}
 .update-stack{display:flex;flex-direction:column;gap:1rem;}
 @media(max-width:720px){
   .page-top{grid-template-columns:1fr;}
@@ -61,7 +58,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
   <div class="nav-i">
     <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
     <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="메뉴 열기">
-      <i class="msym" style="font-size:1.35rem;">menu</i>
+      <i class="msym msym-nav">menu</i>
     </button>
     <div class="nav-links" id="nav-links">
       <a href="index.html" class="nl">홈</a>
@@ -78,7 +75,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
     <div>
       <div class="page-accent">
         <div class="page-accent-bar"></div>
-        <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.1rem,4.5vw,3.35rem);color:var(--primary);margin:0;letter-spacing:-.06em;line-height:1.05;">업데이트 내역</h1>
+        <h1 class="page-title">업데이트 내역</h1>
       </div>
       <p class="page-lead">기능 발전과 패치 기록입니다. 항목을 눌러 상세 내용을 펼칠 수 있습니다.</p>
     </div>
@@ -89,7 +86,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
   </div>
 
   <div id="updates-list" class="reveal">
-    <div style="display:flex;align-items:center;justify-content:center;padding:4.5rem 0;color:var(--muted);gap:8px;font-size:.88rem;">
+    <div class="loading-row">
       <i class="msym spin">progress_activity</i> 불러오는 중...
     </div>
   </div>
@@ -97,17 +94,16 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 
 <footer class="site-footer">
   <div class="footer-i">
-    <p style="color:var(--muted);font-size:.72rem;margin:0;font-family:'Manrope',sans-serif;">© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a>
+    <p>© 2026 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html" style="display:none;" aria-hidden="true">Admin</a>
   </div>
 </footer>
 
 <script>
-const SB_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+/* SB_URL / SB_KEY는 config.js에서 로드됩니다 */
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fmtDate=s=>s?new Date(s).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}):'';
+const fmtDate=s=>{if(!s)return'';const d=new Date(s);return isNaN(d)?'':d.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});};
 
 (function(){
   const t=document.getElementById('nav-toggle'),links=document.getElementById('nav-links');
@@ -116,10 +112,14 @@ const fmtDate=s=>s?new Date(s).toLocaleDateString('ko-KR',{year:'numeric',month:
     const o=!links.classList.contains('open');
     links.classList.toggle('open',o);
     t.setAttribute('aria-expanded',o);
+    t.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');
     document.body.classList.toggle('nav-open',o);
   });
   links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-    links.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');
+    links.classList.remove('open');
+    t.setAttribute('aria-expanded','false');
+    t.setAttribute('aria-label','메뉴 열기');
+    document.body.classList.remove('nav-open');
   }));
 })();
 window.addEventListener('scroll',()=>document.getElementById('mnav')?.classList.toggle('scrolled',scrollY>16),{passive:true});
@@ -134,28 +134,30 @@ async function loadUpdates(){
   const el=document.getElementById('updates-list');
   const{data,error}=await sb.from('updates').select('*').order('release_date',{ascending:false});
   if(error){
-    el.innerHTML=`<div class="update-item" style="padding:2.5rem;text-align:center;"><p style="color:var(--text-dim);font-size:.88rem;margin:0;">불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.</p></div>`;
+    el.innerHTML=`<div class="update-item p-lg text-center"><p class="c-dim fs-base mb-0">불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.</p></div>`;
     return;
   }
   if(!data?.length){
-    el.innerHTML=`<div class="update-item" style="padding:3rem 1.5rem;text-align:center;"><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:var(--text);margin:0 0 .4rem;">아직 업데이트 내역이 없습니다</p><p style="color:var(--text-dim);font-size:.84rem;margin:0;">관리자에서 기록을 추가한 뒤 표시됩니다.</p></div>`;
+    el.innerHTML=`<div class="update-item p-lg text-center"><p class="font-display fw-800 c-navy mb-xs" style="font-size:1.05rem;">아직 업데이트 내역이 없습니다</p><p class="c-dim mb-0" style="font-size:.84rem;">관리자에서 기록을 추가한 뒤 표시됩니다.</p></div>`;
     return;
   }
   const verEl=document.getElementById('current-version');
-  if(verEl)verEl.textContent=data[0].version;
+  /* 최신 버전 표시: version 누락 시 fallback 문구 */
+  const latest=data.find(r=>r.version?.trim());
+  if(verEl)verEl.textContent=latest?.version??'—';
   el.innerHTML=`<div class="update-stack">`+
     data.map((row,i)=>`
     <div class="update-item fu" data-uid="${row.id}" style="animation-delay:${i*.05}s">
       <div class="update-hd" onclick="toggleUpdate('${row.id}')">
-        <i class="msym" style="color:var(--hufs-gold);font-size:1.05rem;flex-shrink:0;">history_edu</i>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:4px;">
-            <span class="ver-pill">${esc(row.version)}</span>
+        <i class="msym msym-md c-gold flex-shrink-0">history_edu</i>
+        <div class="flex-1 min-w-0">
+          <div class="d-flex align-center flex-wrap" style="gap:.5rem;margin-bottom:4px;">
+            <span class="ver-pill">${row.version?.trim()?esc(row.version):'<span style="opacity:.55;font-style:italic;">버전 미입력</span>'}</span>
             ${i===0?`<span class="latest-badge">최신</span>`:''}
           </div>
-          <p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.98rem;color:var(--primary);margin:0;letter-spacing:-.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(row.title)}</p>
+          <p class="font-display fw-800 c-navy truncate" style="font-size:.98rem;letter-spacing:-.025em;margin:0;">${esc(row.title)||'<span style="opacity:.55;font-style:italic;">제목 없음</span>'}</p>
         </div>
-        <span class="date-line">${fmtDate(row.release_date)}</span>
+        <span class="date-line">${row.release_date?fmtDate(row.release_date):'<span style="opacity:.5;">날짜 미입력</span>'}</span>
         <i class="msym chev">expand_more</i>
       </div>
       <div class="update-body">${row.content?esc(row.content):'<span style="opacity:.7;">상세 내용이 없습니다.</span>'}</div>

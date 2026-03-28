@@ -104,8 +104,17 @@ kbd{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7p
 code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7px;font-family:monospace;font-size:.72rem;color:var(--ink);}
 .code-dk{background:var(--panel-hi);border:1px solid var(--bdr);color:var(--ink);}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fu{animation:fadeUp .45s both;}
+/* @keyframes fadeUp는 site.css에 정의됨 */
+
+/* ── Fabric 설치값 패널 (S1 info-box 안) ── */
+.setup-val-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:.75rem;}
+.setup-val-panel{background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;}
+.setup-val-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;}
+.setup-val-value{font-family:'Manrope',sans-serif;font-weight:800;font-size:.82rem;color:var(--ink);margin:0;}
+.setup-val-value-sm{font-family:'Manrope',sans-serif;font-weight:700;font-size:.74rem;color:var(--ink);margin:0;}
+/* S2 헤더 작은 레이블 */
+.sec-sublabel{font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;}
+/* .fu는 site.css에 정의됨 */
 
 @media(max-width:900px){
   .page-hero-inner{grid-template-columns:1fr;gap:1.35rem;padding:2.5rem 1.5rem 2rem;}
@@ -132,7 +141,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
   <div class="nav-i">
     <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
     <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="메뉴 열기">
-      <i class="msym" style="font-size:1.35rem;">menu</i>
+      <i class="msym msym-nav">menu</i>
     </button>
     <div class="nav-links" id="nav-links">
       <a href="index.html" class="nl">홈</a>
@@ -188,7 +197,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
       <div class="sec-head">
       <div class="sec-num" style="background:var(--hufs-green-soft);color:var(--hufs-green);">01</div>
       <h2 class="sec-title">필수</h2>
-      <span style="font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;">먼저 설치</span>
+      <span class="sec-sublabel">먼저 설치</span>
     </div>
     <p class="sec-sub">가장 먼저 설치해야 하는 필수 구성 요소입니다. Fabric 로더를 먼저 설치한 후, 나머지는 <code>mods</code> 폴더에 넣어주세요.</p>
     <div class="mods-grid mods-req" style="margin-bottom:1.25rem;">
@@ -207,10 +216,10 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
     </div>
     <div class="info-box">
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;"><i class="msym" style="font-size:16px;color:var(--hufs-green);">info</i><strong style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.79rem;color:var(--hufs-green);">Fabric 설치 프로그램 설정값</strong></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:.75rem;" class="two-col">
-        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">Minecraft 버전</p><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.82rem;color:var(--ink);margin:0;">사용할 버전 선택</p></div>
-        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">로더 버전</p><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.82rem;color:var(--ink);margin:0;">최신 버전으로 선택</p></div>
-        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">런처 위치</p><p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.74rem;color:var(--ink);margin:0;"><code style="font-family:monospace;font-size:.7rem;background:rgba(157,159,162,.15);padding:1px 5px;border-radius:4px;">%AppData%</code> 폴더 속의 <code style="font-family:monospace;font-size:.72rem;background:rgba(157,159,162,.15);padding:1px 5px;border-radius:4px;">.minecraft</code> 폴더</p></div>
+      <div class="setup-val-grid two-col">
+        <div class="setup-val-panel"><p class="setup-val-label">Minecraft 버전</p><p class="setup-val-value">사용할 버전 선택</p></div>
+        <div class="setup-val-panel"><p class="setup-val-label">로더 버전</p><p class="setup-val-value">최신 버전으로 선택</p></div>
+        <div class="setup-val-panel"><p class="setup-val-label">런처 위치</p><p class="setup-val-value-sm"><code>%AppData%</code> 폴더 속의 <code>.minecraft</code> 폴더</p></div>
       </div>
       <p style="font-size:.76rem;color:var(--ink-dim);margin:0;word-break:keep-all;"><strong style="color:var(--ink);">이 아래로 설치하는 모드 파일들은 압축 해제하거나 실행하지 않습니다.</strong> 다운로드 시 플랫폼: Fabric, 버전: 현재 버전 선택.</p>
     </div>
@@ -222,7 +231,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
     <div class="sec-head">
       <div class="sec-num" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);">02</div>
       <h2 class="sec-title">성능</h2>
-      <span style="font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;">mods 폴더에 넣기</span>
+      <span class="sec-sublabel">mods 폴더에 넣기</span>
     </div>
     <p class="sec-sub">모두 <code>mods</code> 폴더에 넣어주세요.</p>
     <div class="perf-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
@@ -353,8 +362,8 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
 
 <footer class="site-footer">
   <div class="footer-i">
-    <p style="color:var(--muted);font-size:.72rem;margin:0;font-family:'Manrope',sans-serif;">© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a>
+    <p>© 2026 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html">Admin</a>
   </div>
 </footer>
 
@@ -366,10 +375,11 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
     const o=!links.classList.contains('open');
     links.classList.toggle('open',o);
     t.setAttribute('aria-expanded',o);
+    t.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');
     document.body.classList.toggle('nav-open',o);
   });
   links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-    links.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');
+    links.classList.remove('open');t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','메뉴 열기');document.body.classList.remove('nav-open');
   }));
 })();
 window.addEventListener('scroll',()=>document.getElementById('mnav')?.classList.toggle('scrolled',scrollY>16),{passive:true});

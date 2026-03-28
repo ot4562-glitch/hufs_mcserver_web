@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="site.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <style>
 main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5rem) 5rem;width:100%;position:relative;z-index:1;}
 .page-hero{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-layer);}
@@ -22,10 +23,6 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5
 .gold-rule{display:flex;align-items:center;gap:.65rem;margin-bottom:.85rem;}
 .gold-rule-bar{width:3px;height:44px;background:var(--accent);border-radius:2px;}
 .notice-stack{display:flex;flex-direction:column;gap:1rem;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.spin{animation:spin .9s linear infinite;display:inline-block;}
-.fu{animation:fadeUp .4s both;}
 </style>
 </head>
 <body>
@@ -34,7 +31,7 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5
   <div class="nav-i">
     <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
     <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="메뉴 열기">
-      <i class="msym" style="font-size:1.35rem;">menu</i>
+      <i class="msym msym-nav">menu</i>
     </button>
     <div class="nav-links" id="nav-links">
       <a href="index.html" class="nl">홈</a>
@@ -55,7 +52,7 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5
     <p class="page-lead">서버 운영 관련 중요 사항과 공지를 확인하세요. 제목을 누르면 내용이 펼쳐집니다.</p>
   </section>
   <div id="notices-list" class="reveal">
-    <div style="display:flex;align-items:center;justify-content:center;padding:4.5rem 0;color:var(--muted);gap:8px;font-size:.88rem;">
+    <div class="loading-row">
       <i class="msym spin">progress_activity</i> 불러오는 중...
     </div>
   </div>
@@ -63,18 +60,25 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5
 
 <footer class="site-footer">
   <div class="footer-i">
-    <p style="color:var(--muted);font-size:.72rem;margin:0;font-family:'Manrope',sans-serif;">© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a>
+    <p>© 2026 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html" style="display:none;" aria-hidden="true">Admin</a>
   </div>
 </footer>
 
 <script>
-const SB_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+/* SB_URL / SB_KEY는 config.js에서 로드됩니다 */
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 function fmtDate(iso){if(!iso)return'';if(/^\d{4}-\d{2}-\d{2}$/.test(iso)){const[y,m,d]=iso.split('-');return y+'년 '+Number(m)+'월 '+Number(d)+'일';}return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});}
-function ago(iso){const m=Math.floor((Date.now()-new Date(iso))/60000);if(m<1)return'방금 전';if(m<60)return m+'분 전';const h=Math.floor(m/60);if(h<24)return h+'시간 전';const day=Math.floor(h/24);if(day<7)return day+'일 전';return fmtDate(iso);}
+function ago(iso){
+  const d=new Date(iso);
+  if(isNaN(d))return'';
+  const m=Math.floor((Date.now()-d)/60000);
+  if(m<1)return'방금 전';if(m<60)return m+'분 전';
+  const h=Math.floor(m/60);if(h<24)return h+'시간 전';
+  const day=Math.floor(h/24);if(day<7)return day+'일 전';
+  return fmtDate(iso);
+}
 window.toggleNotice=function(id){document.querySelector('[data-nid="'+id+'"]')?.classList.toggle('open');};
 
 (function(){
@@ -84,10 +88,14 @@ window.toggleNotice=function(id){document.querySelector('[data-nid="'+id+'"]')?.
     const o=!links.classList.contains('open');
     links.classList.toggle('open',o);
     t.setAttribute('aria-expanded',o);
+    t.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');
     document.body.classList.toggle('nav-open',o);
   });
   links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-    links.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');
+    links.classList.remove('open');
+    t.setAttribute('aria-expanded','false');
+    t.setAttribute('aria-label','메뉴 열기');
+    document.body.classList.remove('nav-open');
   }));
 })();
 window.addEventListener('scroll',()=>document.getElementById('mnav')?.classList.toggle('scrolled',scrollY>16),{passive:true});
@@ -97,11 +105,15 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 async function loadNotices(){
   const el=document.getElementById('notices-list');
   try{
+    /* 정렬 기준: created_at 내림차순.
+       admin에서 created_at을 직접 수정하면 순서가 왜곡됩니다.
+       → admin 측 created_at 불변 처리 필수.
+         수정 시각이 필요하다면 updated_at 컬럼을 별도 추가하세요. */
     const{data,error}=await sb.from('notices').select('*').order('created_at',{ascending:false});
     if(error)throw error;
     const all=data||[];
     if(!all.length){
-      el.innerHTML=`<div class="notice-item" style="padding:3rem 1.5rem;text-align:center;"><i class="msym" style="font-size:2.4rem;color:var(--muted);display:block;margin-bottom:.75rem;">campaign</i><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:var(--text);margin:0 0 .4rem;">현재 공지사항이 없습니다</p><p style="color:var(--text-dim);font-size:.84rem;margin:0;">새로운 공지가 등록되면 이 곳에 표시됩니다.</p></div>`;
+      el.innerHTML=`<div class="notice-item p-lg text-center"><i class="msym msym-2xl c-muted" style="display:block;margin-bottom:.75rem;">campaign</i><p class="font-display fw-800 c-navy mb-xs" style="font-size:1.05rem;">현재 공지사항이 없습니다</p><p class="c-dim mb-0" style="font-size:.84rem;">새로운 공지가 등록되면 이 곳에 표시됩니다.</p></div>`;
       return;
     }
     el.innerHTML=`<div class="notice-stack">`+all.map((r,i)=>{
@@ -110,19 +122,19 @@ async function loadNotices(){
       const lineDate=displayDate||fmtDate(r.created_at);
       return `<div class="notice-item fu" data-nid="${r.id}" style="animation-delay:${i*.05}s">
         <div class="notice-hd" onclick="toggleNotice('${r.id}')">
-          <i class="msym" style="color:var(--hufs-navy);font-size:1.05rem;flex-shrink:0;">notifications</i>
-          <div style="flex:1;min-width:0;"><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.96rem;color:var(--primary);margin:0;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(titleText)}</p></div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;margin-right:.35rem;">
-            <span style="font-size:.7rem;color:var(--text-dim);white-space:nowrap;font-family:'Manrope',sans-serif;font-weight:600;">${ago(r.created_at)}</span>
-            <span style="font-size:.68rem;color:var(--hufs-gold);font-weight:800;white-space:nowrap;font-family:'Manrope',sans-serif;">${lineDate}</span>
+          <i class="msym msym-md flex-shrink-0 c-navy">notifications</i>
+          <div class="flex-1 min-w-0"><p class="font-display fw-800 c-navy truncate" style="font-size:.96rem;letter-spacing:-.02em;margin:0;">${esc(titleText)}</p></div>
+          <div class="d-flex flex-col align-end flex-shrink-0 gap-xs" style="margin-right:.35rem;">
+            <span class="font-display fw-600 fs-xs c-dim nowrap">${ago(r.created_at)}</span>
+            <span class="font-display fw-800 c-gold nowrap" style="font-size:.68rem;">${lineDate}</span>
           </div>
           <i class="msym chev">expand_more</i>
         </div>
-        <div class="notice-body">${displayDate?`<div class="date-badge"><i class="msym" style="font-size:11px;">calendar_today</i>${displayDate}</div>\n`:''}${esc(r.content)}</div>
+        <div class="notice-body">${displayDate?`<div class="date-badge"><i class="msym msym-xs">calendar_today</i>${displayDate}</div>\n`:''}${esc(r.content)}</div>
       </div>`;
     }).join('')+`</div>`;
   }catch(e){
-    el.innerHTML=`<div class="notice-item" style="padding:2.5rem;text-align:center;"><p style="color:var(--text-dim);font-size:.88rem;margin:0;">공지를 불러오지 못했습니다.</p></div>`;
+    el.innerHTML=`<div class="notice-item p-lg text-center"><p class="c-dim fs-base mb-0">공지를 불러오지 못했습니다.</p></div>`;
   }
 }
 loadNotices();
