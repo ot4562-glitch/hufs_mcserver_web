@@ -453,7 +453,15 @@ async function checkAuth(){
   const{data:{session}}=await sb.auth.getSession();
   return applyAuthState(session,false);
 }
-window.loginWithGoogle=async function(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});};
+window.loginWithGoogle=async function(){
+  await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{
+      redirectTo:window.location.href,
+      queryParams:{hd:'gmail.com'}
+    }
+  });
+};
 window.logout=async function(){await sb.auth.signOut();checkAuth();};
 async function applyAuthState(session,showAlert=true){
   const ae=g('auth-screen'),de=g('dashboard');
@@ -764,6 +772,7 @@ window.delGallerySlot=async function(slot){
   }));
 })();
 window.addEventListener('scroll',()=>document.getElementById('admin-nav')?.classList.toggle('scrolled',scrollY>16),{passive:true});
+checkAuth();
 </script>
 </body>
 </html>
