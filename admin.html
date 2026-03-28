@@ -445,6 +445,8 @@ function isAdminUser(user){
 }
 
 let _cachedUser=null;
+let _dashboardBooted=false;
+let _authSyncing=false;
 
 async function resolveCurrentUser(forceRefresh=false){
   if(_cachedUser&&!forceRefresh)return _cachedUser;
@@ -456,15 +458,6 @@ async function resolveCurrentUser(forceRefresh=false){
     }
   }catch(e){
     console.warn('getSession 복원 실패:',e?.message||e);
-  }
-  try{
-    const{data:refreshData,error:refreshError}=await sb.auth.refreshSession();
-    if(!refreshError&&refreshData?.session?.user){
-      _cachedUser=refreshData.session.user;
-      return _cachedUser;
-    }
-  }catch(e){
-    console.warn('refreshSession 실패(무시):',e?.message||e);
   }
   try{
     const{data,error}=await sb.auth.getUser();
@@ -517,22 +510,36 @@ async function showDashboard(user){
   /* 탭 초기 상태 확실히 세팅 */
   switchTab('update');
   /* 데이터 로드 */
-  await Promise.all([
-    loadServerSettings(),
-    loadAdminLogs(),
-    loadNoticeAdmin(),
-    loadDcAdmin(),
-    renderGalleryAdmin()
-  ]);
+  if(!_dashboardBooted){
+    await Promise.all([
+      loadServerSettings(),
+      loadAdminLogs(),
+      loadNoticeAdmin(),
+      loadDcAdmin(),
+      renderGalleryAdmin()
+    ]);
+    _dashboardBooted=true;
+    return;
+  }
+  await refreshAdminData();
 }
 async function applyAuthState(user){
-  if(user&&isAdminUser(user)){await showDashboard(user);return true;}
+  if(_authSyncing)return false;
+  _authSyncing=true;
+  try{
+    if(user&&isAdminUser(user)){await showDashboard(user);return true;}
   if(user&&!isAdminUser(user)){
     _cachedUser=user;
+    _dashboardBooted=false;
     showDeniedPanel(user.email);
     return false;
   }
-  showLoginPanel();return false;
+    _dashboardBooted=false;
+    showLoginPanel();
+    return false;
+  }finally{
+    _authSyncing=false;
+  }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -552,8 +559,15 @@ bootstrapAuthState();
 
 sb.auth.onAuthStateChange(async(event,session)=>{
   if(event==='INITIAL_SESSION')return;
-  if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='SIGNED_OUT'){
+  if(event==='SIGNED_OUT'){
+    _cachedUser=null;
+    _dashboardBooted=false;
+    await applyAuthState(null);
+    return;
+  }
+  if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='USER_UPDATED'){
     _cachedUser=session?.user||null;
+    if(!_cachedUser)_cachedUser=await resolveCurrentUser(true);
     await applyAuthState(_cachedUser);
   }
 });
@@ -606,6 +620,8 @@ document.addEventListener('click',e=>{
 
 
 async function refreshAdminData(){
+  if(g('dashboard')?.style.display!=='flex')return;
+  if(!isAdminUser(_cachedUser))return;
   await Promise.allSettled([
     loadServerSettings(),
     loadAdminLogs(),
