@@ -18,12 +18,12 @@
   font-size:.58rem;font-weight:800;padding:4px 11px;border-radius:99px;
   letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;width:fit-content;
 }
-.map-title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;}
+.map-title-row{display:flex;align-items:center;gap:1.25rem;flex-wrap:nowrap;}
 .map-main-title{
   font-family:'Manrope',sans-serif;font-weight:900;
   font-size:clamp(2rem,4.2vw,3.25rem);
   color:var(--primary);margin:0;letter-spacing:-.055em;line-height:1.1;
-  white-space:nowrap;
+  white-space:nowrap;flex-shrink:0;
 }
 .map-main-title em{font-style:normal;color:var(--accent);}
 .map-controls{
@@ -64,8 +64,16 @@
   position:relative;z-index:1;
   align-items:center;
 }
-.map-info{max-width:66.666%;}
-@media(max-width:900px){.map-info{max-width:100%;}}
+.map-info{
+  display:inline-flex;align-items:center;gap:.65rem;
+  background:var(--surface);border:1px solid var(--border-layer);
+  border-left:3px solid var(--hufs-gold);border-radius:var(--r-lg);
+  padding:.9rem 1.15rem;font-size:.82rem;color:var(--text-dim);line-height:1.85;
+  transition:box-shadow .25s var(--ease),transform .25s var(--ease);
+  white-space:nowrap;
+  box-sizing:border-box;
+}
+.map-info:hover{box-shadow:var(--sh-card);transform:translateY(-2px);}
 .map-frame-wrap{
   position:relative;border-radius:var(--r-lg);overflow:hidden;
   box-shadow:var(--sh-card-hover);
@@ -86,15 +94,6 @@
 }
 #map-loading.hidden{opacity:0;pointer-events:none;}
 
-.map-info{
-  display:flex;align-items:flex-start;gap:.65rem;
-  background:var(--surface);border:1px solid var(--border-layer);
-  border-left:3px solid var(--hufs-gold);border-radius:var(--r-lg);
-  padding:.9rem 1.15rem;font-size:.82rem;color:var(--text-dim);line-height:1.85;
-  transition:box-shadow .25s var(--ease),transform .25s var(--ease);
-}
-.map-info:hover{box-shadow:var(--sh-card);transform:translateY(-2px);}
-
 body{display:flex;flex-direction:column;min-height:100vh;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -103,12 +102,11 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 
 @media(max-width:900px){
   .map-main-title{white-space:normal;}
-}
-@media(max-width:900px){
+  .map-title-row{flex-wrap:wrap;}
   .map-bleed{padding:0 clamp(.75rem,2vw,1rem);}
   .map-frame-wrap{width:100%;}
   .map-frame-wrap,#map-iframe{min-height:min(52vh,460px);max-height:min(52vh,460px);}
-  .map-info{max-width:100%;}
+  .map-info{white-space:normal;width:100%;}
 }
 @media(max-width:640px){
   .map-frame-wrap,#map-iframe{min-height:min(46vh,340px);max-height:min(46vh,340px);}
@@ -134,12 +132,11 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 </nav>
 
 <div class="map-page-hero reveal">
-  <div class="map-eyebrow"><i class="msym" style="font-size:10px;">travel_explore</i>실시간 지도 · BlueMap</div>
   <div class="map-title-row">
     <h1 class="map-main-title"><em>서버 지도</em></h1>
     <div class="map-controls">
       <span class="map-badge"><i class="msym" style="font-size:.82rem;color:var(--hufs-navy);">public</i>야생 · 건축 · 캠퍼스</span>
-      <span class="map-badge"><i class="msym" style="font-size:.82rem;color:var(--success);">radio_button_checked</i>실시간</span>
+      <span class="map-badge"><i class="msym" style="font-size:.82rem;color:var(--success);">travel_explore</i>실시간 지도 · BlueMap</span>
       <a href="/map/" target="_blank" rel="noopener" class="btn-fullscreen"><i class="msym" style="font-size:.88rem;">open_in_full</i>전체화면</a>
     </div>
   </div>

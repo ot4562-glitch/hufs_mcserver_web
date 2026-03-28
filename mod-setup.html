@@ -111,6 +111,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
   .page-hero-inner{grid-template-columns:1fr;gap:1.35rem;padding:2.5rem 1.5rem 2rem;}
   .page-hero-h1{font-size:clamp(1.75rem,7vw,2.45rem)!important;}
   .mods-req{grid-template-columns:1fr;}
+  .perf-grid{grid-template-columns:repeat(2,1fr)!important;}
 }
 @media(max-width:768px){
   main{padding:1.5rem 1.25rem 4rem;}
@@ -121,6 +122,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
 @media(max-width:480px){
   .mods-grid,.mods-grid-sm{grid-template-columns:1fr!important;}
   .page-hero-steps{display:none;}
+  .perf-grid{grid-template-columns:1fr!important;}
 }
 </style>
 </head>
@@ -223,7 +225,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
       <span style="font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;">mods 폴더에 넣기</span>
     </div>
     <p class="sec-sub">모두 <code>mods</code> 폴더에 넣어주세요.</p>
-    <div class="mods-grid mods-grid-sm">
+    <div class="perf-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
       <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Mod Menu<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">모드 목록 관리</div></div></a>
       <a href="https://modrinth.com/mod/sodium" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Sodium<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">획기적인 프레임 상승</div></div></a>
       <a href="https://modrinth.com/mod/lithium" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Lithium<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">게임 물리 연산 최적화</div></div></a>
@@ -329,7 +331,7 @@ code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7
       <div class="steps">
         <div class="step"><div class="step-num">1</div><div class="step-body"><h3>런처 프로필 선택</h3><p>마인크래프트 런처에서 <strong style="color:var(--hufs-navy);">Fabric Loader</strong> 프로필을 선택하고 실행하세요.</p></div></div>
         <div class="step"><div class="step-num">2</div><div class="step-body"><h3>단축키 설정</h3><p>메인화면 → 설정 → 조작 → 키 지정에서 붉은색으로 표시된 중복 키를 수정하세요.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h3>비디오 설정</h3><p>메인화면 → 설정 → 비디오 설정에서 전체 설정을 확인하세요. <strong style="color:var(--hufs-navy);">쉐이더 팩 설정에서 반드시 켜주세요.</strong></p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h3>비디오 설정</h3><p>메인화면 → 설정 → 비디오 설정에서 전체 설정을 확인하세요.<br><strong style="color:var(--hufs-navy);">쉐이더 팩 설정에서 반드시 켜주세요.</strong></p></div></div>
         <div class="step"><div class="step-num">4</div><div class="step-body"><h3>리소스팩 활성화</h3><p>설정 → 리소스 팩에서 사용 가능 목록의 팩을 선택됨으로 이동하세요.</p></div></div>
       </div>
       <div>

@@ -9,11 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="site.css"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <style>
 .hero{
   position:relative;
-  overflow:hidden;
   background:var(--bg);
   border-bottom:1px solid var(--border-layer);
 }
@@ -145,22 +144,23 @@
 #discord-chip{display:none;animation:fadeUp .5s .34s both;}
 .dc-link{
   display:inline-flex;align-items:center;gap:.55rem;
-  background:rgba(157,159,162,.14);
-  border:1px solid rgba(157,159,162,.32);
+  background:rgba(88,101,242,.1);
+  border:1px solid rgba(88,101,242,.3);
   border-radius:9px;
   padding:.65rem 1.1rem;
   font-size:.88rem;font-weight:800;
-  color:#5a6d82;
+  color:#5865F2;
   text-decoration:none;
-  transition:background .2s,transform .2s,box-shadow .2s,color .2s;
+  transition:background .2s,transform .2s,box-shadow .2s,color .2s,border-color .2s;
   width:fit-content;
 }
+
 .dc-link:hover{
-  background:var(--accent-soft);
-  color:var(--hufs-gold);
-  border-color:var(--hufs-gold);
+  background:rgba(114,89,182,.15);
+  color:#a89ed6;
+  border-color:rgba(114,89,182,.45);
   transform:translateY(-3px);
-  box-shadow:var(--glow-sm);
+  box-shadow:0 8px 28px rgba(88,101,242,.18);
 }
 .dc-link:active{transform:translateY(-1px);}
 
@@ -193,10 +193,10 @@ main{
   border-top:1px solid var(--border-layer);
 }
 
-.nav-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;}
+.nav-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.15rem;}
 .nav-card{
   display:flex;flex-direction:column;
-  padding:1.65rem 1.4rem 1.45rem;
+  padding:2rem 1.65rem 1.85rem;
   text-decoration:none;color:inherit;
   position:relative;overflow:hidden;
 }
@@ -208,9 +208,9 @@ main{
 }
 .nav-card:hover::before{transform:scaleX(1);}
 .nc-icon{
-  width:48px;height:48px;border-radius:9px;
+  width:58px;height:58px;border-radius:11px;
   display:flex;align-items:center;justify-content:center;
-  margin-bottom:1.2rem;flex-shrink:0;
+  margin-bottom:1.4rem;flex-shrink:0;
   transition:transform .28s var(--spring);
 }
 .nav-card:hover .nc-icon{transform:scale(1.06);}
@@ -218,9 +218,8 @@ main{
 .nc-arr{color:var(--muted);transition:transform .25s var(--ease),color .25s var(--ease);font-size:1rem!important;}
 .nav-card:hover .nc-arr{transform:translateX(6px);color:var(--accent);}
 
-.home-bento{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;align-items:start;}
-@media(max-width:1024px){.home-bento{grid-template-columns:1fr;}}
-.aside-stack{display:flex;flex-direction:column;gap:1rem;}
+.home-bento{display:block;}
+.aside-stack{display:none;}
 .aside-card{
   padding:1.15rem 1.2rem;
   font-size:.78rem;color:var(--text-dim);
@@ -231,7 +230,7 @@ main{
   color:var(--accent);margin:0 0 .45rem;letter-spacing:.08em;text-transform:uppercase;
 }
 
-.gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;}
 .g-item{
   position:relative;border-radius:10px;overflow:hidden;
   background:var(--surface);
@@ -290,9 +289,9 @@ main{
 .spin{animation:spin .9s linear infinite;display:inline-block;}
 
 @media(max-width:900px){
-  .hero-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;min-height:auto;padding-top:1.25rem;}
-  .hero-copy{grid-column:1;grid-row:2;max-width:36rem;}
-  .hero-visual{grid-column:1;grid-row:3;min-height:260px;}
+  .hero-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;min-height:auto;padding:1.25rem clamp(1rem,4vw,1.5rem) 2rem;}
+  .hero-copy{grid-column:1;grid-row:2;max-width:100%;}
+  .hero-visual{grid-column:1;grid-row:3;min-height:240px;}
   .hero-notice-row{grid-column:1;grid-row:1;}
   .nav-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
   .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -300,6 +299,7 @@ main{
 @media(max-width:640px){
   .nav-cards{grid-template-columns:1fr;}
   .server-addr{font-size:clamp(2.2rem,12vw,3.4rem)!important;}
+  .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 </style>
 </head>
@@ -368,7 +368,7 @@ main{
 </section>
 
 <main class="page-wrap">
-  <section class="reveal">
+  <section>
     <div class="sec-hd">
       <div class="sec-hd-bar"></div>
       <span class="sec-hd-label">빠른 메뉴</span>
@@ -378,40 +378,40 @@ main{
     <div class="nav-cards">
       <a href="mod-setup.html" class="nav-card card-surface">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
-          <div class="nc-icon" style="background:var(--hufs-green-soft);"><i class="msym" style="font-size:1.3rem;color:var(--hufs-green);">settings_suggest</i></div>
+          <div class="nc-icon" style="background:var(--hufs-green-soft);"><i class="msym" style="font-size:1.6rem;color:var(--hufs-green);">settings_suggest</i></div>
           <i class="msym nc-arr">arrow_forward</i>
         </div>
-        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin:0 0 .35rem;letter-spacing:-.02em;">커스텀 모드 설정</h3>
-        <p style="color:var(--text-dim);font-size:.76rem;margin:0;line-height:1.65;">최적화·편의 모드 설치 순서</p>
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin:0 0 .4rem;letter-spacing:-.02em;">커스텀 모드 설정</h3>
+        <p style="color:var(--text-dim);font-size:.82rem;margin:0;line-height:1.65;">최적화·편의 모드 설치 순서</p>
       </a>
       <a href="updates.html" class="nav-card card-surface">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
-          <div class="nc-icon" style="background:var(--hufs-gold-soft);"><i class="msym" style="font-size:1.3rem;color:var(--hufs-gold);">history</i></div>
+          <div class="nc-icon" style="background:var(--hufs-gold-soft);"><i class="msym" style="font-size:1.6rem;color:var(--hufs-gold);">history</i></div>
           <i class="msym nc-arr">arrow_forward</i>
         </div>
-        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin:0 0 .35rem;">업데이트 내역</h3>
-        <p style="color:var(--text-dim);font-size:.76rem;margin:0;line-height:1.65;">버전별 변경 기록</p>
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin:0 0 .4rem;">업데이트 내역</h3>
+        <p style="color:var(--text-dim);font-size:.82rem;margin:0;line-height:1.65;">버전별 변경 기록</p>
       </a>
       <a href="notices.html" id="notices-cta" class="nav-card card-surface">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
-          <div class="nc-icon" style="background:var(--hufs-gold-soft);"><i class="msym" style="font-size:1.3rem;color:var(--hufs-gold);">campaign</i></div>
+          <div class="nc-icon" style="background:var(--hufs-gold-soft);"><i class="msym" style="font-size:1.6rem;color:var(--hufs-gold);">campaign</i></div>
           <i class="msym nc-arr">arrow_forward</i>
         </div>
-        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin:0 0 .35rem;">공지사항</h3>
-        <p id="notices-cta-sub" style="color:var(--text-dim);font-size:.76rem;margin:0;line-height:1.65;">운영 안내</p>
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin:0 0 .4rem;">공지사항</h3>
+        <p id="notices-cta-sub" style="color:var(--text-dim);font-size:.82rem;margin:0;line-height:1.65;">운영 안내</p>
       </a>
       <a href="map.html" class="nav-card card-surface">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
-          <div class="nc-icon" style="background:var(--hufs-green-soft);"><i class="msym" style="font-size:1.3rem;color:var(--hufs-green);">map</i></div>
+          <div class="nc-icon" style="background:var(--hufs-green-soft);"><i class="msym" style="font-size:1.6rem;color:var(--hufs-green);">map</i></div>
           <i class="msym nc-arr">arrow_forward</i>
         </div>
-        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin:0 0 .35rem;">서버 지도</h3>
-        <p style="color:var(--text-dim);font-size:.76rem;margin:0;line-height:1.65;">BlueMap 실시간 월드</p>
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin:0 0 .4rem;">서버 지도</h3>
+        <p style="color:var(--text-dim);font-size:.82rem;margin:0;line-height:1.65;">BlueMap 실시간 월드</p>
       </a>
     </div>
   </section>
 
-  <section class="reveal">
+  <section>
     <div class="sec-hd">
       <div class="sec-hd-bar"></div>
       <span class="sec-hd-label">서버 갤러리</span>
@@ -426,16 +426,6 @@ main{
         <div class="g-item g-empty"><div class="g-ph"><i class="msym" style="font-size:1.45rem;">image</i></div></div>
         <div class="g-item g-empty"><div class="g-ph"><i class="msym" style="font-size:1.45rem;">image</i></div></div>
         <div class="g-item g-empty"><div class="g-ph"><i class="msym" style="font-size:1.45rem;">image</i></div></div>
-      </div>
-      <div class="aside-stack">
-        <div class="aside-card card-surface">
-          <h4>스냅샷</h4>
-          <p>갤러리는 관리자가 업로드한 장면이 순서대로 표시됩니다. 빈 칸은 곧 채워질 예정이에요.</p>
-        </div>
-        <div class="aside-card card-surface">
-          <h4>탐험</h4>
-          <p>야생·캠퍼스·건축 구역은 상단 <strong>서버 지도</strong> 또는 빠른 메뉴에서 BlueMap으로 열 수 있어요.</p>
-        </div>
       </div>
     </div>
   </section>
@@ -482,7 +472,7 @@ window.addEventListener('scroll',()=>g('mnav').classList.toggle('scrolled',scrol
 
 const io=new IntersectionObserver((ents)=>{
   ents.forEach(e=>{if(e.isIntersecting){e.target.classList.add('reveal-in');io.unobserve(e.target);}});
-},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+},{threshold:0,rootMargin:'0px 0px 0px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 let si=0,st;
