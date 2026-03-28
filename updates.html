@@ -2,180 +2,166 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>업데이트 내역 - 외대.서버.한국</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="apple-touch-icon" href="favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="site.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --color-bg: #F9F9F7;
-  --color-navy: #003764;
-  --color-gold: #C4972A;
-  --color-gray: #9EA2A2;
-  --transition-base: all 0.2s ease;
-  --hover-shadow: 0 10px 25px rgba(0,0,0,0.08);
+main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5rem) 5rem;width:100%;position:relative;z-index:1;}
+body{display:flex;flex-direction:column;min-height:100vh;}
+.page-top{display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-layer);margin-bottom:2rem;}
+.page-accent{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem;}
+.page-accent-bar{width:3px;height:40px;background:var(--accent);border-radius:2px;}
+.page-lead{color:var(--text-dim);font-size:.88rem;margin:0;max-width:520px;line-height:1.75;}
+.ver-card{
+  background:var(--surface);
+  border-radius:var(--r-lg);
+  padding:1.15rem 1.45rem;
+  text-align:right;
+  flex-shrink:0;
+  border:1px solid var(--border-layer);
+  box-shadow:0 1px 3px rgba(0,45,86,.06);
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease);
 }
-
-  :root { --hover-shadow:0 10px 25px rgba(0,0,0,0.08); --transition-base:all .2s ease; }
-  * { box-sizing: border-box; }
-a, button { transition: var(--transition-base); }
-  body { font-family: 'Noto Sans KR', sans-serif; background: #F9F9F7; margin: 0; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spin { animation: spin 0.9s linear infinite; display: inline-block; }
-
-  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  .fu { animation: fadeUp 0.45s both; }
-
-  .update-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(0,55,100,0.09);
-    border-left: 3px solid #C4972A;
-    border-radius: 12px;
-    padding: 1.75rem 2rem;
-    transition: var(--transition-base);
-    box-shadow:none;
-  }
-  .update-card:hover { box-shadow: var(--hover-shadow); transform: translateY(-2px); border-color:rgba(196,151,42,.55); }
-
-  .update-card.latest {
-    border-left-color: #003764;
-    box-shadow:0 4px 16px rgba(0,55,100,.12);
-  }
-
-  .nav-links { display:flex; gap:1.75rem; align-items:center; }
-  .gold-divider{height:1px;background:linear-gradient(90deg,rgba(196,151,42,.15),#C4972A,rgba(196,151,42,.15));margin:0 0 1.25rem;}
-  .page-header-grid { display:grid; grid-template-columns:1fr auto; align-items:flex-end; gap:2rem; }
-
-  @media (max-width: 540px) {
-    .nav-links a:not([style*="border-bottom"]) { display:none; }
-    .nav-links { gap:1rem; }
-    main { padding:1.25rem 1rem 3rem !important; }
-    .page-header-grid { grid-template-columns:1fr; gap:.75rem; }
-    .version-badge { align-self:flex-start; text-align:left !important; padding:.75rem 1rem !important; }
-    .version-badge span:last-child { font-size:1.3rem !important; }
-    h1 { font-size:clamp(1.8rem,7vw,2.6rem) !important; }
-    .update-card { padding:1rem !important; border-radius:10px !important; }
-    .update-card h2 { font-size:.95rem !important; }
-  }
-
-/* ===== 2026 portfolio redesign overrides ===== */
-:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2}
-body,footer,nav{background:var(--bg)!important}
-nav{box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
-main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
-h1{font-size:clamp(3rem,8vw,6rem)!important;line-height:.9!important;margin-bottom:1rem!important}
-.gold-divider{height:1px!important;background:var(--navy)!important;opacity:.22!important;margin:0 0 3rem!important}
-.update-card{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;border-left:none!important;border-right:none!important;border-radius:0!important;box-shadow:none!important;padding:1.5rem 0!important}
-.update-card+ .update-card{margin-top:0!important}
-.update-card *{border-radius:0!important}
-a:hover,.nl-def:hover{color:var(--gold)!important}
-
+.ver-card:hover{transform:translateY(-3px);box-shadow:var(--sh-card-hover);border-color:var(--border-strong);}
+.ver-card .vl{display:block;font-size:.58rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-family:'Manrope',sans-serif;}
+.ver-card #current-version{font-family:'Manrope',sans-serif;font-weight:900;font-size:1.85rem;color:var(--primary);letter-spacing:-.05em;line-height:1;}
+.update-item{background:var(--surface);border:1px solid var(--border-layer);border-radius:var(--r-lg);overflow:hidden;position:relative;transition:box-shadow .28s var(--ease),transform .25s var(--ease),border-color .25s var(--ease);box-shadow:0 1px 3px rgba(0,45,86,.05);}
+.update-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);}
+.update-item:hover{box-shadow:var(--sh-card-hover);border-color:rgba(141,113,80,.28);transform:translateY(-4px);}
+.update-item:active{transform:translateY(-2px);}
+.update-hd{display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.35rem 1.1rem 1.55rem;cursor:pointer;user-select:none;transition:background .22s var(--ease);}
+.update-hd:hover{background:var(--surface-elev);}
+.update-hd:active{background:rgba(0,45,86,.05);}
+.update-body{max-height:0;overflow:hidden;transition:max-height .45s ease,padding .28s ease;padding:0 1.35rem 0 1.55rem;font-size:.88rem;color:var(--text-dim);line-height:1.92;white-space:pre-line;border-top:0 solid var(--border-layer);}
+.update-item.open .update-body{max-height:1600px;padding:.95rem 1.35rem 1.45rem 1.55rem;border-top-width:1px;}
+.update-item .chev{transition:transform .25s;font-size:22px;color:var(--muted);flex-shrink:0;}
+.update-item.open .chev{transform:rotate(180deg);color:var(--accent);}
+.ver-pill{display:inline-flex;align-items:center;background:var(--primary-soft);color:var(--primary);font-family:'Manrope',sans-serif;font-weight:800;font-size:.72rem;padding:5px 14px;border-radius:99px;letter-spacing:-.01em;border:1px solid var(--border-strong);}
+.latest-badge{background:var(--success-soft);color:#15803d;font-size:.62rem;font-weight:800;padding:4px 10px;border-radius:99px;letter-spacing:.04em;font-family:'Manrope',sans-serif;border:1px solid rgba(34,197,94,.35);}
+.date-line{font-size:.68rem;color:var(--text-dim);font-weight:700;font-family:'Manrope',sans-serif;white-space:nowrap;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.spin{animation:spin .9s linear infinite;display:inline-block;}
+.fu{animation:fadeUp .42s both;}
+.update-stack{display:flex;flex-direction:column;gap:1rem;}
+@media(max-width:720px){
+  .page-top{grid-template-columns:1fr;}
+  .ver-card{text-align:left;}
+}
 </style>
 </head>
 <body>
 
-<!-- Nav -->
-<nav style="background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:sticky;top:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
-  <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
-    <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
-    <div class="nav-links">
-      <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">홈</a>
-      <a href="mod-setup.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">모드 설정</a>
-      <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">업데이트 내역</a>
-      <a href="notices.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">공지사항</a>
-      <a href="map.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">서버 지도</a>
+<nav class="site-nav" id="mnav">
+  <div class="nav-i">
+    <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="메뉴 열기">
+      <i class="msym" style="font-size:1.35rem;">menu</i>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nl">홈</a>
+      <a href="mod-setup.html" class="nl">모드 설정</a>
+      <a href="updates.html" class="nl nl-act">업데이트 내역</a>
+      <a href="notices.html" class="nl">공지사항</a>
+      <a href="map.html" class="nl">서버 지도</a>
     </div>
   </div>
 </nav>
 
-<main style="max-width:1200px;margin:0 auto;padding:2.8rem 1.25rem 4rem;">
-
-  <!-- Page header -->
-  <section class="page-header-grid" style="margin-bottom:2.5rem;">
+<main>
+  <div class="page-top reveal">
     <div>
-      <div style="width:44px;height:3px;background:#C4972A;border-radius:2px;margin-bottom:0.9rem;"></div>
-      <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.2rem,4.5vw,3.2rem);color:#003764;margin:0 0 0.75rem;letter-spacing:-0.04em;line-height:1.05;">업데이트 내역</h1>
-      <p style="color:#9EA2A2;font-size:0.92rem;margin:0;max-width:600px;line-height:1.65;">외대.서버.한국의 기능 발전 기록입니다. 새롭게 추가된 기능과 개선 사항들을 버전별로 확인하실 수 있습니다.</p>
+      <div class="page-accent">
+        <div class="page-accent-bar"></div>
+        <h1 style="font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2.1rem,4.5vw,3.35rem);color:var(--primary);margin:0;letter-spacing:-.06em;line-height:1.05;">업데이트 내역</h1>
+      </div>
+      <p class="page-lead">기능 발전과 패치 기록입니다. 항목을 눌러 상세 내용을 펼칠 수 있습니다.</p>
     </div>
-    <!-- Version badge -->
-    <div class="version-badge" style="background:#FFFFFF;border:1px solid rgba(0,55,100,0.10);border-left:3px solid #003764;border-radius:10px;padding:1rem 1.5rem;text-align:right;flex-shrink:0;">
-      <span style="display:block;font-size:0.66rem;font-weight:800;color:#9EA2A2;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">현재 서버 버전</span>
-      <span id="current-version" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.6rem;color:#003764;letter-spacing:-0.03em;">—</span>
+    <div class="ver-card">
+      <span class="vl">현재 서버 버전</span>
+      <span id="current-version">—</span>
     </div>
-  </section>
+  </div>
 
-  <div class="gold-divider"></div>
-
-  <!-- List -->
-  <div id="updates-list">
-    <div style="display:flex;align-items:center;justify-content:center;padding:4rem 0;color:#9EA2A2;gap:8px;font-size:0.88rem;">
-      <span class="material-symbols-outlined spin">progress_activity</span> 불러오는 중...
+  <div id="updates-list" class="reveal">
+    <div style="display:flex;align-items:center;justify-content:center;padding:4.5rem 0;color:var(--muted);gap:8px;font-size:.88rem;">
+      <i class="msym spin">progress_activity</i> 불러오는 중...
     </div>
   </div>
 </main>
 
-<!-- Footer -->
-<footer style="background:#F9F9F7;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
-  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
-    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
+<footer class="site-footer">
+  <div class="footer-i">
+    <p style="color:var(--muted);font-size:.72rem;margin:0;font-family:'Manrope',sans-serif;">© 2026 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a>
   </div>
 </footer>
 
 <script>
-  const SUPABASE_URL = 'https://ggdzsdhpjamgvsrpxspg.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SB_URL='https://ggdzsdhpjamgvsrpxspg.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZHpzZGhwamFtZ3ZzcnB4c3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDE2MDAsImV4cCI6MjA4OTU3NzYwMH0.Bfl4A2PDughSw_Loc918IgVSWWsfkyzNtUxlFP7rLVo';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmtDate=s=>s?new Date(s).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}):'';
 
-  function esc(s) {
-    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+(function(){
+  const t=document.getElementById('nav-toggle'),links=document.getElementById('nav-links');
+  if(!t||!links)return;
+  t.addEventListener('click',()=>{
+    const o=!links.classList.contains('open');
+    links.classList.toggle('open',o);
+    t.setAttribute('aria-expanded',o);
+    document.body.classList.toggle('nav-open',o);
+  });
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    links.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');
+  }));
+})();
+window.addEventListener('scroll',()=>document.getElementById('mnav')?.classList.toggle('scrolled',scrollY>16),{passive:true});
+const io=new IntersectionObserver((ents)=>{ents.forEach(e=>{if(e.isIntersecting){e.target.classList.add('reveal-in');io.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -36px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+window.toggleUpdate=function(id){
+  document.querySelector('[data-uid="'+id+'"]')?.classList.toggle('open');
+};
+
+async function loadUpdates(){
+  const el=document.getElementById('updates-list');
+  const{data,error}=await sb.from('updates').select('*').order('release_date',{ascending:false});
+  if(error){
+    el.innerHTML=`<div class="update-item" style="padding:2.5rem;text-align:center;"><p style="color:var(--text-dim);font-size:.88rem;margin:0;">불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.</p></div>`;
+    return;
   }
-  function fmtDate(s) {
-    if (!s) return '';
-    return new Date(s).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+  if(!data?.length){
+    el.innerHTML=`<div class="update-item" style="padding:3rem 1.5rem;text-align:center;"><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:var(--text);margin:0 0 .4rem;">아직 업데이트 내역이 없습니다</p><p style="color:var(--text-dim);font-size:.84rem;margin:0;">관리자에서 기록을 추가한 뒤 표시됩니다.</p></div>`;
+    return;
   }
-
-  async function loadUpdates() {
-    const el = document.getElementById('updates-list');
-    const { data, error } = await sb.from('updates').select('*').order('release_date', { ascending: false });
-
-    if (error) {
-      el.innerHTML = `<div class="update-card" style="text-align:center;"><p style="color:#9EA2A2;font-size:0.9rem;margin:0;">불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.</p></div>`;
-      return;
-    }
-    if (!data || data.length === 0) {
-      el.innerHTML = `<div class="update-card" style="text-align:center;padding:3rem;">
-        <p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.15rem;color:#003764;margin:0 0 0.4rem;">아직 업데이트 내역이 없습니다.</p>
-        <p style="color:#9EA2A2;font-size:0.86rem;margin:0;">관리자에서 기록을 추가한 뒤 표시됩니다.</p>
-      </div>`;
-      return;
-    }
-
-    const verEl = document.getElementById('current-version');
-    if (verEl) verEl.textContent = data[0].version;
-
-    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:1rem;">` +
-      data.map((row, i) => `
-        <article class="update-card ${i===0?'latest':''} fu" style="animation-delay:${i*0.055}s">
-          <div style="display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;justify-content:space-between;margin-bottom:0.9rem;">
-            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-              <span style="display:inline-flex;align-items:center;background:#003764;color:#FFFFFF;font-family:'Manrope',sans-serif;font-weight:800;font-size:0.75rem;padding:3px 11px;border-radius:99px;letter-spacing:-0.01em;">${esc(row.version)}</span>
-              ${i===0 ? '<span style="background:#16a34a;color:#FFFFFF;font-size:0.68rem;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:0.04em;font-family:\'Manrope\',sans-serif;">최신</span>' : ''}
-            </div>
-            <span style="font-size:0.8rem;color:#9EA2A2;">${fmtDate(row.release_date)}</span>
+  const verEl=document.getElementById('current-version');
+  if(verEl)verEl.textContent=data[0].version;
+  el.innerHTML=`<div class="update-stack">`+
+    data.map((row,i)=>`
+    <div class="update-item fu" data-uid="${row.id}" style="animation-delay:${i*.05}s">
+      <div class="update-hd" onclick="toggleUpdate('${row.id}')">
+        <i class="msym" style="color:var(--hufs-gold);font-size:1.05rem;flex-shrink:0;">history_edu</i>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:4px;">
+            <span class="ver-pill">${esc(row.version)}</span>
+            ${i===0?`<span class="latest-badge">최신</span>`:''}
           </div>
-          <h2 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:#003764;margin:0 0 0.5rem;letter-spacing:-0.02em;">${esc(row.title)}</h2>
-          ${row.content ? `<p style="color:#9EA2A2;font-size:0.875rem;line-height:1.7;margin:0;white-space:pre-line;">${esc(row.content)}</p>` : ''}
-        </article>
-      `).join('') + `</div>`;
-  }
-
-  loadUpdates();
+          <p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.98rem;color:var(--primary);margin:0;letter-spacing:-.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(row.title)}</p>
+        </div>
+        <span class="date-line">${fmtDate(row.release_date)}</span>
+        <i class="msym chev">expand_more</i>
+      </div>
+      <div class="update-body">${row.content?esc(row.content):'<span style="opacity:.7;">상세 내용이 없습니다.</span>'}</div>
+    </div>`).join('')+`</div>`;
+}
+loadUpdates();
 </script>
 </body>
 </html>

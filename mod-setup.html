@@ -1,584 +1,376 @@
 <!DOCTYPE html>
-<html class="light" lang="ko"><head>
+<html lang="ko">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>모드 설정 - 외대.서버.한국</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>커스텀 모드 설정 - 외대.서버.한국</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="apple-touch-icon" href="favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          "hufs-green":      "#00743A",
-          "hufs-navy":       "#003764",
-          "hufs-gold":       "#C4972A",
-          "hufs-gray":       "#9EA2A2",
-          "hufs-silver":     "#A8A9AD",
-          "hufs-light":      "#F9F9F7",
-          "hufs-green-dark": "#005c2e",
-          "hufs-navy-dark":  "#002549",
-        },
-        fontFamily: {"headline": ["Manrope"],"body": ["Inter","Noto Sans KR"],"label": ["Inter"]},
-        borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","2xl": "1rem","full": "9999px"},
-      },
-    },
-  }
-</script>
+<link rel="stylesheet" href="site.css"/>
 <style>
-:root {
-  --color-bg: #F9F9F7;
-  --color-navy: #003764;
-  --color-gold: #C4972A;
-  --color-gray: #9EA2A2;
-  --transition-base: all 0.2s ease;
-  --hover-shadow: 0 10px 25px rgba(0,0,0,0.08);
+:root{
+  --ink:rgb(0,45,86);--ink-dim:#556070;--muted:rgb(157,159,162);
+  --panel:#fff;--panel-hi:#F5F5F3;
+  --bdr:rgba(157,159,162,.32);
+  --sh-sm:0 4px 20px rgba(0,45,86,.06);
+  --sh-md:0 12px 40px rgba(0,45,86,.08);
+  --r:8px;--ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
 }
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;margin:0;color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;z-index:1;}
+.msym{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-style:normal;line-height:1;display:inline-block;}
 
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #F9F9F7; overflow-x:hidden; }
-  h1, h2, h3 { font-family: 'Manrope', sans-serif; }
-  :root { --hover-shadow:0 10px 25px rgba(0,0,0,0.08); --transition-base:all .2s ease; }
-  .mod-card { transition: var(--transition-base); box-shadow:none; }
-  .mod-card:hover { transform: translateY(-2px); box-shadow: var(--hover-shadow); border-color:rgba(196,151,42,.5); }
-  section h2 { display:inline-block; position:relative; }
-  section h2::after { content:''; display:block; height:2px; margin-top:.25rem; background:linear-gradient(90deg,#C4972A,rgba(196,151,42,.2)); }
+.page-hero{
+  background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%);
+  position:relative;overflow:hidden;border-bottom:1px solid var(--border-layer);
+}
+.page-hero::before{content:'';position:absolute;inset:0;opacity:.35;background-image:linear-gradient(rgba(0,45,86,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,45,86,.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.page-hero-inner{max-width:1280px;margin:0 auto;padding:3rem clamp(1.25rem,4vw,2.5rem) 2.75rem;position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;}
+.page-hero-h1{font-family:'Manrope',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,3rem);color:var(--hufs-navy);margin:0 0 .65rem;letter-spacing:-.05em;line-height:1.05;animation:fadeUp .4s .08s both;}
+.page-hero-sub{color:var(--ink-dim);font-size:.86rem;margin:0;max-width:540px;line-height:1.75;animation:fadeUp .4s .14s both;}
+.page-hero-steps{display:flex;gap:1.1rem;animation:fadeUp .4s .2s both;flex-wrap:wrap;}
+.phs-item{display:flex;flex-direction:column;align-items:center;gap:.35rem;}
+.phs-num{width:36px;height:36px;border-radius:50%;border:2px solid var(--hufs-navy);display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:900;font-size:.78rem;color:var(--hufs-navy);background:var(--primary-soft);}
+.phs-label{font-family:'Manrope',sans-serif;font-size:.58rem;font-weight:700;color:var(--muted);text-align:center;white-space:nowrap;letter-spacing:.04em;}
 
-  .nav-links { display:flex; gap:1.75rem; align-items:center; }
-  a, button, .mod-card { transition: var(--transition-base) !important; }
+main{max-width:1280px;margin:0 auto;padding:2rem clamp(1.25rem,4vw,2.5rem) 5rem;position:relative;z-index:1;}
 
-  /* 폴더 경로 박스: 모바일에서 줄바꿈 허용 */
-  .folder-hint { display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; }
-  .folder-hint p { margin:0; line-height:1.7; }
+.sec-card{
+  background:var(--panel);
+  border:1px solid var(--bdr);
+  border-radius:var(--r-lg);
+  padding:1.85rem 2rem;
+  position:relative;overflow:hidden;
+  margin-bottom:1.25rem;
+  transition:box-shadow .28s var(--ease),border-color .25s var(--ease),transform .25s var(--ease);
+  box-shadow:0 1px 3px rgba(0,45,86,.05);
+}
+.sec-card:hover{box-shadow:var(--sh-card-hover);border-color:rgba(141,113,80,.28);transform:translateY(-4px);}
+.sec-card:active{transform:translateY(-2px);}
+.sec-card-top{position:absolute;top:0;left:0;right:0;height:3px;background:var(--hufs-gold);border-radius:3px 3px 0 0;}
 
-  @media (max-width: 768px) {
-    .nav-links a:not(.nav-active) { display:none; }
-    .nav-links { gap:1rem; }
-    main { padding-top:1.5rem !important; padding-left:1rem !important; padding-right:1rem !important; padding-bottom:3rem !important; }
-    /* 히어로 배너 */
-    .mod-hero { padding:1.25rem !important; }
-    .mod-hero h1 { font-size:1.75rem !important; }
-    /* 상단 헤더 mb 줄이기 */
-    header.mb-12 { margin-bottom:1.5rem !important; }
-    /* 메인 그리드 강제 1컬럼 */
-    .grid { grid-template-columns:1fr !important; }
-    /* 섹션 전체 full width */
-    [class*="col-span"] { grid-column: span 1 / span 1 !important; }
-    /* 섹션2 성능 카드는 2열 유지 */
-    .grid-cols-2 { grid-template-columns: repeat(2,1fr) !important; }
-    /* 설치 후 과정 섹션 */
-    .after-install-flex { flex-direction:column !important; }
-    /* 섹션 패딩 */
-    section { padding:1.25rem !important; }
-    /* 섹션6 스텝 간격 줄이기 */
-    .space-y-8 > * + * { margin-top:1.5rem !important; }
-    /* 섹션6 체크리스트 max-width 해제 */
-    .flex-1.w-full.max-w-md { max-width:100% !important; }
-    /* 카드 텍스트 줄바꿈 */
-    .mod-card span.font-medium { word-break:break-word; }
-    /* 이미지 overflow 방지 */
-    img { max-width:100%; }
-  }
-  @media (max-width: 480px) {
-    .mod-hero { padding:1rem !important; }
-    .mod-hero h1 { font-size:1.45rem !important; }
-    .mod-hero p { font-size:0.82rem !important; }
-    section { padding:1rem !important; border-radius:1rem !important; }
-    /* 섹션6 스텝 번호 크기 줄이기 */
-    .bg-hufs-green.w-12.h-12 { width:2.25rem !important; height:2.25rem !important; font-size:1rem !important; flex-shrink:0; }
-  }
+.sec-head{display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem;flex-wrap:wrap;}
+.sec-num{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:900;font-size:.78rem;flex-shrink:0;letter-spacing:.02em;}
+.sec-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:1.15rem;margin:0;letter-spacing:-.03em;color:var(--ink);}
+.sec-badge{display:inline-flex;align-items:center;font-family:'Manrope',sans-serif;font-size:.58rem;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;}
+.sec-sub{font-size:.82rem;line-height:1.75;margin:0 0 1.35rem;color:var(--ink-dim);word-break:keep-all;overflow-wrap:anywhere;}
 
-/* ===== 2026 portfolio redesign overrides ===== */
-:root{--bg:#F9F9F7;--navy:#003764;--gold:#C4972A;--gray:#9EA2A2;--radius:4px;--space:88px}
-*{border-radius:0!important}
-body{background:var(--bg)!important;color:var(--navy)!important}
-nav{background:var(--bg)!important;box-shadow:none!important;border-bottom:1px solid var(--navy)!important}
-main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 6rem!important}
-main>header,main>section:first-of-type{margin-bottom:var(--space)!important}
-section{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;padding:clamp(1.2rem,2vw,2rem)!important;box-shadow:none!important}
-section+section{margin-top:var(--space)!important}
-section [class*="absolute"], section [style*="background:#16a34a"], section [style*="#22c55e"]{display:none!important}
-h1{font-size:clamp(3rem,8vw,6rem)!important;line-height:.9!important;letter-spacing:-.04em!important}
-h2{font-size:clamp(1.6rem,3vw,2.8rem)!important;letter-spacing:-.02em!important}
-p,li,span{color:var(--gray)!important}
-a,.material-symbols-outlined{color:var(--navy)!important}
-a:hover{color:var(--gold)!important;background:transparent!important}
-.mod-card{background:transparent!important;border:1px solid rgba(0,55,100,.2)!important;box-shadow:none!important;transform:none!important;padding:.9rem!important}
-.mod-card:hover{border-color:var(--gold)!important}
-[class*="bg-hufs-green"],[class*="text-hufs-green"],[style*="hufs-green"],[style*="#00743A"],[style*="#5865F2"],[style*="#16a34a"],[style*="#22c55e"]{background:transparent!important;color:var(--navy)!important;border-color:rgba(0,55,100,.2)!important}
-[style*="border-top"], .absolute.top-0.left-0.w-full.h-1{display:none!important}
-@media(max-width:900px){section+section{margin-top:64px!important}}
+.mods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;}
+.mods-req{grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;}
+.mods-grid-sm{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+.mod-block{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem .9rem;border-radius:10px;text-decoration:none;border:1px solid var(--bdr);transition:transform .18s var(--ease),box-shadow .18s,border-color .18s;background:var(--panel-hi);min-height:auto;height:auto;}
+.mod-block:hover{transform:translateY(-3px);box-shadow:var(--sh-card);border-color:rgba(141,113,80,.28);}
+.mod-block:active{transform:translateY(-1px);}
+.mod-block img{width:36px;height:36px;border-radius:7px;flex-shrink:0;object-fit:cover;margin-top:2px;}
+.mod-block-info{flex:1;min-width:0;}
+.mod-name{font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;display:flex;align-items:flex-start;gap:.28rem;color:var(--ink);line-height:1.35;word-break:keep-all;overflow-wrap:anywhere;}
+.mod-desc{font-size:.68rem;margin-top:3px;color:var(--ink-dim);line-height:1.5;word-break:keep-all;overflow-wrap:anywhere;white-space:normal;}
+.mod-block-lt{background:var(--panel-hi);border-color:var(--bdr);}
+.mod-block-lt:hover{border-color:rgba(157,159,162,.35);}
 
+/* 필수: 컴팩트 카드 (전체 높이 채우지 않음) */
+.mod-block-feat{
+  display:flex;align-items:flex-start;gap:.75rem;
+  padding:.85rem 1rem;
+  min-height:auto;height:auto;
+  border-radius:9px;text-decoration:none;
+  border:1px solid var(--bdr);background:var(--panel-hi);
+  transition:transform .18s var(--ease),box-shadow .18s,border-color .18s;
+}
+.mod-block-feat:hover{transform:translateY(-3px);box-shadow:var(--sh-card);border-color:rgba(141,113,80,.28);}
+.mod-block-feat:active{transform:translateY(-1px);}
+.mod-block-feat img{width:40px;height:40px;border-radius:8px;flex-shrink:0;object-fit:cover;}
+.mod-feat-name{font-family:'Manrope',sans-serif;font-weight:800;font-size:.8rem;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:.28rem;margin-bottom:.2rem;line-height:1.35;word-break:keep-all;}
+.mod-feat-desc{font-size:.72rem;color:var(--ink-dim);line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;white-space:normal;}
+
+.steps{display:flex;flex-direction:column;gap:1.35rem;}
+.step{display:flex;gap:1rem;align-items:flex-start;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--hufs-navy);display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:900;font-size:.88rem;color:#fff;flex-shrink:0;}
+.step-body h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:.92rem;color:var(--hufs-navy);margin:0 0 .28rem;}
+.step-body p{font-size:.8rem;color:var(--ink-dim);line-height:1.7;margin:0;}
+
+.checklist{display:flex;flex-direction:column;gap:.5rem;}
+.cl-item{display:flex;align-items:center;gap:.75rem;background:var(--panel-hi);border:1px solid var(--bdr);border-radius:9px;padding:.55rem .85rem;}
+.cl-img{width:30px;height:30px;border-radius:6px;object-fit:cover;flex-shrink:0;}
+.cl-label{font-size:.78rem;font-weight:600;color:var(--ink);flex:1;}
+.cl-check{color:var(--hufs-navy);font-size:1.05rem!important;}
+
+.info-box{background:var(--hufs-green-soft);border:1px solid rgba(157,159,162,.30);border-radius:9px;padding:1rem 1.1rem;font-size:.79rem;color:var(--ink);line-height:1.75;word-break:keep-all;}
+.success-box{background:var(--hufs-green-soft);border:1px solid rgba(157,159,162,.35);border-radius:10px;padding:.75rem 1rem;text-align:center;color:var(--hufs-navy);font-family:'Manrope',sans-serif;font-weight:800;font-size:.84rem;margin-top:.65rem;}
+.folder-hint{display:flex;align-items:flex-start;gap:.65rem;background:var(--panel-hi);border:1px solid var(--bdr);border-radius:9px;padding:.75rem 1rem;font-size:.78rem;color:var(--ink-dim);line-height:1.75;}
+kbd{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7px;font-family:monospace;font-size:.72rem;color:var(--ink);}
+code{background:#fff;border:1px solid var(--bdr);border-radius:5px;padding:2px 7px;font-family:monospace;font-size:.72rem;color:var(--ink);}
+.code-dk{background:var(--panel-hi);border:1px solid var(--bdr);color:var(--ink);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .45s both;}
+
+@media(max-width:900px){
+  .page-hero-inner{grid-template-columns:1fr;gap:1.35rem;padding:2.5rem 1.5rem 2rem;}
+  .page-hero-h1{font-size:clamp(1.75rem,7vw,2.45rem)!important;}
+  .mods-req{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  main{padding:1.5rem 1.25rem 4rem;}
+  .sec-card{padding:1.45rem 1.35rem;}
+  .mods-grid:not(.mods-req){grid-template-columns:1fr 1fr;}
+  .two-col{grid-template-columns:1fr!important;}
+}
+@media(max-width:480px){
+  .mods-grid,.mods-grid-sm{grid-template-columns:1fr!important;}
+  .page-hero-steps{display:none;}
+}
 </style>
 </head>
-<body class="bg-hufs-light text-hufs-navy">
+<body>
 
-<!-- TopNavBar -->
-<nav style="background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,55,100,0.08);position:sticky;top:0;z-index:100;box-shadow:0 1px 10px rgba(0,55,100,0.06);">
-  <div style="max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;height:60px;">
-    <a href="index.html" style="font-family:'Manrope',sans-serif;font-weight:900;font-size:1.1rem;color:#003764;text-decoration:none;letter-spacing:-0.03em;">외대.서버.한국</a>
-    <div class="nav-links">
-      <a href="index.html"     style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">홈</a>
-      <a href="mod-setup.html" class="nav-active" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#003764;text-decoration:none;border-bottom:2px solid #003764;padding-bottom:1px;">모드 설정</a>
-      <a href="updates.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">업데이트 내역</a>
-      <a href="notices.html"   style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">공지사항</a>
-      <a href="map.html"       style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;color:#9EA2A2;text-decoration:none;" onmouseover="this.style.color='#003764'" onmouseout="this.style.color='#9EA2A2'">서버 지도</a>
+<nav class="site-nav" id="mnav">
+  <div class="nav-i">
+    <a href="index.html" class="nav-logo"><span class="nav-dot"></span>외대.서버.한국</a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="메뉴 열기">
+      <i class="msym" style="font-size:1.35rem;">menu</i>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nl">홈</a>
+      <a href="mod-setup.html" class="nl nl-act">모드 설정</a>
+      <a href="updates.html" class="nl">업데이트 내역</a>
+      <a href="notices.html" class="nl">공지사항</a>
+      <a href="map.html" class="nl">서버 지도</a>
     </div>
   </div>
 </nav>
 
-<main style="max-width:1200px;margin:0 auto;padding:2.4rem 1.25rem 4rem;overflow-x:hidden;">
-
-  <!-- 페이지 헤더 -->
-  <header class="mb-12 mt-4">
-    <div class="mod-hero relative overflow-hidden bg-hufs-navy rounded-2xl px-10 py-12 lg:px-14 lg:py-14 mb-8" style="max-width:100%;">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
-      <div class="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-hufs-green opacity-10 blur-3xl pointer-events-none"></div>
-      <div class="relative z-10 flex items-center justify-between gap-8">
-        <div class="flex-1">
-          <h1 class="text-4xl lg:text-5xl font-extrabold text-white tracking-tighter mb-3 leading-tight">Mod Setup Guide</h1>
-          <p class="text-white/60 text-base max-w-[600px] leading-relaxed">모드는 <strong class="text-white font-bold">선택적으로 설치</strong>하시면 됩니다. 처음 접속하시는 분들도 단계별로 쉽게 따라하실 수 있습니다.</p>
-        </div>
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div>
+      <h1 class="page-hero-h1">커스텀 모드 설정</h1>
+      <p class="page-hero-sub">Fabric 로더, 필수 모드, 쉐이더팩까지 단계별로 안내합니다. 아래 순서대로 따라오세요.</p>
+    </div>
+    <div class="page-hero-steps">
+      <div class="phs-item">
+        <div class="phs-num">01</div>
+        <div class="phs-label">필수 설치</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--bdr);align-self:center;"></div>
+      <div class="phs-item">
+        <div class="phs-num">02</div>
+        <div class="phs-label">성능 모드</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--bdr);align-self:center;"></div>
+      <div class="phs-item">
+        <div class="phs-num">03</div>
+        <div class="phs-label">편의 · 건축</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--bdr);align-self:center;"></div>
+      <div class="phs-item">
+        <div class="phs-num">04</div>
+        <div class="phs-label">시각 효과</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--bdr);align-self:center;"></div>
+      <div class="phs-item">
+        <div class="phs-num">05</div>
+        <div class="phs-label">설치 후 과정</div>
       </div>
     </div>
-
-    <div class="folder-hint bg-white border border-hufs-gray/20 px-4 py-3 rounded-xl">
-      <span class="material-symbols-outlined text-hufs-green flex-shrink-0" style="font-size:18px;margin-top:2px;">folder_open</span>
-      <p class="text-sm text-hufs-gray">마인크래프트 폴더 위치: <kbd class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">Win+R</kbd> 누르고
-        <code class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">%appdata%</code> 입력 후 실행 →
-        <code class="bg-hufs-light border border-hufs-gray/30 px-2 py-0.5 rounded font-mono text-xs text-hufs-navy">.minecraft</code> 폴더
-      </p>
-    </div>
-  </header>
-
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-
-    <!-- Section 1: 필수 -->
-    <section class="md:col-span-12 bg-white rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-navy"></div>
-      <div class="flex items-center gap-3 mb-2">
-        <span class="material-symbols-outlined text-hufs-green text-3xl">terminal</span>
-        <h2 class="text-3xl font-bold text-hufs-navy">Section 1: 필수</h2>
-      </div>
-      <p class="text-hufs-gray text-sm mb-6 ml-1">가장 먼저 설치해야 하는 필수 구성 요소입니다. Fabric 로더를 먼저 설치한 후, 나머지는
-        <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">mods</code> 폴더에 넣어주세요.
-      </p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener"
-           class="mod-card bg-hufs-light p-5 rounded-xl border-l-4 border-hufs-green flex items-start gap-4 cursor-pointer hover:bg-white border border-hufs-gray/20">
-          <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div>
-            <div class="flex items-center gap-1 mb-0.5">
-              <h3 class="font-bold text-hufs-navy">Fabric 설치 프로그램</h3>
-              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
-            </div>
-            <p class="text-sm text-hufs-gray">모드 로더의 근간</p>
-          </div>
-        </a>
-        <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener"
-           class="mod-card bg-hufs-light p-5 rounded-xl border-l-4 border-hufs-green flex items-start gap-4 cursor-pointer hover:bg-white border border-hufs-gray/20">
-          <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric API" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div>
-            <div class="flex items-center gap-1 mb-0.5">
-              <h3 class="font-bold text-hufs-navy">Fabric API</h3>
-              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
-            </div>
-            <p class="text-sm text-hufs-gray">호환성 라이브러리</p>
-            <p class="text-xs text-hufs-silver mt-1">mods 폴더에 넣기</p>
-          </div>
-        </a>
-        <a href="https://irisshaders.dev/download" target="_blank" rel="noopener"
-           class="mod-card bg-hufs-light p-5 rounded-xl border-l-4 border-hufs-green flex items-start gap-4 cursor-pointer hover:bg-white border border-hufs-gray/20">
-          <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="Iris Shaders" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div>
-            <div class="flex items-center gap-1 mb-0.5">
-              <h3 class="font-bold text-hufs-navy">Iris Shaders 설치 프로그램</h3>
-              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
-            </div>
-            <p class="text-sm text-hufs-gray">쉐이더 지원 (Iris + Fabric 통합 설치)</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- Fabric 설치 상세 설정 -->
-      <div class="bg-hufs-green/5 border border-hufs-green/20 rounded-xl p-6">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="material-symbols-outlined text-hufs-green" style="font-size:20px;">info</span>
-          <p class="text-sm font-bold text-hufs-green">Fabric 설치 프로그램 설정값</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-4">
-          <div class="bg-white rounded-lg p-4 border border-hufs-gray/20">
-            <p class="text-xs text-hufs-gray uppercase tracking-widest font-bold mb-1">Minecraft 버전</p>
-            <p class="font-bold text-hufs-navy">사용할 버전 선택</p>
-            <p class="text-xs text-hufs-gray mt-1">현재 서버 버전에 맞추세요</p>
-          </div>
-          <div class="bg-white rounded-lg p-4 border border-hufs-gray/20">
-            <p class="text-xs text-hufs-gray uppercase tracking-widest font-bold mb-1">로더 버전</p>
-            <p class="font-bold text-hufs-navy">최신 버전으로 선택</p>
-            <p class="text-xs text-hufs-gray mt-1">스냅샷 표시는 체크 불필요</p>
-          </div>
-          <div class="bg-white rounded-lg p-4 border border-hufs-gray/20">
-            <p class="text-xs text-hufs-gray uppercase tracking-widest font-bold mb-1">런처 위치</p>
-            <p class="font-bold text-hufs-navy font-mono text-xs break-all">%AppData%\Roaming\.minecraft</p>
-            <p class="text-xs text-hufs-gray mt-1">기본 마인크래프트 폴더</p>
-          </div>
-        </div>
-        <div class="pt-3 border-t border-hufs-green/15">
-          <p class="text-xs text-hufs-gray leading-relaxed">
-            <span class="font-bold text-hufs-navy">이 아래로 설치하는 모드 파일들은 따로 압축 해제하거나 실행하지 않습니다.</span>
-            모두 Fabric 기준이므로 다운로드 시 <strong>플랫폼: Fabric</strong>, <strong>버전: 현재 버전</strong>, <strong>채널: 원하시는 대로</strong> 선택하세요.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: 성능 -->
-    <section class="md:col-span-12 bg-hufs-navy rounded-2xl p-8 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
-      <div class="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-hufs-green opacity-10 blur-3xl pointer-events-none"></div>
-      <div class="flex items-center gap-3 mb-2 relative z-10">
-        <span class="material-symbols-outlined text-hufs-gold text-3xl" style="font-variation-settings: 'FILL' 1;">speed</span>
-        <h2 class="text-3xl font-bold text-white">Section 2: 성능</h2>
-      </div>
-      <p class="text-white/50 text-sm mb-6 ml-1 relative z-10">모두 <code class="bg-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-white">mods</code> 폴더에 넣어주세요.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 relative z-10">
-
-        <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png" alt="Mod Menu" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Mod Menu</p><p class="text-xs text-white/50 mt-0.5">모드 목록 관리</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/sodium" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="Sodium" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Sodium</p><p class="text-xs text-white/50 mt-0.5">획기적인 프레임 상승</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/lithium" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp" alt="Lithium" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Lithium</p><p class="text-xs text-white/50 mt-0.5">게임 물리 연산 최적화</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/ferrite-core" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/uXXizFIs/222a126f26f8f9ae1eb339f3b767677f18bff31f_96.webp" alt="FerriteCore" class="w-11 h-11 rounded-lg flex-shrink-0 object-cover" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">FerriteCore</p><p class="text-xs text-white/50 mt-0.5">메모리 사용량 절감</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/immediatelyfast" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/5ZwdcRci/e57b6b451425692ac17ad322d5e14bea686a383a_96.webp" alt="ImmediatelyFast" class="w-11 h-11 rounded-lg flex-shrink-0 object-cover" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">ImmediatelyFast</p><p class="text-xs text-white/50 mt-0.5">렌더링 최적화</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/entityculling" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/NNAgCjsB/icon.png" alt="Entity Culling" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Entity Culling</p><p class="text-xs text-white/50 mt-0.5">비가시 엔티티 처리 생략</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/dynamic-fps" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/LQ3K71Q1/icon.png" alt="Dynamic FPS" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Dynamic FPS</p><p class="text-xs text-white/50 mt-0.5">백그라운드 FPS 제한</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/sodium-extra" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/PtjYWJkn/icon.png" alt="Sodium Extra" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Sodium Extra</p><p class="text-xs text-white/50 mt-0.5">Sodium 추가 옵션</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/reeses-sodium-options" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/Bh37bMuy/icon.png" alt="Reese's Sodium Options" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Reese's Sodium Options</p><p class="text-xs text-white/50 mt-0.5">Sodium 설정 UI 개선</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/cloth-config" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/9s6osm5g/icon.png" alt="Cloth Config API" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Cloth Config API</p><p class="text-xs text-white/50 mt-0.5">설정 라이브러리</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/architectury-api" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/lhGA9TYQ/icon.png" alt="Architectury API" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">Architectury API</p><p class="text-xs text-white/50 mt-0.5">크로스 플랫폼 라이브러리</p></div>
-        </a>
-
-        <a href="https://modrinth.com/mod/c2me-fabric" target="_blank" rel="noopener"
-           class="mod-card bg-white/10 hover:bg-white/20 rounded-xl p-4 flex items-center gap-3 cursor-pointer border border-white/10">
-          <img src="https://cdn.modrinth.com/data/VSNURh3q/icon.png" alt="C2ME" class="w-11 h-11 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div><p class="font-bold text-sm leading-tight text-white">C2ME</p><p class="text-xs text-white/50 mt-0.5">청크 병렬 처리 <span class="opacity-60">(불안정시 제거)</span></p></div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- Section 3: 편의성 & 디테일 (옵션) -->
-    <section class="md:col-span-6 bg-white rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-silver"></div>
-      <div class="flex items-center gap-3 mb-6">
-        <span class="material-symbols-outlined text-hufs-gray text-3xl">tune</span>
-        <h2 class="text-2xl font-bold text-hufs-navy">Section 3: 편의성 &amp; 디테일</h2>
-        <span class="bg-hufs-gold text-white text-xs font-bold px-2 py-0.5 rounded">옵션</span>
-      </div>
-      <p class="text-hufs-gray text-sm mb-5">모두
-        <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">mods</code> 폴더에 넣어주세요.
-      </p>
-      <div class="space-y-3">
-
-        <a href="https://modrinth.com/mod/appleskin" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/EsAfCjCV/icon.png" alt="AppleSkin" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">AppleSkin</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">체력 &amp; 포만감 수치 시각화</p>
-          </div>
-        </a>
-
-        <a href="https://modrinth.com/mod/chat-heads" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/Wb5oqrBJ/icon.png" alt="Chat Heads" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">Chat Heads</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">채팅창에 플레이어 얼굴 표시</p>
-          </div>
-        </a>
-
-        <a href="https://modrinth.com/mod/shulkerboxtooltip" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/2M01OLQq/bb490716cf2590cf84100a495931c3d4743bce43_96.webp" alt="Shulker Box Tooltip" class="w-10 h-10 rounded-md flex-shrink-0 object-cover"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">Shulker Box Tooltip</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">셜커 박스 내용물 미리보기</p>
-          </div>
-        </a>
-
-        <a href="https://modrinth.com/mod/jade" target="_blank" rel="noopener"
-           class="mod-card flex items-center gap-3 p-3 bg-hufs-light rounded-xl cursor-pointer border border-hufs-gray/20 hover:bg-white">
-          <img src="https://cdn.modrinth.com/data/nvQzSEkH/icon.png" alt="Jade" class="w-10 h-10 rounded-md flex-shrink-0" onerror="this.style.display='none'"/>
-          <div class="flex-1">
-            <div class="flex items-center gap-1"><span class="font-medium text-hufs-navy">Jade 🔍</span><span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span></div>
-            <p class="text-xs text-hufs-gray">블록 &amp; 엔티티 정보 표시</p>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- Section 4: 건축 (옵션) -->
-    <section class="md:col-span-6 bg-white rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
-      <div class="flex items-center gap-3 mb-6">
-        <span class="material-symbols-outlined text-hufs-gold text-3xl">architecture</span>
-        <h2 class="text-2xl font-bold text-hufs-navy">Section 4: 건축</h2>
-        <span class="bg-hufs-gold text-white text-xs font-bold px-2 py-0.5 rounded">옵션</span>
-      </div>
-      <p class="text-hufs-gray text-sm mb-5">모두
-        <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">mods</code> 폴더에 넣어주세요.
-      </p>
-      <div class="space-y-5">
-
-        <a href="https://modrinth.com/mod/litematica" target="_blank" rel="noopener"
-           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-hufs-gold cursor-pointer bg-hufs-light rounded-xl p-3 border border-hufs-gray/20 hover:bg-white transition-colors">
-          <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div>
-            <div class="flex items-center gap-1 mb-0.5">
-              <h3 class="font-bold text-lg text-hufs-navy">Litematica</h3>
-              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
-            </div>
-            <p class="text-sm text-hufs-gray">건축 청사진 및 가이드. 대규모 건축에 유용합니다. <span class="font-semibold text-hufs-navy">사용법을 미리 공부해 두세요.</span></p>
-          </div>
-        </a>
-
-        <a href="https://modrinth.com/mod/malilib" target="_blank" rel="noopener"
-           class="mod-card flex gap-4 items-start pl-4 border-l-2 border-hufs-gold cursor-pointer bg-hufs-light rounded-xl p-3 border border-hufs-gray/20 hover:bg-white transition-colors">
-          <img src="https://cdn.modrinth.com/data/GcWjdA9I/a530ae55df5e0c405f5cf1b3e4fd6163a398bdc3.png" alt="MaLiLib" class="w-12 h-12 rounded-lg flex-shrink-0" onerror="this.style.display='none'"/>
-          <div>
-            <div class="flex items-center gap-1 mb-0.5">
-              <h3 class="font-bold text-lg text-hufs-navy">MaLiLib</h3>
-              <span class="material-symbols-outlined text-hufs-gray" style="font-size:14px;">open_in_new</span>
-            </div>
-            <p class="text-sm text-hufs-gray">Litematica 실행을 위한 필수 선행 라이브러리입니다.</p>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- Section 5: 시각 효과 (옵션) -->
-    <section class="md:col-span-12 bg-white rounded-2xl p-8 border border-hufs-gray/20 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-navy"></div>
-      <div class="flex items-center gap-3 mb-6">
-        <span class="material-symbols-outlined text-hufs-green text-3xl">palette</span>
-        <h2 class="text-2xl font-bold text-hufs-navy">Section 5: 시각 효과</h2>
-        <span class="bg-hufs-gold text-white text-xs font-bold px-2 py-0.5 rounded">옵션</span>
-      </div>
-      <p class="text-hufs-gray text-sm mb-6">리소스팩은
-        <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">resourcepacks</code> 폴더,
-        쉐이더팩은 <code class="bg-hufs-light border border-hufs-gray/30 px-1.5 py-0.5 rounded text-xs font-mono text-hufs-navy">shaderpacks</code> 폴더에 넣어주세요.
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <!-- 리소스팩 -->
-        <div class="bg-hufs-light rounded-xl p-6 border border-hufs-gray/20">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-hufs-navy" style="font-size:1.75rem;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">brush</span>
-            <h3 class="font-bold text-lg text-hufs-navy">리소스팩</h3>
-          </div>
-          <div class="space-y-3">
-            <a href="https://modrinth.com/resourcepack/fresh-animations" target="_blank" rel="noopener"
-               class="mod-card flex items-center gap-3 p-3 bg-white rounded-xl cursor-pointer border border-hufs-gray/20">
-              <img src="https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp" alt="Fresh Animations" class="w-10 h-10 rounded-md flex-shrink-0 object-cover"/>
-              <div class="flex-1">
-                <div class="flex items-center gap-1">
-                  <span class="font-medium text-sm text-hufs-navy">Fresh Animations</span>
-                  <span class="material-symbols-outlined text-hufs-gray" style="font-size:13px;">open_in_new</span>
-                </div>
-                <p class="text-xs text-hufs-gray">몬스터 &amp; 동물의 부드러운 움직임 · resourcepacks 폴더</p>
-              </div>
-            </a>
-
-            <div class="pl-2 pt-1">
-              <p class="text-xs text-hufs-gray font-semibold mb-2">↳ Fresh Animations 사용을 위한 모드 (mods 폴더):</p>
-              <div class="space-y-2">
-                <a href="https://modrinth.com/mod/entitytexturefeatures" target="_blank" rel="noopener"
-                   class="mod-card flex items-center gap-2 p-2 bg-white rounded-xl cursor-pointer border border-hufs-gray/20">
-                  <img src="https://cdn.modrinth.com/data/BVzZfTc1/af683d206d50b05258d865b0d6e4aa2f2cee12f2_96.webp" alt="Entity Texture Features" class="w-9 h-9 rounded flex-shrink-0 object-cover"/>
-                  <div class="flex items-center gap-1 flex-1">
-                    <span class="text-xs font-medium text-hufs-navy">Entity Texture Features</span>
-                    <span class="material-symbols-outlined text-hufs-gray" style="font-size:12px;">open_in_new</span>
-                  </div>
-                </a>
-                <a href="https://modrinth.com/mod/entity-model-features" target="_blank" rel="noopener"
-                   class="mod-card flex items-center gap-2 p-2 bg-white rounded-xl cursor-pointer border border-hufs-gray/20">
-                  <img src="https://cdn.modrinth.com/data/4I1XuqiY/6e5bbd0d06b1741bfdab6c0cfab6de8fdaf0064c_96.webp" alt="Entity Model Features" class="w-9 h-9 rounded flex-shrink-0 object-cover"/>
-                  <div class="flex items-center gap-1 flex-1">
-                    <span class="text-xs font-medium text-hufs-navy">Entity Model Features</span>
-                    <span class="material-symbols-outlined text-hufs-gray" style="font-size:12px;">open_in_new</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 쉐이더팩 -->
-        <div class="bg-hufs-light rounded-xl p-6 border border-hufs-gray/20">
-          <div class="flex items-center gap-2 mb-4">
-            <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="쉐이더팩" class="w-7 h-7 rounded object-cover" onerror="this.style.display='none'"/>
-            <h3 class="font-bold text-lg text-hufs-navy">쉐이더팩</h3>
-          </div>
-          <a href="https://modrinth.com/shaders" target="_blank" rel="noopener"
-             class="mod-card flex items-start gap-3 p-4 bg-white rounded-xl cursor-pointer border border-hufs-gray/20">
-            <span class="material-symbols-outlined text-hufs-green text-3xl mt-0.5">open_in_new</span>
-            <div>
-              <p class="font-bold text-sm text-hufs-green">Modrinth 쉐이더 목록 보기</p>
-              <p class="text-xs text-hufs-gray mt-1">샘플을 확인하고 원하는 쉐이더팩을 골라
-                <code class="bg-hufs-light border border-hufs-gray/30 px-1 py-0.5 rounded font-mono text-hufs-navy">shaderpacks</code> 폴더에 넣어주세요.
-              </p>
-            </div>
-          </a>
-          <p class="text-xs text-hufs-gray mt-4 pl-1">설치 후 비디오 설정 → 쉐이더 팩에서 다운로드한 것을 활성화하세요. 세부 설정에서 안개, 비, 빛 등을 커스텀할 수 있습니다.</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Section 6: 설치 후 과정 -->
-    <section class="md:col-span-12 bg-hufs-navy rounded-2xl p-10 mb-8 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-1 bg-hufs-gold"></div>
-      <div class="absolute -left-6 bottom-0 w-36 h-36 rounded-full bg-hufs-gold opacity-10 blur-2xl pointer-events-none"></div>
-      <div class="flex items-center gap-3 mb-6 relative z-10">
-        <span class="material-symbols-outlined text-hufs-gold text-4xl">settings_input_component</span>
-        <h2 class="text-4xl font-extrabold text-white">Section 6: 설치 후 과정</h2>
-      </div>
-      <div class="after-install-flex flex flex-col md:flex-row gap-12 items-start relative z-10">
-        <div class="flex-1 space-y-8">
-
-          <div class="flex gap-6">
-            <div class="bg-hufs-green w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white font-black text-xl">1</div>
-            <div>
-              <h3 class="text-xl font-bold mb-2 text-white">런처 프로필 선택</h3>
-              <p class="text-white/60 leading-relaxed">마인크래프트 런처에서 <strong class="text-white">Fabric Loader</strong> 프로필을 선택하고 실행하세요.</p>
-            </div>
-          </div>
-
-          <div class="flex gap-6">
-            <div class="bg-hufs-green w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white font-black text-xl">2</div>
-            <div>
-              <h3 class="text-xl font-bold mb-2 text-white">단축키 설정</h3>
-              <p class="text-white/60 leading-relaxed">마인크래프트 실행 후 메인화면 → 설정 → <wbr>조작 → 키 지정에서 붉은색으로 표시된 <wbr>중복 키를 수정하세요.</p>
-            </div>
-          </div>
-
-          <div class="flex gap-6">
-            <div class="bg-hufs-green w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white font-black text-xl">3</div>
-            <div>
-              <h3 class="text-xl font-bold mb-2 text-white">비디오 설정</h3>
-              <p class="text-white/60 leading-relaxed">메인화면 → 설정 → 비디오 설정에서 <wbr>왼쪽 스크롤을 내리며 전체 설정을 확인하세요. <wbr>PC 사양과 취향에 맞춰 조정하시면 됩니다.<br><strong class="text-white">쉐이더 팩 설정에서 다운로드한 것을 반드시 켜주세요.</strong></p>
-            </div>
-          </div>
-
-          <div class="flex gap-6">
-            <div class="bg-hufs-green w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white font-black text-xl">4</div>
-            <div>
-              <h3 class="text-xl font-bold mb-2 text-white">리소스팩 활성화</h3>
-              <p class="text-white/60 leading-relaxed">메인화면 → 설정 → 리소스 팩에서 다운로드한 팩을 왼쪽 <span class="font-semibold text-white">사용 가능</span> 목록에서 오른쪽 <span class="font-semibold text-white">선택됨</span>으로 이동하세요.</p>
-            </div>
-          </div>
-
-        </div>
-        <div class="flex-1 w-full max-w-md">
-          <div class="bg-white/10 border border-white/20 rounded-xl p-6 flex flex-col gap-3">
-            <p class="text-xs uppercase tracking-widest text-white/40 font-bold mb-1">설치 체크리스트</p>
-            <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
-              <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
-              <span class="text-sm font-medium flex-1 text-white">Fabric + Fabric API</span>
-              <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
-              <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="Iris" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
-              <span class="text-sm font-medium flex-1 text-white">Iris Shaders</span>
-              <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
-              <img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="Sodium" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
-              <span class="text-sm font-medium flex-1 text-white">성능 모드 12종</span>
-              <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
-              <img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="Litematica" class="w-8 h-8 rounded-md" onerror="this.style.display='none'"/>
-              <span class="text-sm font-medium flex-1 text-white">Litematica + MaLiLib</span>
-              <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
-              <span class="material-symbols-outlined text-white flex-shrink-0" style="font-size:2rem;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">brush</span>
-              <span class="text-sm font-medium flex-1 text-white">리소스팩 / 쉐이더팩</span>
-              <span class="material-symbols-outlined text-emerald-400 text-xl">check_circle</span>
-            </div>
-            <div class="mt-1 p-3 bg-hufs-green/30 border border-hufs-green/40 rounded-lg text-center">
-              <p class="text-white font-bold text-sm">환경 설정 완료 ✓</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </div>
+</div>
+
+<main>
+  <div style="display:flex;flex-direction:column;gap:1.35rem;">
+
+  <!-- S1: 필수 -->
+  <div class="sec-card fu" style="animation-delay:.05s">
+    <div class="sec-card-top" aria-hidden="true"></div>
+      <div class="sec-head">
+      <div class="sec-num" style="background:var(--hufs-green-soft);color:var(--hufs-green);">01</div>
+      <h2 class="sec-title">필수</h2>
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;">먼저 설치</span>
+    </div>
+    <p class="sec-sub">가장 먼저 설치해야 하는 필수 구성 요소입니다. Fabric 로더를 먼저 설치한 후, 나머지는 <code>mods</code> 폴더에 넣어주세요.</p>
+    <div class="mods-grid mods-req" style="margin-bottom:1.25rem;">
+      <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener" class="mod-block-feat">
+        <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric" onerror="this.style.display='none'"/>
+        <div><div class="mod-feat-name">Fabric 설치 프로그램<i class="msym" style="font-size:12px;color:var(--muted);">open_in_new</i></div><div class="mod-feat-desc">모드 로더의 근간. 가장 먼저 설치하세요.</div></div>
+      </a>
+      <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener" class="mod-block-feat">
+        <img src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" alt="Fabric API" onerror="this.style.display='none'"/>
+        <div><div class="mod-feat-name">Fabric API<i class="msym" style="font-size:12px;color:var(--muted);">open_in_new</i></div><div class="mod-feat-desc">호환성 라이브러리. mods 폴더에 넣기.</div></div>
+      </a>
+      <a href="https://irisshaders.dev/download" target="_blank" rel="noopener" class="mod-block-feat">
+        <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" alt="Iris" onerror="this.style.display='none'"/>
+        <div><div class="mod-feat-name">Iris Shaders<i class="msym" style="font-size:12px;color:var(--muted);">open_in_new</i></div><div class="mod-feat-desc">쉐이더 지원 (Iris + Fabric 통합 설치).</div></div>
+      </a>
+    </div>
+    <div class="info-box">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;"><i class="msym" style="font-size:16px;color:var(--hufs-green);">info</i><strong style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.79rem;color:var(--hufs-green);">Fabric 설치 프로그램 설정값</strong></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:.75rem;" class="two-col">
+        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">Minecraft 버전</p><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.82rem;color:var(--ink);margin:0;">사용할 버전 선택</p></div>
+        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">로더 버전</p><p style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.82rem;color:var(--ink);margin:0;">최신 버전으로 선택</p></div>
+        <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:10px;padding:.75rem .9rem;"><p style="font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 3px;">런처 위치</p><p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.74rem;color:var(--ink);margin:0;"><code style="font-family:monospace;font-size:.7rem;background:rgba(157,159,162,.15);padding:1px 5px;border-radius:4px;">%AppData%</code> 폴더 속의 <code style="font-family:monospace;font-size:.72rem;background:rgba(157,159,162,.15);padding:1px 5px;border-radius:4px;">.minecraft</code> 폴더</p></div>
+      </div>
+      <p style="font-size:.76rem;color:var(--ink-dim);margin:0;word-break:keep-all;"><strong style="color:var(--ink);">이 아래로 설치하는 모드 파일들은 압축 해제하거나 실행하지 않습니다.</strong> 다운로드 시 플랫폼: Fabric, 버전: 현재 버전 선택.</p>
+    </div>
+  </div>
+
+  <!-- S2: 성능 -->
+  <div class="sec-card fu" style="animation-delay:.1s">
+    <div class="sec-card-top" aria-hidden="true"></div>
+    <div class="sec-head">
+      <div class="sec-num" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);">02</div>
+      <h2 class="sec-title">성능</h2>
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);font-family:'Manrope',sans-serif;margin-left:.25rem;">mods 폴더에 넣기</span>
+    </div>
+    <p class="sec-sub">모두 <code>mods</code> 폴더에 넣어주세요.</p>
+    <div class="mods-grid mods-grid-sm">
+      <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Mod Menu<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">모드 목록 관리</div></div></a>
+      <a href="https://modrinth.com/mod/sodium" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Sodium<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">획기적인 프레임 상승</div></div></a>
+      <a href="https://modrinth.com/mod/lithium" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Lithium<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">게임 물리 연산 최적화</div></div></a>
+      <a href="https://modrinth.com/mod/ferrite-core" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/uXXizFIs/222a126f26f8f9ae1eb339f3b767677f18bff31f_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">FerriteCore<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">메모리 사용량 절감</div></div></a>
+      <a href="https://modrinth.com/mod/immediatelyfast" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/5ZwdcRci/e57b6b451425692ac17ad322d5e14bea686a383a_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">ImmediatelyFast<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">렌더링 최적화</div></div></a>
+      <a href="https://modrinth.com/mod/entityculling" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/NNAgCjsB/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Entity Culling<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">비가시 엔티티 처리 생략</div></div></a>
+      <a href="https://modrinth.com/mod/dynamic-fps" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/LQ3K71Q1/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Dynamic FPS<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">백그라운드 FPS 제한</div></div></a>
+      <a href="https://modrinth.com/mod/sodium-extra" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/PtjYWJkn/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Sodium Extra<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">Sodium 추가 옵션</div></div></a>
+      <a href="https://modrinth.com/mod/reeses-sodium-options" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/Bh37bMuy/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Reese's Sodium<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">Sodium 설정 UI 개선</div></div></a>
+      <a href="https://modrinth.com/mod/cloth-config" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/9s6osm5g/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Cloth Config API<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">설정 라이브러리</div></div></a>
+      <a href="https://modrinth.com/mod/architectury-api" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/lhGA9TYQ/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Architectury API<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">크로스 플랫폼 라이브러리</div></div></a>
+      <a href="https://modrinth.com/mod/c2me-fabric" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/VSNURh3q/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">C2ME<i class="msym" style="font-size:11px;opacity:.4;">open_in_new</i></div><div class="mod-desc">청크 병렬 처리</div></div></a>
+    </div>
+  </div>
+
+  <!-- S3+S4 row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="two-col">
+    <!-- S3: 편의성 -->
+    <div class="sec-card fu" style="animation-delay:.15s">
+      <div class="sec-card-top" aria-hidden="true"></div>
+      <div class="sec-head">
+        <div class="sec-num" style="background:rgba(138,154,180,.15);color:var(--ink-dim);">03</div>
+        <h2 class="sec-title">편의성 &amp; 디테일</h2>
+        <span class="sec-badge" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);border:1px solid rgba(141,113,80,.28);">옵션</span>
+      </div>
+      <p class="sec-sub">모두 <code>mods</code> 폴더에 넣어주세요.</p>
+      <div class="mods-grid mods-grid-sm">
+        <a href="https://modrinth.com/mod/appleskin" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/EsAfCjCV/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">AppleSkin<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">체력 &amp; 포만감 시각화</div></div></a>
+        <a href="https://modrinth.com/mod/chat-heads" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/Wb5oqrBJ/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Chat Heads<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">채팅창에 플레이어 얼굴</div></div></a>
+        <a href="https://modrinth.com/mod/shulkerboxtooltip" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/2M01OLQq/bb490716cf2590cf84100a495931c3d4743bce43_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Shulker Tooltip<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">셜커 박스 미리보기</div></div></a>
+        <a href="https://modrinth.com/mod/jade" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/nvQzSEkH/icon.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Jade 🔍<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">블록 &amp; 엔티티 정보</div></div></a>
+      </div>
+    </div>
+
+    <!-- S4: 건축 -->
+    <div class="sec-card fu" style="animation-delay:.2s">
+      <div class="sec-card-top" aria-hidden="true"></div>
+      <div class="sec-head">
+        <div class="sec-num" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);">04</div>
+        <h2 class="sec-title">건축</h2>
+        <span class="sec-badge" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);border:1px solid rgba(141,113,80,.28);">옵션</span>
+      </div>
+      <p class="sec-sub">모두 <code>mods</code> 폴더에 넣어주세요.</p>
+      <div class="mods-grid mods-grid-sm">
+        <a href="https://modrinth.com/mod/litematica" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">Litematica<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">건축 청사진 및 가이드</div></div></a>
+        <a href="https://modrinth.com/mod/malilib" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/GcWjdA9I/a530ae55df5e0c405f5cf1b3e4fd6163a398bdc3.png" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name">MaLiLib<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">Litematica 필수 라이브러리</div></div></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: 시각 효과 -->
+  <div class="sec-card fu" style="animation-delay:.25s">
+    <div class="sec-card-top" aria-hidden="true"></div>
+    <div class="sec-head">
+      <div class="sec-num" style="background:var(--hufs-green-soft);color:var(--hufs-green);">05</div>
+      <h2 class="sec-title">시각 효과</h2>
+      <span class="sec-badge" style="background:var(--hufs-gold-soft);color:var(--hufs-gold);border:1px solid rgba(141,113,80,.28);">옵션</span>
+    </div>
+    <p class="sec-sub">리소스팩은 <code>resourcepacks</code> 폴더, 쉐이더팩은 <code>shaderpacks</code> 폴더에 넣어주세요.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="two-col">
+      <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:11px;padding:1.1rem 1.2rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;">
+          <i class="msym" style="font-size:1.3rem;color:var(--accent-10);">brush</i>
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--ink);margin:0;">리소스팩</h3>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <a href="https://modrinth.com/resourcepack/fresh-animations" target="_blank" rel="noopener" class="mod-block mod-block-lt" style="height:auto;min-height:56px;">
+            <img src="https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp" alt="" onerror="this.style.display='none'"/>
+            <div class="mod-block-info"><div class="mod-name">Fresh Animations<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div><div class="mod-desc">몬스터 &amp; 동물 부드러운 움직임</div></div>
+          </a>
+          <div style="border-left:2px solid var(--bdr);padding-left:.75rem;margin-left:.3rem;">
+            <p style="font-size:.68rem;color:var(--muted);font-weight:700;margin:0 0 .4rem;">↳ Fresh Animations 필요 모드 (mods 폴더)</p>
+            <div style="display:flex;flex-direction:column;gap:.4rem;">
+              <a href="https://modrinth.com/mod/entitytexturefeatures" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/BVzZfTc1/af683d206d50b05258d865b0d6e4aa2f2cee12f2_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name" style="font-size:.74rem;">Entity Texture Features<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div></div></a>
+              <a href="https://modrinth.com/mod/entity-model-features" target="_blank" rel="noopener" class="mod-block mod-block-lt"><img src="https://cdn.modrinth.com/data/4I1XuqiY/6e5bbd0d06b1741bfdab6c0cfab6de8fdaf0064c_96.webp" alt="" onerror="this.style.display='none'"/><div class="mod-block-info"><div class="mod-name" style="font-size:.74rem;">Entity Model Features<i class="msym" style="font-size:11px;color:var(--muted);">open_in_new</i></div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--panel-hi);border:1px solid var(--bdr);border-radius:11px;padding:1.1rem 1.2rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;">
+          <img src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" style="width:22px;height:22px;border-radius:4px;" onerror="this.style.display='none'"/>
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:800;font-size:.9rem;color:var(--ink);margin:0;">쉐이더팩</h3>
+        </div>
+        <a href="https://modrinth.com/shaders" target="_blank" rel="noopener" class="mod-block-feat" style="margin-bottom:.75rem;">
+          <i class="msym" style="font-size:1.8rem;color:var(--hufs-green);flex-shrink:0;">open_in_new</i>
+          <div><div class="mod-feat-name" style="font-size:.82rem;">Modrinth 쉐이더 목록 보기</div><div class="mod-feat-desc">shaderpacks 폴더에 넣어주세요.</div></div>
+        </a>
+        <p style="font-size:.75rem;color:var(--ink-dim);margin:0;line-height:1.65;word-break:keep-all;">설치 후 비디오 설정 → 쉐이더 팩에서 활성화. 세부 설정에서 안개, 비, 빛 등 커스텀 가능합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6: 설치 후 -->
+  <div class="sec-card fu" style="animation-delay:.3s">
+    <div class="sec-card-top" aria-hidden="true"></div>
+    <div class="sec-head">
+      <div class="sec-num" style="background:var(--hufs-green-soft);color:var(--hufs-green);">06</div>
+      <h2 class="sec-title">설치 후 과정</h2>
+    </div>
+    <p class="sec-sub">모드 설치 완료 후 아래 순서대로 진행하세요.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;" class="two-col">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h3>런처 프로필 선택</h3><p>마인크래프트 런처에서 <strong style="color:var(--hufs-navy);">Fabric Loader</strong> 프로필을 선택하고 실행하세요.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h3>단축키 설정</h3><p>메인화면 → 설정 → 조작 → 키 지정에서 붉은색으로 표시된 중복 키를 수정하세요.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h3>비디오 설정</h3><p>메인화면 → 설정 → 비디오 설정에서 전체 설정을 확인하세요. <strong style="color:var(--hufs-navy);">쉐이더 팩 설정에서 반드시 켜주세요.</strong></p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h3>리소스팩 활성화</h3><p>설정 → 리소스 팩에서 사용 가능 목록의 팩을 선택됨으로 이동하세요.</p></div></div>
+      </div>
+      <div>
+        <p style="font-size:.62rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:0 0 .65rem;">설치 체크리스트</p>
+        <div class="checklist">
+          <div class="cl-item"><img class="cl-img" src="https://cdn.modrinth.com/data/P7dR8mSH/icon.png" onerror="this.style.display='none'"/><span class="cl-label">Fabric + Fabric API</span><i class="msym cl-check">check_circle</i></div>
+          <div class="cl-item"><img class="cl-img" src="https://cdn.modrinth.com/data/YL57xq9U/icon.png" onerror="this.style.display='none'"/><span class="cl-label">Iris Shaders</span><i class="msym cl-check">check_circle</i></div>
+          <div class="cl-item"><img class="cl-img" src="https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp" onerror="this.style.display='none'"/><span class="cl-label">성능 모드 12종</span><i class="msym cl-check">check_circle</i></div>
+          <div class="cl-item"><img class="cl-img" src="https://cdn.modrinth.com/data/bEpr0Arc/25b5529d7a3b030ac136a6ce879d8ed2a1aa4a8d.png" onerror="this.style.display='none'"/><span class="cl-label">Litematica + MaLiLib</span><i class="msym cl-check">check_circle</i></div>
+          <div class="cl-item"><i class="msym" style="font-size:1.7rem;color:var(--hufs-navy);flex-shrink:0;">brush</i><span class="cl-label">리소스팩 / 쉐이더팩</span><i class="msym cl-check">check_circle</i></div>
+          <div class="success-box">환경 설정 완료 ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end flex col -->
 </main>
 
-<footer style="background:#F9F9F7;border-top:1px solid rgba(0,55,100,0.08);padding:2.25rem 2rem;">
-  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;">
-    <p style="color:#9EA2A2;font-size:0.8rem;margin:0;">© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;color:#003764;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Admin</a>
+<footer class="site-footer">
+  <div class="footer-i">
+    <p style="color:var(--muted);font-size:.72rem;margin:0;font-family:'Manrope',sans-serif;">© 2026 외대.서버.한국. All rights reserved.</p>
+    <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a>
   </div>
 </footer>
 
-</body></html>
+<script>
+(function(){
+  const t=document.getElementById('nav-toggle'),links=document.getElementById('nav-links');
+  if(!t||!links)return;
+  t.addEventListener('click',()=>{
+    const o=!links.classList.contains('open');
+    links.classList.toggle('open',o);
+    t.setAttribute('aria-expanded',o);
+    document.body.classList.toggle('nav-open',o);
+  });
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    links.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');
+  }));
+})();
+window.addEventListener('scroll',()=>document.getElementById('mnav')?.classList.toggle('scrolled',scrollY>16),{passive:true});
+</script>
+</body>
+</html>
