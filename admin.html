@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <title>외대.서버.한국 - 관리자</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <link rel="apple-touch-icon" href="favicon.ico"/>
@@ -442,13 +445,44 @@ function isAdminUser(user){
 }
 
 let _cachedUser=null;
-async function requireAdmin(showAlert=true){
-  if(_cachedUser&&isAdminUser(_cachedUser))return true;
+
+async function resolveCurrentUser(forceRefresh=false){
+  if(_cachedUser&&!forceRefresh)return _cachedUser;
   try{
     const{data:{session}}=await sb.auth.getSession();
-    _cachedUser=session?.user||null;
-    if(isAdminUser(_cachedUser))return true;
-  }catch(e){console.error('requireAdmin 오류:',e?.message||e);}
+    if(session?.user){
+      _cachedUser=session.user;
+      return _cachedUser;
+    }
+  }catch(e){
+    console.warn('getSession 복원 실패:',e?.message||e);
+  }
+  try{
+    const{data:refreshData,error:refreshError}=await sb.auth.refreshSession();
+    if(!refreshError&&refreshData?.session?.user){
+      _cachedUser=refreshData.session.user;
+      return _cachedUser;
+    }
+  }catch(e){
+    console.warn('refreshSession 실패(무시):',e?.message||e);
+  }
+  try{
+    const{data,error}=await sb.auth.getUser();
+    if(error)throw error;
+    _cachedUser=data?.user||null;
+    return _cachedUser;
+  }catch(e){
+    console.error('getUser 조회 실패:',e?.message||e);
+    _cachedUser=null;
+    return null;
+  }
+}
+
+async function requireAdmin(showAlert=true){
+  let user=await resolveCurrentUser();
+  if(isAdminUser(user))return true;
+  user=await resolveCurrentUser(true);
+  if(isAdminUser(user))return true;
   if(showAlert)alert('권한 없음');
   return false;
 }
@@ -504,12 +538,17 @@ async function applyAuthState(user){
 /* ═══════════════════════════════════════════════════
    페이지 초기화 (세션 복원)
 ═══════════════════════════════════════════════════ */
-(async()=>{
+async function bootstrapAuthState(){
   try{
-    const{data:{session}}=await sb.auth.getSession();
-    await applyAuthState(session?.user||null);
-  }catch(e){showLoginPanel();}
-})();
+    const user=await resolveCurrentUser();
+    await applyAuthState(user);
+  }catch(e){
+    console.error('초기 세션 복원 실패:',e?.message||e);
+    showLoginPanel();
+  }
+}
+
+bootstrapAuthState();
 
 sb.auth.onAuthStateChange(async(event,session)=>{
   if(event==='INITIAL_SESSION')return;
@@ -563,6 +602,24 @@ document.addEventListener('click',e=>{
   toggle.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');
   document.body.classList.toggle('nav-open',o);
 });
+
+
+
+async function refreshAdminData(){
+  await Promise.allSettled([
+    loadServerSettings(),
+    loadAdminLogs(),
+    loadNoticeAdmin(),
+    loadDcAdmin(),
+    renderGalleryAdmin()
+  ]);
+}
+
+window.addEventListener('pageshow',()=>{refreshAdminData();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')refreshAdminData();
+});
+window.addEventListener('focus',()=>{refreshAdminData();});
 
 /* ═══════════════════════════════════════════════════
    서버 상태
@@ -641,7 +698,6 @@ window.switchTab=switchTab;
 ═══════════════════════════════════════════════════ */
 let editNId=null;
 async function loadNoticeAdmin(){
-  if(!await requireAdmin(false))return;
   const c=g('notice-list');if(!c)return;
   c.innerHTML='<p style="font-size:.84rem;color:#666;">불러오는 중...</p>';
   const{data,error}=await sb.from('notices').select('*').order('created_at',{ascending:false});
@@ -790,7 +846,6 @@ window.submitUpdate=submitUpdate;
 window.toggleLogItem=function(id){g('log-item-'+id)?.classList.toggle('open');};
 
 async function loadAdminLogs(){
-  if(!await requireAdmin(false))return;
   const c=g('log-list');if(!c)return;
   const{data,error}=await sb.from('updates').select('*').order('release_date',{ascending:false});
   if(error){c.innerHTML='<p style="font-size:.84rem;color:#B91C1C;">불러오기 실패: '+esc(error.message)+'</p>';return;}
@@ -832,7 +887,6 @@ window.delLog=delLog;
 let galleryCache={};
 
 async function renderGalleryAdmin(){
-  if(!await requireAdmin(false))return;
   const grid=g('g-admin-grid');if(!grid)return;
   grid.innerHTML='<p style="font-size:.84rem;color:#666;grid-column:1/-1;">불러오는 중...</p>';
   try{
