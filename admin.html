@@ -430,13 +430,14 @@ function showEnvMsg(msg){
    Supabase 초기화
 ═══════════════════════════════════════════════════ */
 /* SB_URL / SB_KEY는 config.js에서 로드됩니다 */
-const ADMIN_EMAIL='ot4562@gmail.com';
+const ADMIN_EMAILS=['ot4562@gmail.com'];
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
 function isAdminUser(user){
   if(!user)return false;
+  const email=String(user.email||'').trim().toLowerCase();
   if(user.app_metadata?.role==='admin')return true;
-  if(user.email===ADMIN_EMAIL)return true;
+  if(ADMIN_EMAILS.some(e=>e.toLowerCase()===email))return true;
   return false;
 }
 
@@ -493,7 +494,9 @@ async function showDashboard(user){
 async function applyAuthState(user){
   if(user&&isAdminUser(user)){await showDashboard(user);return true;}
   if(user&&!isAdminUser(user)){
-    _cachedUser=null;await sb.auth.signOut();showDeniedPanel(user.email);return false;
+    _cachedUser=user;
+    showDeniedPanel(user.email);
+    return false;
   }
   showLoginPanel();return false;
 }
@@ -526,7 +529,9 @@ g('google-login-btn')?.addEventListener('click',async()=>{
   });
 });
 g('denied-logout-btn')?.addEventListener('click',async()=>{
-  _cachedUser=null;await sb.auth.signOut();showLoginPanel();
+  _cachedUser=null;
+  try{await sb.auth.signOut();}catch(e){console.error('logout 오류:',e?.message||e);}
+  showLoginPanel();
 });
 /* 나가기 — dashboard가 hidden 상태일 때도 등록되도록 document 레벨 위임 */
 document.addEventListener('click',async(e)=>{
@@ -538,7 +543,7 @@ document.addEventListener('click',async(e)=>{
   document.body.classList.remove('nav-open');
   g('adm-nav-toggle')?.setAttribute('aria-expanded','false');
   _cachedUser=null;
-  await sb.auth.signOut();
+  try{await sb.auth.signOut();}catch(err){console.error('logout 오류:',err?.message||err);}
   showLoginPanel();
 });
 
@@ -615,7 +620,7 @@ const TAB_SUB={
   notice:'홈 화면 상단에 공지를 게시합니다.',
   gallery:'홈 화면 갤러리 이미지를 관리합니다.'
 };
-window.switchTab=function(tab){
+function switchTab(tab){
   ['update','notice','gallery'].forEach(t=>{
     const btn=g('tab-'+t+'-btn');
     const panel=g('panel-'+t);
@@ -628,7 +633,8 @@ window.switchTab=function(tab){
   if(tab==='update')loadAdminLogs();
   if(tab==='notice'){loadNoticeAdmin();setDateDefault();}
   if(tab==='gallery')renderGalleryAdmin();
-};
+}
+window.switchTab=switchTab;
 
 /* ═══════════════════════════════════════════════════
    공지
