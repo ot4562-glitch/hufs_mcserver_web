@@ -378,6 +378,7 @@ async function requireAdmin(showAlert=true){
 /* 서버 상태 */
 let _serverOn=true,_serverVer='1.21.11';
 async function loadServerSettings(){
+  if(!await requireAdmin(false))return;
   try{
     const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
     if(data&&data.length>0){data.forEach(r=>{if(r.key==='serverEnabled')_serverOn=(r.value==='true');if(r.key==='publicMinecraftVersion'&&r.value)_serverVer=r.value;});}
@@ -450,25 +451,30 @@ window.switchTab=function(tab){
 /* Auth */
 async function checkAuth(){
   const{data:{session}}=await sb.auth.getSession();
-  const ae=g('auth-screen'),de=g('dashboard');
-  if(!ae||!de)return;
-  if(!session){
-    ae.style.display='flex';de.style.display='none';
-    return;
-  }
-  const user=session.user;
-  if(!isAdminUser(user)){
-    alert('관리자만 접근 가능합니다.');
-    await sb.auth.signOut();
-    ae.style.display='flex';de.style.display='none';
-    return;
-  }
-  ae.style.display='none';de.style.display='flex';
-  loadServerSettings();loadAdminLogs();loadDcAdmin();
+  return applyAuthState(session,false);
 }
 window.loginWithGoogle=async function(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});};
 window.logout=async function(){await sb.auth.signOut();checkAuth();};
-sb.auth.onAuthStateChange(()=>{checkAuth();});
+async function applyAuthState(session,showAlert=true){
+  const ae=g('auth-screen'),de=g('dashboard');
+  if(!ae||!de)return false;
+  const user=session?.user;
+  if(user&&isAdminUser(user)){
+    ae.style.display='none';de.style.display='flex';
+    await Promise.all([loadServerSettings(),loadAdminLogs(),loadDcAdmin()]);
+    return true;
+  }
+  if(user&&!isAdminUser(user)){
+    await sb.auth.signOut();
+    if(showAlert)alert('접근 권한이 없습니다.');
+  }
+  ae.style.display='flex';de.style.display='none';
+  return false;
+}
+sb.auth.onAuthStateChange(async(event,session)=>{
+  const isInitialSession=event==='INITIAL_SESSION';
+  await applyAuthState(session,!isInitialSession);
+});
 
 /* 공지 */
 let editNId=null;
@@ -498,6 +504,7 @@ function setDateDefault(){
 }
 
 async function loadNoticeAdmin(){
+  if(!await requireAdmin(false))return;
   const c=g('notice-list');if(!c)return;
   c.innerHTML='<p style="font-size:.84rem;color:#666;">불러오는 중...</p>';
   const{data}=await sb.from('notices').select('*').order('created_at',{ascending:false});
@@ -524,6 +531,7 @@ async function loadNoticeAdmin(){
 window.loadNoticeAdmin=loadNoticeAdmin;
 
 window.editNotice=async function(id){
+  if(!await requireAdmin())return;
   const{data}=await sb.from('notices').select('*').eq('id',id).maybeSingle();if(!data)return;
   editNId=id;
   g('notice-title-inp').value=data.title||'';
@@ -570,6 +578,7 @@ window.submitNotice=async function(){
 
 /* 디스코드 */
 async function loadDcAdmin(){
+  if(!await requireAdmin(false))return;
   try{
     const{data}=await sb.from('settings').select('value').eq('key','discord_link').maybeSingle();
     const s=g('dc-st');
@@ -612,6 +621,7 @@ async function submitUpdate(e){
 window.submitUpdate=submitUpdate;
 window.toggleLogItem=function(id){const el=g('log-item-'+id);if(el)el.classList.toggle('open');};
 async function loadAdminLogs(){
+  if(!await requireAdmin(false))return;
   const c=g('log-list');if(!c)return;
   const{data}=await sb.from('updates').select('*').order('release_date',{ascending:false});
   if(!data||!data.length){c.innerHTML='<p style="font-size:.84rem;color:#666;">게시된 로그가 없습니다.</p>';return;}
@@ -650,6 +660,7 @@ window.delLog=delLog;
 let galleryCache={};  // slot → row
 
 async function renderGalleryAdmin(){
+  if(!await requireAdmin(false))return;
   const grid=g('g-admin-grid');
   grid.innerHTML='<p style="font-size:.84rem;color:#666;grid-column:1/-1;">불러오는 중...</p>';
   try{
