@@ -615,7 +615,7 @@ const TAB_SUB={
   notice:'홈 화면 상단에 공지를 게시합니다.',
   gallery:'홈 화면 갤러리 이미지를 관리합니다.'
 };
-window.switchTab=function(tab){
+function switchTab(tab){
   ['update','notice','gallery'].forEach(t=>{
     const btn=g('tab-'+t+'-btn');
     const panel=g('panel-'+t);
@@ -628,7 +628,8 @@ window.switchTab=function(tab){
   if(tab==='update')loadAdminLogs();
   if(tab==='notice'){loadNoticeAdmin();setDateDefault();}
   if(tab==='gallery')renderGalleryAdmin();
-};
+}
+window.switchTab=switchTab;
 
 /* ═══════════════════════════════════════════════════
    공지
