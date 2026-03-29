@@ -95,7 +95,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 <footer class="site-footer">
   <div class="footer-i">
     <p>© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="display:none;" aria-hidden="true">Admin</a>
+    <a href="admin.html">Admin</a>
   </div>
 </footer>
 
@@ -147,8 +147,8 @@ async function loadUpdates(){
   if(verEl)verEl.textContent=latest?.version??'—';
   el.innerHTML=`<div class="update-stack">`+
     data.map((row,i)=>`
-    <div class="update-item fu" data-uid="${row.id}" style="animation-delay:${i*.05}s">
-      <div class="update-hd" onclick="toggleUpdate('${row.id}')">
+    <div class="update-item fu" data-uid="${esc(row.id)}" style="animation-delay:${i*.05}s">
+      <div class="update-hd" onclick="toggleUpdate('${esc(row.id)}')">
         <i class="msym msym-md c-gold flex-shrink-0">history_edu</i>
         <div class="flex-1 min-w-0">
           <div class="d-flex align-center flex-wrap" style="gap:.5rem;margin-bottom:4px;">

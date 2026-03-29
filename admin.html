@@ -2,108 +2,74 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>외대.서버.한국 - 관리자</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <link rel="apple-touch-icon" href="favicon.ico"/>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="site.css"/>
-<!-- ★ FIX: defer 없이 동기 로드 (index.html과 동일) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
-:root {
-  --adm-muted:#666666;
-  --adm-ink:#111111;
-  --adm-bdr:rgba(0,45,86,.1);
-}
-
-* { box-sizing:border-box; }
-body { font-family:'Noto Sans KR',sans-serif; background:var(--bg)!important; color:var(--text)!important; margin:0; overflow-x:hidden; }
-
-#dashboard{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-#dashboard > main{flex:1 0 auto;}
-
-.msym { font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-style:normal;line-height:1;display:inline-block; }
-h1,h2,h3 { font-family:'Manrope',sans-serif; }
-
-.toggle-track { width:44px;height:24px;background:#e5e7eb;border-radius:99px;position:relative;transition:background .2s;cursor:pointer; }
-.toggle-track.on { background:var(--accent); }
-.toggle-thumb { width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.12); }
-.toggle-track.on .toggle-thumb { transform:translateX(20px); }
-
-/* keyframes (ping/spin)는 site.css에 정의됨 */
-.spin { animation:spin .8s linear infinite;display:inline-block; }
-
-input[type=text],input[type=date],input[type=url],textarea {
-  width:100%;background:var(--surface)!important;border:1px solid var(--adm-bdr)!important;
-  padding:.8rem 1rem;border-radius:10px;
-  font-family:'Noto Sans KR',sans-serif;font-size:.9rem;color:var(--adm-ink)!important;
-  outline:none;transition:border-color .15s,box-shadow .15s;
-}
-input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:0 0 0 3px var(--accent-soft)!important; }
-
-.tab-btn { display:inline-flex;align-items:center;gap:5px;padding:.42rem .85rem;border-radius:8px;border:1px solid var(--adm-bdr);cursor:pointer;font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;transition:background .15s,color .15s,border-color .15s;background:var(--surface);color:var(--adm-muted); }
-.tab-btn.active { background:var(--accent-soft);color:var(--hufs-gold);border-color:rgba(141,113,80,.35); }
-.tab-btn:not(.active):hover { background:rgba(0,45,86,.06);color:var(--primary); }
-
-.log-item { background:#fff;border:1px solid var(--adm-bdr);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,45,86,.04); }
-.log-hd { display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;cursor:pointer;transition:background .15s; }
-.log-hd:hover { background:var(--surface-elev); }
-.log-bd { max-height:0;overflow:hidden;transition:max-height .25s ease,padding .2s ease;padding:0 1rem;font-size:.83rem;color:var(--adm-muted);white-space:pre-line;line-height:1.65;border-top:0 solid var(--adm-bdr); }
-.log-item.open .log-bd { max-height:600px;padding:.75rem 1rem 1rem;border-top-width:1px; }
-.lchev { transition:transform .2s;font-size:18px;color:var(--adm-muted);flex-shrink:0; }
-.log-item.open .lchev { transform:rotate(180deg);color:var(--hufs-gold); }
-
-.adm-notice-item { background:var(--primary-soft);border:1px solid var(--border-layer);border-left:3px solid var(--accent);border-radius:12px;padding:.8rem 1rem;color:var(--adm-ink); }
-
-.g-slot { position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;background:var(--surface);border:1.5px dashed var(--adm-bdr);transition:border-color .15s; }
-.g-slot.has-img { border-style:solid;border-color:var(--adm-bdr); }
-.g-slot img { width:100%;height:100%;object-fit:cover;display:block; }
-.g-slot .g-overlay { position:absolute;inset:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;gap:.5rem; }
-.g-slot:hover .g-overlay { display:flex; }
-.g-slot .g-num { position:absolute;top:.45rem;left:.5rem;font-family:'Manrope',sans-serif;font-weight:800;font-size:.65rem;color:#fff;background:var(--hufs-navy);border-radius:4px;padding:1px 6px; }
-.g-ph { width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.35rem;color:#888;cursor:pointer; }
-.g-ph:hover { color:var(--hufs-gold); }
-.g-upload-input { display:none; }
-
-.env-row { display:flex;align-items:stretch;gap:1rem;flex-wrap:wrap; }
-.main-grid { display:grid;grid-template-columns:1fr 390px;gap:1.5rem;align-items:start; }
-.gallery-admin-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem; }
-
-#dashboard .site-nav { top:3px; }
-
-@media(max-width:1020px){ .main-grid { grid-template-columns:1fr; } }
+:root{--adm-muted:#666666;--adm-ink:#111111;--adm-bdr:rgba(0,45,86,.1);}
+*{box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg)!important;color:var(--text)!important;margin:0;overflow-x:hidden;}
+#dashboard{min-height:100vh;display:flex;flex-direction:column;}
+#dashboard>main{flex:1 0 auto;}
+.msym{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-style:normal;line-height:1;display:inline-block;}
+h1,h2,h3{font-family:'Manrope',sans-serif;}
+.toggle-track{width:44px;height:24px;background:#e5e7eb;border-radius:99px;position:relative;transition:background .2s;cursor:pointer;}
+.toggle-track.on{background:var(--accent);}
+.toggle-thumb{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.toggle-track.on .toggle-thumb{transform:translateX(20px);}
+.spin{animation:spin .8s linear infinite;display:inline-block;}
+input[type=text],input[type=date],input[type=url],textarea{width:100%;background:var(--surface)!important;border:1px solid var(--adm-bdr)!important;padding:.8rem 1rem;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:.9rem;color:var(--adm-ink)!important;outline:none;transition:border-color .15s,box-shadow .15s;}
+input:focus,textarea:focus{border-color:var(--hufs-gold)!important;box-shadow:0 0 0 3px var(--accent-soft)!important;}
+.tab-btn{display:inline-flex;align-items:center;gap:5px;padding:.42rem .85rem;border-radius:8px;border:1px solid var(--adm-bdr);cursor:pointer;font-family:'Manrope',sans-serif;font-weight:700;font-size:.78rem;transition:background .15s,color .15s,border-color .15s;background:var(--surface);color:var(--adm-muted);}
+.tab-btn.active{background:var(--accent-soft);color:var(--hufs-gold);border-color:rgba(141,113,80,.35);}
+.tab-btn:not(.active):hover{background:rgba(0,45,86,.06);color:var(--primary);}
+.log-item{background:#fff;border:1px solid var(--adm-bdr);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,45,86,.04);}
+.log-hd{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;cursor:pointer;transition:background .15s;}
+.log-hd:hover{background:var(--surface-elev);}
+.log-bd{max-height:0;overflow:hidden;transition:max-height .25s ease,padding .2s ease;padding:0 1rem;font-size:.83rem;color:var(--adm-muted);white-space:pre-line;line-height:1.65;border-top:0 solid var(--adm-bdr);}
+.log-item.open .log-bd{max-height:600px;padding:.75rem 1rem 1rem;border-top-width:1px;}
+.lchev{transition:transform .2s;font-size:18px;color:var(--adm-muted);flex-shrink:0;}
+.log-item.open .lchev{transform:rotate(180deg);color:var(--hufs-gold);}
+.adm-notice-item{background:var(--primary-soft);border:1px solid var(--border-layer);border-left:3px solid var(--accent);border-radius:12px;padding:.8rem 1rem;color:var(--adm-ink);}
+.g-slot{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;background:var(--surface);border:1.5px dashed var(--adm-bdr);transition:border-color .15s;}
+.g-slot.has-img{border-style:solid;border-color:var(--adm-bdr);}
+.g-slot img{width:100%;height:100%;object-fit:cover;display:block;}
+.g-slot .g-overlay{position:absolute;inset:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;gap:.5rem;}
+.g-slot:hover .g-overlay{display:flex;}
+.g-slot .g-num{position:absolute;top:.45rem;left:.5rem;font-family:'Manrope',sans-serif;font-weight:800;font-size:.65rem;color:#fff;background:var(--hufs-navy);border-radius:4px;padding:1px 6px;}
+.g-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.35rem;color:#888;cursor:pointer;}
+.g-ph:hover{color:var(--hufs-gold);}
+.g-upload-input{display:none;}
+.env-row{display:flex;align-items:stretch;gap:1rem;flex-wrap:wrap;}
+.main-grid{display:grid;grid-template-columns:1fr 390px;gap:1.5rem;align-items:start;}
+.gallery-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;}
+#dashboard .site-nav{top:3px;}
+@media(max-width:1020px){.main-grid{grid-template-columns:1fr;}}
 @media(max-width:760px){
-  .env-row { flex-direction:column; }
-  #dashboard main { padding:88px 1rem 3rem !important; }
-  .gallery-admin-grid { grid-template-columns:repeat(2,1fr); }
-  .main-grid { grid-template-columns:1fr !important; }
-  .main-grid > * { min-width:0; max-width:100%; }
-  .tab-btn-row { flex-wrap:wrap; gap:.3rem !important; }
+  .env-row{flex-direction:column;}
+  #dashboard main{padding:88px 1rem 3rem !important;}
+  .gallery-admin-grid{grid-template-columns:repeat(2,1fr);}
+  .main-grid{grid-template-columns:1fr !important;}
+  .main-grid>*{min-width:0;max-width:100%;}
+  .tab-btn-row{flex-wrap:wrap;gap:.3rem !important;}
 }
 @media(max-width:540px){
-  .gallery-admin-grid { grid-template-columns:repeat(2,1fr); gap:.6rem; }
-  .ver-date-grid { grid-template-columns:1fr !important; }
-  .tab-btn { font-size:.72rem; padding:.38rem .7rem; }
-  .env-row > div { min-width:0; max-width:100%; overflow:hidden; }
-  input[type=text],input[type=date],input[type=url] { font-size:.85rem; }
+  .gallery-admin-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
+  .ver-date-grid{grid-template-columns:1fr !important;}
+  .tab-btn{font-size:.72rem;padding:.38rem .7rem;}
+  .env-row>div{min-width:0;max-width:100%;overflow:hidden;}
+  input[type=text],input[type=date],input[type=url]{font-size:.85rem;}
 }
-
 #dashboard main{max-width:1280px!important;padding:3rem clamp(1rem,3vw,2rem) 4rem!important;width:100%;margin:0 auto;}
-#dashboard section{background:#fff!important;border:1px solid var(--border)!important;border-radius:10px!important;box-shadow:0 2px 10px rgba(0,45,86,.06)!important}
-#dashboard h1{font-size:clamp(1.85rem,4vw,2.5rem)!important;line-height:1.1!important;color:var(--hufs-navy)!important}
-#dashboard h2,#dashboard header p{color:var(--text-dim)!important}
-
-/* ── 버튼 hover 클래스 (onmouseover/onmouseout 대체) ── */
+#dashboard section{background:#fff!important;border:1px solid var(--border)!important;border-radius:10px!important;box-shadow:0 2px 10px rgba(0,45,86,.06)!important;}
+#dashboard h1{font-size:clamp(1.85rem,4vw,2.5rem)!important;line-height:1.1!important;color:var(--hufs-navy)!important;}
+#dashboard h2,#dashboard header p{color:var(--text-dim)!important;}
 .btn-primary{background:var(--hufs-navy)!important;color:#fff;transition:background .15s,box-shadow .15s;}
 .btn-primary:hover{background:var(--primary-dark)!important;}
 .btn-danger{background:#B91C1C!important;color:#fff;transition:background .15s;}
@@ -112,18 +78,11 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 .btn-discord:hover{background:#404EED!important;}
 .btn-outline{background:var(--surface)!important;color:#666;border:1px solid rgba(0,45,86,.1);transition:background .15s;}
 .btn-outline:hover{background:#eee!important;}
-/* adm-label: 폼 레이블 통일 */
 .adm-label{display:block;font-size:.68rem;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;}
-/* footer-badge */
 .footer-badge{font-family:'Manrope',sans-serif;font-size:.72rem;font-weight:700;color:var(--hufs-gold);}
-/* 아이콘 버튼 hover 색상 */
-.hover-gold{color:#666;transition:color .15s;}
-.hover-gold:hover{color:var(--hufs-gold)!important;}
-.hover-navy{color:#666;transition:color .15s;}
-.hover-navy:hover{color:#1E3A8A!important;}
-.hover-red{color:#666;transition:color .15s;}
-.hover-red:hover{color:#B91C1C!important;}
-/* 갤러리 overlay 버튼 */
+.hover-gold{color:#666;transition:color .15s;}.hover-gold:hover{color:var(--hufs-gold)!important;}
+.hover-navy{color:#666;transition:color .15s;}.hover-navy:hover{color:#1E3A8A!important;}
+.hover-red{color:#666;transition:color .15s;}.hover-red:hover{color:#B91C1C!important;}
 .g-btn-replace{background:var(--accent-soft);border:1px solid rgba(141,113,80,.4);color:var(--hufs-gold);font-size:.75rem;font-weight:700;padding:.4rem .75rem;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .15s;}
 .g-btn-replace:hover{background:rgba(141,113,80,.2)!important;}
 .g-btn-delete{background:rgba(185,28,28,.7);border:1px solid rgba(185,28,28,.9);color:#fff;font-size:.75rem;font-weight:700;padding:.4rem .75rem;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .15s;}
@@ -132,8 +91,11 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 </head>
 <body>
 
-<!-- 로그인 -->
+<!-- ══════════════════════════════════════
+     로그인 화면 (초기 표시)
+══════════════════════════════════════ -->
 <div id="auth-screen" style="display:flex;position:fixed;inset:0;z-index:200;background:rgba(248,250,252,.96);backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);align-items:center;justify-content:center;">
+
   <div id="login-panel" style="background:#fff;border:1px solid rgba(0,45,86,.1);border-radius:16px;box-shadow:0 24px 64px rgba(0,45,86,.1);padding:2.75rem 2.25rem;width:100%;max-width:360px;text-align:center;">
     <span style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:var(--accent-soft);margin-bottom:1.25rem;border:1px solid rgba(141,113,80,.25);">
       <i class="msym" style="color:var(--hufs-gold);font-size:1.6rem;">admin_panel_settings</i>
@@ -141,7 +103,8 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
     <h2 style="font-size:1.4rem;font-weight:900;color:var(--hufs-navy);margin:0 0 .4rem;">관리자 로그인</h2>
     <p style="font-size:.84rem;color:#666;margin:0 0 1.75rem;">허가된 계정만 접근 가능합니다.</p>
     <button id="google-login-btn" type="button"
-      style="width:100%;padding:.9rem;font-family:'Manrope',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;" class="btn-primary">
+      style="width:100%;padding:.9rem;font-family:'Manrope',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;"
+      class="btn-primary">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.5 26.9 36 24 36c-5.2 0-9.6-2.9-11.3-7.1l-6.5 5C9.8 39.7 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.4-4.6 5.8l6.2 5.2C40.8 35.7 44 30.3 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
       Google 계정으로 로그인
     </button>
@@ -156,13 +119,17 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
     <p style="font-size:.84rem;color:#444;margin:0 0 .5rem;">관리자만 접근할 수 있는 페이지입니다.</p>
     <p id="denied-email" style="font-size:.78rem;color:#999;margin:0 0 1.75rem;"></p>
     <button id="denied-logout-btn" type="button"
-      style="width:100%;padding:.9rem;font-family:'Manrope',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:10px;cursor:pointer;" class="btn-danger">
+      style="width:100%;padding:.9rem;font-family:'Manrope',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:10px;cursor:pointer;"
+      class="btn-danger">
       로그아웃 후 다시 시도
     </button>
     <a href="index.html" style="display:block;margin-top:.85rem;font-size:.8rem;color:#666;text-decoration:none;font-family:'Manrope',sans-serif;font-weight:600;">← 홈으로 돌아가기</a>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     대시보드 (인증 후 표시)
+══════════════════════════════════════ -->
 <div id="dashboard" style="display:none;">
 
 <nav id="mnav" class="site-nav">
@@ -258,7 +225,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 
     <!-- 왼쪽: 탭 전환 작성 폼 -->
     <section style="border-top:3px solid var(--silver-mid);padding:1.75rem;">
-
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.65rem;flex-wrap:wrap;gap:.5rem;">
         <div class="tab-btn-row" style="display:flex;gap:.4rem;flex-wrap:wrap;">
           <button id="tab-update-btn" class="tab-btn active" onclick="switchTab('update')"><i class="msym" style="font-size:14px;">history_edu</i>업데이트 로그</button>
@@ -339,12 +305,9 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
       <!-- 갤러리 관리 패널 -->
       <div id="panel-gallery" style="display:none;">
         <p style="font-size:.82rem;color:#666;margin:0 0 1rem;">사진을 클릭하거나 빈 칸을 클릭해 이미지를 업로드하세요. 각 슬롯에 최대 <strong style="color:#111;">3MB</strong>까지 업로드 가능합니다. 이미지는 Supabase Storage에 저장됩니다.</p>
-        <div class="gallery-admin-grid" id="g-admin-grid">
-          <!-- JS 채움 -->
-        </div>
+        <div class="gallery-admin-grid" id="g-admin-grid"></div>
         <div id="g-msg" style="display:none;font-size:.82rem;font-weight:700;padding:.6rem .9rem;border-radius:7px;margin-top:.85rem;"></div>
       </div>
-
     </section>
 
     <!-- 오른쪽: 목록 -->
@@ -380,7 +343,6 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
       </section>
 
     </div>
-
   </div>
 
 </main>
@@ -395,550 +357,445 @@ input:focus,textarea:focus { border-color:var(--hufs-gold)!important;box-shadow:
 </div><!-- /dashboard -->
 
 <script>
-/* ═══════════════════════════════════════════════════
-   유틸 — 가장 먼저 선언 (이후 모든 함수에서 참조)
-═══════════════════════════════════════════════════ */
-const g=id=>document.getElementById(id);
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function showMsg(elId,text,ok){
-  const el=g(elId);if(!el)return;
-  el.textContent=text;
-  el.style.background=ok?'#ECFDF5':'#FEF2F2';
-  el.style.color=ok?'#065F46':'#B91C1C';
-  el.style.display='block';
-  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';},3500);
-}
-function fmtT(iso){return new Date(iso).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
-function fmtDateKo(iso){
-  if(!iso)return'';
-  if(/^\d{4}-\d{2}-\d{2}$/.test(iso)){const[y,m,d]=iso.split('-');return y+'년 '+Number(m)+'월 '+Number(d)+'일';}
-  return new Date(iso).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
-}
-function localDateStr(date){
-  const d=date||new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-function setDateDefault(){
-  const el=g('notice-date-inp');if(el&&!el.value)el.value=localDateStr();
-}
-function showEnvMsg(msg){
-  const el=g('env-msg');if(!el)return;
-  const ok=msg.startsWith('✅');
-  el.style.background=ok?'#f0fdf4':'#fef2f2';el.style.color=ok?'#166534':'#991b1b';
-  el.textContent=msg;el.style.display='block';
-  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';},3000);
-}
+/* ══════════════════════════════════════════════════
+   유틸
+══════════════════════════════════════════════════ */
+const g   = id => document.getElementById(id);
+const esc = s  => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-/* ═══════════════════════════════════════════════════
-   Supabase 초기화
-═══════════════════════════════════════════════════ */
-/* SB_URL / SB_KEY는 config.js에서 로드됩니다 */
-const ADMIN_EMAILS=['ot4562@gmail.com'];
-const sb=supabase.createClient(SB_URL,SB_KEY);
+const fmtT = iso => new Date(iso).toLocaleString('ko-KR', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
 
-function isAdminUser(user){
-  if(!user)return false;
-  const email=String(user.email||'').trim().toLowerCase();
-  if(user.app_metadata?.role==='admin')return true;
-  if(ADMIN_EMAILS.some(e=>e.toLowerCase()===email))return true;
-  return false;
-}
-
-let _cachedUser=null;
-let _dashboardBooted=false;
-let _authSyncing=false;
-
-async function resolveCurrentUser(forceRefresh=false){
-  if(_cachedUser&&!forceRefresh)return _cachedUser;
-  try{
-    const{data:{session}}=await sb.auth.getSession();
-    if(session?.user){
-      _cachedUser=session.user;
-      return _cachedUser;
-    }
-  }catch(e){
-    console.warn('getSession 복원 실패:',e?.message||e);
+const fmtDateKo = iso => {
+  if(!iso) return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const [y,m,d] = iso.split('-');
+    return y + '년 ' + Number(m) + '월 ' + Number(d) + '일';
   }
-  try{
-    const{data,error}=await sb.auth.getUser();
-    if(error)throw error;
-    _cachedUser=data?.user||null;
-    return _cachedUser;
-  }catch(e){
-    console.error('getUser 조회 실패:',e?.message||e);
-    _cachedUser=null;
-    return null;
-  }
+  return new Date(iso).toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric'});
+};
+
+const localDateStr = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+};
+
+function showMsg(elId, text, ok) {
+  const el = g(elId); if(!el) return;
+  el.textContent = text;
+  el.style.background = ok ? '#ECFDF5' : '#FEF2F2';
+  el.style.color      = ok ? '#065F46' : '#B91C1C';
+  el.style.display    = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 3500);
 }
 
-async function requireAdmin(showAlert=true){
-  let user=await resolveCurrentUser();
-  if(isAdminUser(user))return true;
-  user=await resolveCurrentUser(true);
-  if(isAdminUser(user))return true;
-  if(showAlert)alert('권한 없음');
-  return false;
+function showEnvMsg(msg) {
+  const el = g('env-msg'); if(!el) return;
+  const ok = msg.startsWith('✅');
+  el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+  el.style.color      = ok ? '#166534' : '#991b1b';
+  el.textContent      = msg;
+  el.style.display    = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
-/* ═══════════════════════════════════════════════════
-   Auth UI helpers
-═══════════════════════════════════════════════════ */
-function showLoginPanel(){
-  const ae=g('auth-screen'),de=g('dashboard');
-  if(ae){ae.style.display='flex';g('login-panel').style.display='block';g('denied-panel').style.display='none';}
-  if(de)de.style.display='none';
+/* ══════════════════════════════════════════════════
+   Supabase 클라이언트
+   SB_URL / SB_KEY 는 config.js 에서 로드
+══════════════════════════════════════════════════ */
+const ADMIN_EMAIL = 'ot4562@gmail.com';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ══════════════════════════════════════════════════
+   인증 — onAuthStateChange 단일 진입점
+   Supabase JS v2 는 페이지 최초 로드 시 INITIAL_SESSION 을
+   반드시 발생시키므로 별도 getSession() 호출 불필요.
+══════════════════════════════════════════════════ */
+let _tabReady = false;   /* 최초 탭 리셋 여부 */
+
+function showAuth(panel, email) {
+  g('auth-screen').style.display = 'flex';
+  g('dashboard').style.display   = 'none';
+  g('login-panel').style.display  = panel === 'login'  ? 'block' : 'none';
+  g('denied-panel').style.display = panel === 'denied' ? 'block' : 'none';
+  if(panel === 'denied' && email)
+    g('denied-email').textContent = '로그인된 계정: ' + email;
 }
-function showDeniedPanel(email){
-  const ae=g('auth-screen'),de=g('dashboard');
-  if(ae){
-    ae.style.display='flex';
-    g('login-panel').style.display='none';
-    g('denied-panel').style.display='block';
-    const el=g('denied-email');
-    if(el)el.textContent=email?'로그인된 계정: '+email:'';
-  }
-  if(de)de.style.display='none';
+
+function openDashboard(user) {
+  g('auth-screen').style.display      = 'none';
+  g('dashboard').style.display        = 'flex';
+  g('dashboard').style.flexDirection  = 'column';
+  /* 날짜 기본값 */
+  const di = g('inp-date');       if(di && !di.value) di.value = localDateStr();
+  const dn = g('notice-date-inp'); if(dn && !dn.value) dn.value = localDateStr();
+  /* 첫 진입에만 탭 update 로 리셋 */
+  if(!_tabReady) { switchTab('update'); _tabReady = true; }
+  /* 데이터 전체 로드 */
+  loadAllData();
 }
-async function showDashboard(user){
-  _cachedUser=user;
-  const ae=g('auth-screen'),de=g('dashboard');
-  if(ae)ae.style.display='none';
-  if(de){de.style.display='flex';de.style.flexDirection='column';}
-  /* 날짜 기본값 설정 */
-  const di=g('inp-date');if(di&&!di.value)di.value=localDateStr();
-  setDateDefault();
-  /* 탭 초기 상태 확실히 세팅 */
-  switchTab('update');
-  /* 데이터 로드 */
-  if(!_dashboardBooted){
-    await Promise.all([
-      loadServerSettings(),
-      loadAdminLogs(),
-      loadNoticeAdmin(),
-      loadDcAdmin(),
-      renderGalleryAdmin()
-    ]);
-    _dashboardBooted=true;
+
+sb.auth.onAuthStateChange((event, session) => {
+  const user    = session ? session.user : null;
+  const isAdmin = !!(user && user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
+  if(event === 'SIGNED_OUT') {
+    _tabReady = false;
+    showAuth('login');
     return;
   }
-  await refreshAdminData();
-}
-async function applyAuthState(user){
-  if(_authSyncing)return false;
-  _authSyncing=true;
-  try{
-    if(user&&isAdminUser(user)){await showDashboard(user);return true;}
-  if(user&&!isAdminUser(user)){
-    _cachedUser=user;
-    _dashboardBooted=false;
-    showDeniedPanel(user.email);
-    return false;
-  }
-    _dashboardBooted=false;
-    showLoginPanel();
-    return false;
-  }finally{
-    _authSyncing=false;
-  }
-}
 
-/* ═══════════════════════════════════════════════════
-   페이지 초기화 (세션 복원)
-═══════════════════════════════════════════════════ */
-async function bootstrapAuthState(){
-  try{
-    const user=await resolveCurrentUser();
-    await applyAuthState(user);
-  }catch(e){
-    console.error('초기 세션 복원 실패:',e?.message||e);
-    showLoginPanel();
-  }
-}
-
-bootstrapAuthState();
-
-sb.auth.onAuthStateChange(async(event,session)=>{
-  if(event==='INITIAL_SESSION')return;
-  if(event==='SIGNED_OUT'){
-    _cachedUser=null;
-    _dashboardBooted=false;
-    await applyAuthState(null);
+  /* INITIAL_SESSION: 첫 로드 / SIGNED_IN: 로그인 직후 리다이렉트 */
+  if(event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+    if(!user)        { showAuth('login');               return; }
+    if(!isAdmin)     { showAuth('denied', user.email);  return; }
+    openDashboard(user);
     return;
   }
-  if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='USER_UPDATED'){
-    _cachedUser=session?.user||null;
-    if(!_cachedUser)_cachedUser=await resolveCurrentUser(true);
-    await applyAuthState(_cachedUser);
-  }
+
+  /* TOKEN_REFRESHED: 세션 자동 갱신 — 별도 처리 불필요 */
 });
 
-/* ═══════════════════════════════════════════════════
-   버튼 이벤트 — 로그인/로그아웃/나가기
-═══════════════════════════════════════════════════ */
-g('google-login-btn')?.addEventListener('click',async()=>{
-  await sb.auth.signInWithOAuth({
-    provider:'google',
-    options:{redirectTo:window.location.origin+window.location.pathname}
+/* ══════════════════════════════════════════════════
+   버튼 — 로그인 / 로그아웃 / 나가기 / 모바일 nav
+══════════════════════════════════════════════════ */
+g('google-login-btn').addEventListener('click', () => {
+  sb.auth.signInWithOAuth({
+    provider: 'google',
+    options:  { redirectTo: window.location.origin + window.location.pathname }
   });
 });
-g('denied-logout-btn')?.addEventListener('click',async()=>{
-  _cachedUser=null;
-  try{await sb.auth.signOut();}catch(e){console.error('logout 오류:',e?.message||e);}
-  showLoginPanel();
-});
-/* 나가기 — dashboard가 hidden 상태일 때도 등록되도록 document 레벨 위임 */
-document.addEventListener('click',async(e)=>{
-  const link=e.target.closest('#logout-link');
-  if(!link)return;
-  e.preventDefault();
-  /* 모바일 nav 닫기 */
-  g('adm-nav-links')?.classList.remove('open');
-  document.body.classList.remove('nav-open');
-  g('adm-nav-toggle')?.setAttribute('aria-expanded','false');
-  _cachedUser=null;
-  try{await sb.auth.signOut();}catch(err){console.error('logout 오류:',err?.message||err);}
-  showLoginPanel();
+
+g('denied-logout-btn').addEventListener('click', () => {
+  sb.auth.signOut();
+  /* SIGNED_OUT 이벤트가 showAuth('login') 처리 */
 });
 
-/* ═══════════════════════════════════════════════════
-   Nav (스크롤 + 모바일 토글)
-═══════════════════════════════════════════════════ */
-window.addEventListener('scroll',()=>{
-  g('mnav')?.classList.toggle('scrolled',scrollY>16);
-},{passive:true});
-document.addEventListener('click',e=>{
-  const toggle=e.target.closest('#adm-nav-toggle');
-  if(!toggle)return;
-  const links=g('adm-nav-links');if(!links)return;
-  const o=!links.classList.contains('open');
-  links.classList.toggle('open',o);
-  toggle.setAttribute('aria-expanded',String(o));
-  toggle.setAttribute('aria-label',o?'메뉴 닫기':'메뉴 열기');
-  document.body.classList.toggle('nav-open',o);
+document.addEventListener('click', e => {
+  /* 나가기 링크 */
+  if(e.target.closest('#logout-link')) {
+    e.preventDefault();
+    const nl = g('adm-nav-links');
+    if(nl) nl.classList.remove('open');
+    document.body.classList.remove('nav-open');
+    g('adm-nav-toggle').setAttribute('aria-expanded', 'false');
+    _tabReady = false;
+    sb.auth.signOut();
+    return;
+  }
+  /* 모바일 nav 토글 */
+  if(e.target.closest('#adm-nav-toggle')) {
+    const links = g('adm-nav-links');
+    const open  = !links.classList.contains('open');
+    links.classList.toggle('open', open);
+    g('adm-nav-toggle').setAttribute('aria-expanded', String(open));
+    g('adm-nav-toggle').setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+    document.body.classList.toggle('nav-open', open);
+  }
 });
 
+window.addEventListener('scroll', () => {
+  g('mnav')?.classList.toggle('scrolled', scrollY > 16);
+}, {passive: true});
 
-
-async function refreshAdminData(){
-  if(g('dashboard')?.style.display!=='flex')return;
-  if(!isAdminUser(_cachedUser))return;
-  await Promise.allSettled([
-    loadServerSettings(),
-    loadAdminLogs(),
-    loadNoticeAdmin(),
-    loadDcAdmin(),
-    renderGalleryAdmin()
-  ]);
+/* ══════════════════════════════════════════════════
+   전체 데이터 로드
+══════════════════════════════════════════════════ */
+function loadAllData() {
+  loadServerSettings();
+  loadAdminLogs();
+  loadNoticeAdmin();
+  loadDcAdmin();
+  renderGalleryAdmin();
 }
 
-window.addEventListener('pageshow',()=>{refreshAdminData();});
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible')refreshAdminData();
-});
-window.addEventListener('focus',()=>{refreshAdminData();});
+/* ══════════════════════════════════════════════════
+   탭 전환
+══════════════════════════════════════════════════ */
+const TAB_SUB = {
+  update:  '버전 배포와 변경 사항을 기록합니다.',
+  notice:  '홈 화면 상단에 공지를 게시합니다.',
+  gallery: '홈 화면 갤러리 이미지를 관리합니다.'
+};
 
-/* ═══════════════════════════════════════════════════
-   서버 상태
-═══════════════════════════════════════════════════ */
-let _serverOn=true,_serverVer='1.21.11';
-async function loadServerSettings(){
-  try{
-    const{data}=await sb.from('settings').select('key,value').in('key',['serverEnabled','publicMinecraftVersion']);
-    if(data){
-      data.forEach(r=>{
-        if(r.key==='serverEnabled')_serverOn=(r.value==='true');
-        if(r.key==='publicMinecraftVersion'&&r.value)_serverVer=r.value;
-      });
-    }
-  }catch(e){console.error('loadServerSettings 오류:',e?.message||e);}
-  renderAdminUI();
+function switchTab(tab) {
+  ['update', 'notice', 'gallery'].forEach(t => {
+    const btn   = g('tab-'+t+'-btn');
+    const panel = g('panel-'+t);
+    const right = g('right-'+t);
+    if(btn)   btn.className       = 'tab-btn' + (tab === t ? ' active' : '');
+    if(panel) panel.style.display = tab === t ? 'block' : 'none';
+    if(right) right.style.display = tab === t ? 'block' : 'none';
+  });
+  const fs = g('form-sub'); if(fs) fs.textContent = TAB_SUB[tab] || '';
+  if(tab === 'update')  loadAdminLogs();
+  if(tab === 'notice')  { loadNoticeAdmin(); const dn = g('notice-date-inp'); if(dn && !dn.value) dn.value = localDateStr(); }
+  if(tab === 'gallery') renderGalleryAdmin();
 }
-function renderAdminUI(){
-  const on=_serverOn,track=g('toggle-track');if(!track)return;
-  on?track.classList.add('on'):track.classList.remove('on');
-  g('tog-lbl').textContent=on?'가동':'점검';
-  g('st-label').textContent=on?'가동':'점검 중';
-  g('st-ping').style.background=on?'#22C55E':'#ef4444';
-  g('st-core').style.background=on?'#22C55E':'#ef4444';
-  const vi=g('ver-input');if(vi)vi.value=_serverVer;
-  const vt=g('ver-txt');if(vt)vt.textContent=_serverVer;
+window.switchTab = switchTab;
+
+/* ══════════════════════════════════════════════════
+   서버 설정
+══════════════════════════════════════════════════ */
+let _serverOn  = true;
+let _serverVer = '1.21.11';
+
+async function loadServerSettings() {
+  const {data} = await sb.from('settings')
+    .select('key,value')
+    .in('key', ['serverEnabled', 'publicMinecraftVersion']);
+  if(data) data.forEach(r => {
+    if(r.key === 'serverEnabled')                          _serverOn  = (r.value === 'true');
+    if(r.key === 'publicMinecraftVersion' && r.value)      _serverVer = r.value;
+  });
+  renderServerUI();
 }
-async function sbSet(key,value){
-  const{data:existing,error:selErr}=await sb.from('settings').select('key').eq('key',key).maybeSingle();
-  if(selErr){console.error('settings select error:',key,selErr.message);return selErr;}
-  if(existing){const{error}=await sb.from('settings').update({value}).eq('key',key);return error;}
-  else{const{error}=await sb.from('settings').insert({key,value});return error;}
+
+function renderServerUI() {
+  const on    = _serverOn;
+  const track = g('toggle-track'); if(!track) return;
+  on ? track.classList.add('on') : track.classList.remove('on');
+  g('tog-lbl').textContent  = on ? '가동' : '점검';
+  g('st-label').textContent = on ? '가동' : '점검 중';
+  g('st-ping').style.background = on ? '#22C55E' : '#ef4444';
+  g('st-core').style.background = on ? '#22C55E' : '#ef4444';
+  const vi = g('ver-input'); if(vi) vi.value        = _serverVer;
+  const vt = g('ver-txt');   if(vt) vt.textContent  = _serverVer;
 }
-window.toggleServer=async function(){
-  if(!await requireAdmin())return;
-  _serverOn=!_serverOn;renderAdminUI();
-  const err=await sbSet('serverEnabled',String(_serverOn));
-  if(err){_serverOn=!_serverOn;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
+
+async function sbSet(key, value) {
+  const {error} = await sb.from('settings').upsert({key, value}, {onConflict: 'key'});
+  return error;
+}
+
+window.toggleServer = async function() {
+  _serverOn = !_serverOn; renderServerUI();
+  const err = await sbSet('serverEnabled', String(_serverOn));
+  if(err) { _serverOn = !_serverOn; renderServerUI(); showEnvMsg('❌ 저장 실패: '+err.message); }
   else showEnvMsg('✅ 서버 상태가 저장되었습니다.');
 };
-window.applyVer=async function(){
-  if(!await requireAdmin())return;
-  const v=g('ver-input').value.trim();if(!v)return;
-  const prev=_serverVer;_serverVer=v;renderAdminUI();
-  const err=await sbSet('publicMinecraftVersion',v);
-  if(err){_serverVer=prev;renderAdminUI();showEnvMsg('❌ 저장 실패: '+err.message);}
+
+window.applyVer = async function() {
+  const v = g('ver-input').value.trim(); if(!v) return;
+  const prev = _serverVer; _serverVer = v; renderServerUI();
+  const err = await sbSet('publicMinecraftVersion', v);
+  if(err) { _serverVer = prev; renderServerUI(); showEnvMsg('❌ 저장 실패: '+err.message); }
   else showEnvMsg('✅ 버전이 저장되었습니다.');
 };
 
-/* ═══════════════════════════════════════════════════
-   탭 전환
-═══════════════════════════════════════════════════ */
-const TAB_SUB={
-  update:'버전 배포와 변경 사항을 기록합니다.',
-  notice:'홈 화면 상단에 공지를 게시합니다.',
-  gallery:'홈 화면 갤러리 이미지를 관리합니다.'
-};
-function switchTab(tab){
-  ['update','notice','gallery'].forEach(t=>{
-    const btn=g('tab-'+t+'-btn');
-    const panel=g('panel-'+t);
-    const right=g('right-'+t);
-    if(btn)btn.className='tab-btn'+(tab===t?' active':'');
-    if(panel)panel.style.display=tab===t?'block':'none';
-    if(right)right.style.display=tab===t?'block':'none';
-  });
-  const fs=g('form-sub');if(fs)fs.textContent=TAB_SUB[tab]||'';
-  if(tab==='update')loadAdminLogs();
-  if(tab==='notice'){loadNoticeAdmin();setDateDefault();}
-  if(tab==='gallery')renderGalleryAdmin();
+/* ══════════════════════════════════════════════════
+   업데이트 로그
+══════════════════════════════════════════════════ */
+async function submitUpdate(e) {
+  e.preventDefault();
+  const btn     = g('upd-btn');
+  const version = g('inp-ver').value.trim();
+  const date    = g('inp-date').value;
+  const title   = g('inp-title').value.trim();
+  const content = g('inp-content').value.trim();
+  btn.disabled  = true;
+  btn.innerHTML = '<i class="msym spin">progress_activity</i>게시 중...';
+  const {error} = await sb.from('updates').insert({version, release_date:date, title, content});
+  if(error) {
+    showMsg('upd-msg', '❌ 오류: '+error.message, false);
+  } else {
+    showMsg('upd-msg', '✅ 성공적으로 게시되었습니다.', true);
+    e.target.reset();
+    const di = g('inp-date'); if(di) di.value = localDateStr();
+    loadAdminLogs();
+  }
+  btn.disabled  = false;
+  btn.innerHTML = '<i class="msym" style="font-size:16px;">publish</i>변경 게시';
 }
-window.switchTab=switchTab;
+window.submitUpdate = submitUpdate;
 
-/* ═══════════════════════════════════════════════════
+async function loadAdminLogs() {
+  const c = g('log-list'); if(!c) return;
+  c.innerHTML = '<p style="font-size:.84rem;color:#666;">불러오는 중...</p>';
+  const {data, error} = await sb.from('updates').select('*').order('release_date', {ascending:false});
+  if(error) { c.innerHTML = '<p style="font-size:.84rem;color:#B91C1C;">불러오기 실패: '+esc(error.message)+'</p>'; return; }
+  if(!data?.length) { c.innerHTML = '<p style="font-size:.84rem;color:#666;">게시된 로그가 없습니다.</p>'; return; }
+  c.innerHTML = data.map(r => `
+    <div class="log-item" id="log-item-${r.id}">
+      <div class="log-hd" onclick="this.closest('.log-item').classList.toggle('open')">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+            <span style="font-size:.7rem;font-weight:800;background:var(--hufs-navy);color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;flex-shrink:0;">${esc(r.version)}</span>
+            <span style="font-size:.74rem;color:#666;flex-shrink:0;">${r.release_date ?? ''}</span>
+          </div>
+          <p style="font-weight:700;font-size:.86rem;color:#111;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.title)}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+          <i class="msym lchev">expand_more</i>
+          <button onclick="event.stopPropagation();delLog('${r.id}')" type="button"
+            style="background:none;border:none;cursor:pointer;color:#666;transition:color .15s;padding:2px;display:flex;align-items:center;" class="hover-red" title="삭제">
+            <i class="msym" style="font-size:17px;">delete</i>
+          </button>
+        </div>
+      </div>
+      ${r.content ? `<div class="log-bd">${esc(r.content)}</div>` : ''}
+    </div>`).join('');
+}
+window.loadAdminLogs = loadAdminLogs;
+
+window.delLog = async function(id) {
+  if(!confirm('이 로그를 삭제할까요?')) return;
+  const {error} = await sb.from('updates').delete().eq('id', id);
+  if(!error) loadAdminLogs();
+  else showMsg('upd-msg', '❌ 삭제 실패: '+error.message, false);
+};
+
+/* ══════════════════════════════════════════════════
    공지
-═══════════════════════════════════════════════════ */
-let editNId=null;
-async function loadNoticeAdmin(){
-  const c=g('notice-list');if(!c)return;
-  c.innerHTML='<p style="font-size:.84rem;color:#666;">불러오는 중...</p>';
-  const{data,error}=await sb.from('notices').select('*').order('created_at',{ascending:false});
-  if(error){c.innerHTML='<p style="font-size:.84rem;color:#B91C1C;">불러오기 실패: '+esc(error.message)+'</p>';return;}
-  if(!data||!data.length){c.innerHTML='<p style="font-size:.84rem;color:#666;">게시된 공지가 없습니다.</p>';return;}
-  c.innerHTML=data.map((r,i)=>`
+══════════════════════════════════════════════════ */
+let editNId = null;
+
+async function loadNoticeAdmin() {
+  const c = g('notice-list'); if(!c) return;
+  c.innerHTML = '<p style="font-size:.84rem;color:#666;">불러오는 중...</p>';
+  const {data, error} = await sb.from('notices').select('*').order('created_at', {ascending:false});
+  if(error) { c.innerHTML = '<p style="font-size:.84rem;color:#B91C1C;">불러오기 실패: '+esc(error.message)+'</p>'; return; }
+  if(!data?.length) { c.innerHTML = '<p style="font-size:.84rem;color:#666;">게시된 공지가 없습니다.</p>'; return; }
+  c.innerHTML = data.map((r, i) => `
     <div class="adm-notice-item">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;">
         <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
-          ${i===0?'<span style="font-size:.62rem;font-weight:800;background:var(--hufs-gold);color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">최신</span>':''}
-          ${r.pinned?'<span style="font-size:.62rem;font-weight:800;background:var(--hufs-navy);color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">홈 표시</span>':''}
+          ${i === 0 ? '<span style="font-size:.62rem;font-weight:800;background:var(--hufs-gold);color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">최신</span>' : ''}
+          ${r.pinned ? '<span style="font-size:.62rem;font-weight:800;background:var(--hufs-navy);color:#fff;padding:2px 7px;border-radius:99px;font-family:\'Manrope\',sans-serif;">홈 표시</span>' : ''}
         </div>
         <div style="display:flex;gap:2px;flex-shrink:0;">
           <button onclick="editNotice('${r.id}')" type="button" style="background:none;border:none;cursor:pointer;color:#666;padding:2px;display:flex;align-items:center;transition:color .15s;" class="hover-navy"><i class="msym" style="font-size:16px;">edit</i></button>
           <button onclick="delNotice('${r.id}')" type="button" style="background:none;border:none;cursor:pointer;color:#666;padding:2px;display:flex;align-items:center;transition:color .15s;" class="hover-red"><i class="msym" style="font-size:16px;">delete</i></button>
         </div>
       </div>
-      ${r.title?`<p style="font-size:.86rem;font-weight:800;color:#111;margin:0 0 .2rem;font-family:'Manrope',sans-serif;">${esc(r.title)}</p>`:''}
+      ${r.title ? `<p style="font-size:.86rem;font-weight:800;color:#111;margin:0 0 .2rem;font-family:'Manrope',sans-serif;">${esc(r.title)}</p>` : ''}
       <p style="font-size:.83rem;color:#444;margin:0 0 .3rem;white-space:pre-line;line-height:1.55;">${esc(r.content)}</p>
-      <span style="font-size:.68rem;color:#666;">${r.notice_date?'📅 '+fmtDateKo(r.notice_date)+' · ':''}작성: ${fmtT(r.created_at)}</span>
+      <span style="font-size:.68rem;color:#666;">${r.notice_date ? '📅 '+fmtDateKo(r.notice_date)+' · ' : ''}작성: ${fmtT(r.created_at)}</span>
     </div>`).join('');
 }
-window.loadNoticeAdmin=loadNoticeAdmin;
+window.loadNoticeAdmin = loadNoticeAdmin;
 
-window.editNotice=async function(id){
-  if(!await requireAdmin())return;
-  const{data}=await sb.from('notices').select('*').eq('id',id).maybeSingle();
-  if(!data)return;
-  editNId=id;
-  g('notice-title-inp').value=data.title||'';
-  g('notice-inp').value=data.content;
-  g('notice-date-inp').value=data.notice_date||localDateStr();
-  g('notice-pinned-inp').checked=data.pinned||false;
-  g('notice-btn').innerHTML='<i class="msym" style="font-size:16px;">edit</i>수정 저장';
-  g('notice-cancel-btn').style.display='';
-  g('notice-title-inp').focus();
-  /* 공지 탭으로 전환 */
-  ['update','notice','gallery'].forEach(t=>{
-    g('tab-'+t+'-btn').className='tab-btn'+(t==='notice'?' active':'');
-    g('panel-'+t).style.display=t==='notice'?'block':'none';
-    g('right-'+t).style.display=t==='notice'?'block':'none';
-  });
-  const fs=g('form-sub');if(fs)fs.textContent=TAB_SUB.notice;
+window.editNotice = async function(id) {
+  const {data} = await sb.from('notices').select('*').eq('id', id).maybeSingle();
+  if(!data) return;
+  editNId = id;
+  g('notice-title-inp').value    = data.title || '';
+  g('notice-inp').value          = data.content;
+  g('notice-date-inp').value     = data.notice_date || localDateStr();
+  g('notice-pinned-inp').checked = data.pinned || false;
+  g('notice-btn').innerHTML      = '<i class="msym" style="font-size:16px;">edit</i>수정 저장';
+  g('notice-cancel-btn').style.display = '';
+  switchTab('notice');
+  setTimeout(() => g('notice-title-inp').focus(), 0);
 };
-window.cancelNoticeEdit=function(){
-  editNId=null;
-  g('notice-title-inp').value='';
-  g('notice-inp').value='';
-  g('notice-pinned-inp').checked=false;
-  setDateDefault();
-  g('notice-btn').innerHTML='<i class="msym" style="font-size:16px;">send</i>공지 게시';
-  g('notice-cancel-btn').style.display='none';
+
+window.cancelNoticeEdit = function() {
+  editNId = null;
+  g('notice-title-inp').value    = '';
+  g('notice-inp').value          = '';
+  g('notice-pinned-inp').checked = false;
+  const dn = g('notice-date-inp'); if(dn) dn.value = localDateStr();
+  g('notice-btn').innerHTML      = '<i class="msym" style="font-size:16px;">send</i>공지 게시';
+  g('notice-cancel-btn').style.display = 'none';
 };
-window.delNotice=async function(id){
-  if(!await requireAdmin())return;
-  if(!confirm('이 공지를 삭제할까요?'))return;
-  const{error}=await sb.from('notices').delete().eq('id',id);
-  if(error){showMsg('notice-msg','❌ 삭제 실패: '+error.message,false);return;}
+
+window.delNotice = async function(id) {
+  if(!confirm('이 공지를 삭제할까요?')) return;
+  const {error} = await sb.from('notices').delete().eq('id', id);
+  if(error) { showMsg('notice-msg', '❌ 삭제 실패: '+error.message, false); return; }
   loadNoticeAdmin();
 };
-window.submitNotice=async function(){
-  if(!await requireAdmin())return;
-  const title=g('notice-title-inp').value.trim();
-  const content=g('notice-inp').value.trim();
-  const notice_date=g('notice-date-inp').value||null;
-  const pinned=g('notice-pinned-inp').checked;
-  if(!content){showMsg('notice-msg','공지 내용을 입력해 주세요.',false);return;}
-  const btn=g('notice-btn');btn.disabled=true;
+
+window.submitNotice = async function() {
+  const title       = g('notice-title-inp').value.trim();
+  const content     = g('notice-inp').value.trim();
+  const notice_date = g('notice-date-inp').value || null;
+  const pinned      = g('notice-pinned-inp').checked;
+  if(!content) { showMsg('notice-msg', '공지 내용을 입력해 주세요.', false); return; }
+  const btn = g('notice-btn'); btn.disabled = true;
   let error;
-  if(editNId){
-    ({error}=await sb.from('notices').update({title,content,notice_date,pinned}).eq('id',editNId));
-    if(!error)await sb.from('notices').update({updated_at:new Date().toISOString()}).eq('id',editNId);
-  }else{
-    ({error}=await sb.from('notices').insert({title,content,notice_date,pinned}));
+  if(editNId) {
+    ({error} = await sb.from('notices')
+      .update({title, content, notice_date, pinned, updated_at: new Date().toISOString()})
+      .eq('id', editNId));
+  } else {
+    ({error} = await sb.from('notices').insert({title, content, notice_date, pinned}));
   }
-  btn.disabled=false;
-  if(error){showMsg('notice-msg','❌ 오류: '+error.message,false);return;}
-  showMsg('notice-msg',editNId?'✅ 공지가 수정되었습니다.':'✅ 공지가 게시되었습니다.',true);
+  btn.disabled = false;
+  if(error) { showMsg('notice-msg', '❌ 오류: '+error.message, false); return; }
+  showMsg('notice-msg', editNId ? '✅ 공지가 수정되었습니다.' : '✅ 공지가 게시되었습니다.', true);
   cancelNoticeEdit();
   loadNoticeAdmin();
 };
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════
    디스코드
-═══════════════════════════════════════════════════ */
-async function loadDcAdmin(){
-  try{
-    const{data}=await sb.from('settings').select('value').eq('key','discord_link').maybeSingle();
-    const s=g('dc-st');
-    if(data?.value){const di=g('dc-input');if(di)di.value=data.value;if(s){s.textContent='설정됨';s.style.color='#5865F2';}}
-    else if(s){s.textContent='미설정';s.style.color='#888';}
-  }catch(e){console.error('loadDcAdmin 오류:',e?.message||e);}
+══════════════════════════════════════════════════ */
+async function loadDcAdmin() {
+  const {data} = await sb.from('settings').select('value').eq('key', 'discord_link').maybeSingle();
+  const s = g('dc-st');
+  if(data?.value) {
+    const di = g('dc-input'); if(di) di.value = data.value;
+    if(s) { s.textContent = '설정됨'; s.style.color = '#5865F2'; }
+  } else {
+    if(s) { s.textContent = '미설정'; s.style.color = '#888'; }
+  }
 }
-window.saveDc=async function(){
-  if(!await requireAdmin())return;
-  const val=g('dc-input').value.trim();
-  if(!val){showMsg('dc-msg','링크를 입력해 주세요.',false);return;}
+
+window.saveDc = async function() {
+  const val = g('dc-input').value.trim();
+  if(!val) { showMsg('dc-msg', '링크를 입력해 주세요.', false); return; }
   let parsed;
-  try{parsed=new URL(val);}catch{showMsg('dc-msg','❌ 올바른 URL 형식이 아닙니다.',false);return;}
-  if(parsed.protocol!=='https:'){showMsg('dc-msg','❌ https:// 로 시작하는 URL만 허용됩니다.',false);return;}
-  const ALLOWED=['discord.gg','discord.com','discordapp.com'];
-  if(!ALLOWED.some(h=>parsed.hostname===h||parsed.hostname.endsWith('.'+h))){
-    showMsg('dc-msg','❌ Discord 링크만 허용됩니다.',false);return;
+  try { parsed = new URL(val); } catch { showMsg('dc-msg', '❌ 올바른 URL 형식이 아닙니다.', false); return; }
+  if(parsed.protocol !== 'https:') { showMsg('dc-msg', '❌ https:// 로 시작하는 URL만 허용됩니다.', false); return; }
+  const ALLOWED = ['discord.gg', 'discord.com', 'discordapp.com'];
+  if(!ALLOWED.some(h => parsed.hostname === h || parsed.hostname.endsWith('.'+h))) {
+    showMsg('dc-msg', '❌ Discord 링크만 허용됩니다.', false); return;
   }
-  const{error}=await sb.from('settings').upsert({key:'discord_link',value:val},{onConflict:'key'});
-  if(error)showMsg('dc-msg','❌ 오류: '+error.message,false);
-  else{showMsg('dc-msg','✅ 저장되었습니다.',true);loadDcAdmin();}
-};
-window.clearDc=async function(){
-  if(!await requireAdmin())return;
-  if(!confirm('디스코드 링크를 삭제할까요?'))return;
-  const{error}=await sb.from('settings').delete().eq('key','discord_link');
-  if(error){showMsg('dc-msg','❌ 삭제 실패: '+error.message,false);return;}
-  const di=g('dc-input');if(di)di.value='';
-  const s=g('dc-st');if(s){s.textContent='미설정';s.style.color='#888';}
-  showMsg('dc-msg','✅ 삭제되었습니다.',true);
+  const {error} = await sb.from('settings').upsert({key:'discord_link', value:val}, {onConflict:'key'});
+  if(error) showMsg('dc-msg', '❌ 오류: '+error.message, false);
+  else { showMsg('dc-msg', '✅ 저장되었습니다.', true); loadDcAdmin(); }
 };
 
-/* ─────────────────────────────────
-   업데이트 로그
-───────────────────────────────── */
-/* ═══════════════════════════════════════════════════
-   업데이트 로그
-═══════════════════════════════════════════════════ */
-async function submitUpdate(e){
-  e.preventDefault();
-  if(!await requireAdmin())return;
-  const btn=g('upd-btn'),msg=g('upd-msg');
-  const version=g('inp-ver').value.trim(),date=g('inp-date').value,
-        title=g('inp-title').value.trim(),content=g('inp-content').value.trim();
-  btn.disabled=true;
-  btn.innerHTML='<i class="msym spin">progress_activity</i>게시 중...';
-  const{error}=await sb.from('updates').insert({version,release_date:date,title,content});
-  if(error){
-    showMsg('upd-msg','❌ 오류: '+error.message,false);
-  }else{
-    showMsg('upd-msg','✅ 성공적으로 게시되었습니다.',true);
-    e.target.reset();
-    const di=g('inp-date');if(di)di.value=localDateStr();
-    loadAdminLogs();
-  }
-  btn.disabled=false;
-  btn.innerHTML='<i class="msym" style="font-size:16px;">publish</i>변경 게시';
-}
-window.submitUpdate=submitUpdate;
-window.toggleLogItem=function(id){g('log-item-'+id)?.classList.toggle('open');};
+window.clearDc = async function() {
+  if(!confirm('디스코드 링크를 삭제할까요?')) return;
+  const {error} = await sb.from('settings').delete().eq('key', 'discord_link');
+  if(error) { showMsg('dc-msg', '❌ 삭제 실패: '+error.message, false); return; }
+  const di = g('dc-input'); if(di) di.value = '';
+  const s = g('dc-st'); if(s) { s.textContent = '미설정'; s.style.color = '#888'; }
+  showMsg('dc-msg', '✅ 삭제되었습니다.', true);
+};
 
-async function loadAdminLogs(){
-  const c=g('log-list');if(!c)return;
-  const{data,error}=await sb.from('updates').select('*').order('release_date',{ascending:false});
-  if(error){c.innerHTML='<p style="font-size:.84rem;color:#B91C1C;">불러오기 실패: '+esc(error.message)+'</p>';return;}
-  if(!data||!data.length){c.innerHTML='<p style="font-size:.84rem;color:#666;">게시된 로그가 없습니다.</p>';return;}
-  c.innerHTML=data.map(r=>`
-    <div class="log-item" id="log-item-${r.id}">
-      <div class="log-hd" onclick="toggleLogItem('${r.id}')">
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
-            <span style="font-size:.7rem;font-weight:800;background:var(--hufs-navy);color:#fff;padding:2px 8px;border-radius:99px;font-family:'Manrope',sans-serif;flex-shrink:0;">${esc(r.version)}</span>
-            <span style="font-size:.74rem;color:#666;flex-shrink:0;">${r.release_date??''}</span>
-          </div>
-          <p style="font-weight:700;font-size:.86rem;color:#111;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.title)}</p>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-          <i class="msym lchev">expand_more</i>
-          <button onclick="event.stopPropagation();delLog('${r.id}')" type="button" style="background:none;border:none;cursor:pointer;color:#666;transition:color .15s;padding:2px;display:flex;align-items:center;" class="hover-red" title="삭제">
-            <i class="msym" style="font-size:17px;">delete</i>
-          </button>
-        </div>
-      </div>
-      ${r.content?`<div class="log-bd">${esc(r.content)}</div>`:''}
-    </div>`).join('');
-}
-window.loadAdminLogs=loadAdminLogs;
+/* ══════════════════════════════════════════════════
+   갤러리
+══════════════════════════════════════════════════ */
+let galleryCache = {};
 
-async function delLog(id){
-  if(!await requireAdmin())return;
-  if(!confirm('이 로그를 삭제할까요?'))return;
-  const{error}=await sb.from('updates').delete().eq('id',id);
-  if(!error)loadAdminLogs();
-  else showMsg('upd-msg','❌ 삭제 실패: '+error.message,false);
-}
-window.delLog=delLog;
-
-/* ─────────────────────────────────
-   갤러리 관리 (base64 → Supabase DB)
-───────────────────────────────── */
-let galleryCache={};
-
-async function renderGalleryAdmin(){
-  const grid=g('g-admin-grid');if(!grid)return;
-  grid.innerHTML='<p style="font-size:.84rem;color:#666;grid-column:1/-1;">불러오는 중...</p>';
-  try{
-    const{data,error}=await sb.from('gallery').select('*').order('slot',{ascending:true});
-    /* ★ FIX 3: 갤러리 로드 실패 시 사용자에게 오류 표시 + 콘솔 로그 */
-    if(error){
-      console.error('renderGalleryAdmin 오류:',error.message);
-      grid.innerHTML='<p style="font-size:.84rem;color:#B91C1C;grid-column:1/-1;">갤러리 불러오기 실패: '+esc(error.message)+'</p>';
-      return;
-    }
-    galleryCache={};
-    if(data)data.forEach(r=>galleryCache[r.slot]=r);
-  }catch(e){
-    console.error('renderGalleryAdmin 네트워크 오류:',e?.message||e);
-    grid.innerHTML='<p style="font-size:.84rem;color:#B91C1C;grid-column:1/-1;">갤러리 불러오기 중 오류가 발생했습니다.</p>';
+async function renderGalleryAdmin() {
+  const grid = g('g-admin-grid'); if(!grid) return;
+  grid.innerHTML = '<p style="font-size:.84rem;color:#666;grid-column:1/-1;">불러오는 중...</p>';
+  const {data, error} = await sb.from('gallery').select('*').order('slot', {ascending:true});
+  if(error) {
+    grid.innerHTML = '<p style="font-size:.84rem;color:#B91C1C;grid-column:1/-1;">갤러리 불러오기 실패: '+esc(error.message)+'</p>';
     return;
   }
-
-  let h='';
-  for(let i=1;i<=6;i++){
-    const row=galleryCache[i];
-    if(row&&row.image_url){
-      h+=`<div class="g-slot has-img" id="gslot-${i}">
+  galleryCache = {};
+  if(data) data.forEach(r => galleryCache[r.slot] = r);
+  let h = '';
+  for(let i = 1; i <= 6; i++) {
+    const row = galleryCache[i];
+    if(row && row.image_url) {
+      h += `<div class="g-slot has-img" id="gslot-${i}">
         <span class="g-num">${i}</span>
         <img src="${row.image_url}" alt="슬롯 ${i}" loading="lazy"/>
         <div class="g-overlay">
-          <button onclick="triggerUpload(${i})" type="button" class="g-btn-replace">
-            <i class="msym" style="font-size:15px;">upload</i>교체
-          </button>
-          <button onclick="delGallerySlot(${i})" type="button" class="g-btn-delete">
-            <i class="msym" style="font-size:15px;">delete</i>삭제
-          </button>
+          <button onclick="triggerUpload(${i})" type="button" class="g-btn-replace"><i class="msym" style="font-size:15px;">upload</i>교체</button>
+          <button onclick="delGallerySlot(${i})" type="button" class="g-btn-delete"><i class="msym" style="font-size:15px;">delete</i>삭제</button>
         </div>
       </div>`;
-    }else{
-      h+=`<div class="g-slot" id="gslot-${i}" onclick="triggerUpload(${i})">
+    } else {
+      h += `<div class="g-slot" id="gslot-${i}" onclick="triggerUpload(${i})">
         <span class="g-num">${i}</span>
         <div class="g-ph">
           <i class="msym" style="font-size:1.6rem;">add_photo_alternate</i>
@@ -946,77 +803,64 @@ async function renderGalleryAdmin(){
         </div>
       </div>`;
     }
-    h+=`<input type="file" class="g-upload-input" id="gfile-${i}" accept="image/*" onchange="handleGalleryUpload(event,${i})"/>`;
+    h += `<input type="file" class="g-upload-input" id="gfile-${i}" accept="image/*" onchange="handleGalleryUpload(event,${i})"/>`;
   }
-  grid.innerHTML=h;
+  grid.innerHTML = h;
 }
 
-window.triggerUpload=function(slot){
-  const inp=g('gfile-'+slot);if(inp)inp.click();
+window.triggerUpload = function(slot) {
+  const inp = g('gfile-'+slot); if(inp) inp.click();
 };
-/* ★ FIX 4: 이미지를 Base64로 DB 컬럼에 직접 저장하던 방식 제거.
-   Supabase Storage('gallery' 버킷)에 파일 업로드 후 public URL만 DB에 저장.
-   사전 조건:
-     1. Supabase Storage > 버킷 생성: 이름 'gallery', Public 버킷으로 설정
-     2. gallery 테이블에 storage_path text 컬럼 추가:
-        ALTER TABLE gallery ADD COLUMN IF NOT EXISTS storage_path text; */
-window.handleGalleryUpload=async function(e,slot){
-  if(!await requireAdmin())return;
-  const file=e.target.files[0];if(!file)return;
-  if(file.size>3*1024*1024){showMsg('g-msg','❌ 파일 크기가 3MB를 초과합니다.',false);return;}
-  const slotEl=g('gslot-'+slot);
-  if(slotEl)slotEl.style.opacity='.5';
-  showMsg('g-msg','업로드 중...',true);
-  try{
-    const existing=galleryCache[slot];
-    // 기존 Storage 파일 삭제
-    if(existing?.storage_path){
-      const{error:rmErr}=await sb.storage.from('gallery').remove([existing.storage_path]);
-      if(rmErr)console.warn('기존 파일 삭제 실패(무시):',rmErr.message);
+
+window.handleGalleryUpload = async function(e, slot) {
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 3*1024*1024) { showMsg('g-msg', '❌ 파일 크기가 3MB를 초과합니다.', false); return; }
+  const slotEl = g('gslot-'+slot);
+  if(slotEl) slotEl.style.opacity = '.5';
+  showMsg('g-msg', '업로드 중...', true);
+  try {
+    const existing = galleryCache[slot];
+    if(existing?.storage_path) {
+      const {error:rmErr} = await sb.storage.from('gallery').remove([existing.storage_path]);
+      if(rmErr) console.warn('기존 파일 삭제 실패(무시):', rmErr.message);
     }
-    // 새 파일 업로드 (경로: slot-N-타임스탬프.확장자)
-    const nameParts=file.name.split('.');
-    const ext=(nameParts.length>1?nameParts.pop().toLowerCase():'')||'jpg';
-    const path='slot-'+slot+'-'+Date.now()+'.'+ext;
-    const{error:upErr}=await sb.storage.from('gallery').upload(path,file,{upsert:true,contentType:file.type});
-    if(upErr)throw upErr;
-    // Public URL 취득 (버킷이 Public이면 signed URL 불필요)
-    const{data:{publicUrl}}=sb.storage.from('gallery').getPublicUrl(path);
-    // DB에는 URL + storage_path만 저장
+    const nameParts = file.name.split('.');
+    const ext  = (nameParts.length > 1 ? nameParts.pop().toLowerCase() : '') || 'jpg';
+    const path = 'slot-'+slot+'-'+Date.now()+'.'+ext;
+    const {error:upErr} = await sb.storage.from('gallery').upload(path, file, {upsert:true, contentType:file.type});
+    if(upErr) throw upErr;
+    const {data:{publicUrl}} = sb.storage.from('gallery').getPublicUrl(path);
     let error;
-    if(existing){
-      ({error}=await sb.from('gallery').update({image_url:publicUrl,storage_path:path}).eq('id',existing.id));
-      if(!error){
-        // updated_at 컬럼이 있으면 별도 갱신
-        await sb.from('gallery').update({updated_at:new Date().toISOString()}).eq('id',existing.id);
-      }
-    }else{
-      ({error}=await sb.from('gallery').insert({slot,image_url:publicUrl,storage_path:path}));
+    if(existing) {
+      ({error} = await sb.from('gallery')
+        .update({image_url:publicUrl, storage_path:path, updated_at:new Date().toISOString()})
+        .eq('id', existing.id));
+    } else {
+      ({error} = await sb.from('gallery').insert({slot, image_url:publicUrl, storage_path:path}));
     }
-    if(error)throw error;
-    showMsg('g-msg','✅ 슬롯 '+slot+' 이미지가 저장되었습니다.',true);
+    if(error) throw error;
+    showMsg('g-msg', '✅ 슬롯 '+slot+' 이미지가 저장되었습니다.', true);
     await renderGalleryAdmin();
-  }catch(err){
-    console.error('갤러리 업로드 오류:',err?.message||err);
-    showMsg('g-msg','❌ 오류: '+(err?.message||'알 수 없는 오류'),false);
-    if(slotEl)slotEl.style.opacity='1';
+  } catch(err) {
+    console.error('갤러리 업로드 오류:', err?.message || err);
+    showMsg('g-msg', '❌ 오류: '+(err?.message || '알 수 없는 오류'), false);
+    if(slotEl) slotEl.style.opacity = '1';
   }
-  e.target.value='';
+  e.target.value = '';
 };
-window.delGallerySlot=async function(slot){
-  if(!await requireAdmin())return;
-  if(!confirm('슬롯 '+slot+' 이미지를 삭제할까요?'))return;
-  const row=galleryCache[slot];
-  if(row){
-    // Storage 파일도 함께 삭제
-    if(row.storage_path){
-      const{error:rmErr}=await sb.storage.from('gallery').remove([row.storage_path]);
-      if(rmErr)console.warn('Storage 파일 삭제 실패(무시):',rmErr.message);
+
+window.delGallerySlot = async function(slot) {
+  if(!confirm('슬롯 '+slot+' 이미지를 삭제할까요?')) return;
+  const row = galleryCache[slot];
+  if(row) {
+    if(row.storage_path) {
+      const {error:rmErr} = await sb.storage.from('gallery').remove([row.storage_path]);
+      if(rmErr) console.warn('Storage 파일 삭제 실패(무시):', rmErr.message);
     }
-    const{error}=await sb.from('gallery').delete().eq('id',row.id);
-    if(error){showMsg('g-msg','❌ 오류: '+error.message,false);return;}
+    const {error} = await sb.from('gallery').delete().eq('id', row.id);
+    if(error) { showMsg('g-msg', '❌ 오류: '+error.message, false); return; }
   }
-  showMsg('g-msg','✅ 슬롯 '+slot+' 이미지가 삭제되었습니다.',true);
+  showMsg('g-msg', '✅ 슬롯 '+slot+' 이미지가 삭제되었습니다.', true);
   await renderGalleryAdmin();
 };
 </script>

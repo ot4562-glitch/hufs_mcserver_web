@@ -61,7 +61,7 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:2.75rem clamp(1.25rem,4vw,2.5
 <footer class="site-footer">
   <div class="footer-i">
     <p>© 2026 외대.서버.한국. All rights reserved.</p>
-    <a href="admin.html" style="display:none;" aria-hidden="true">Admin</a>
+    <a href="admin.html">Admin</a>
   </div>
 </footer>
 
@@ -120,8 +120,8 @@ async function loadNotices(){
       const titleText=r.title||r.content.split('\n')[0].slice(0,60)+((!r.title&&(r.content.length>60||r.content.includes('\n')))?'…':'');
       const displayDate=r.notice_date?fmtDate(r.notice_date):null;
       const lineDate=displayDate||fmtDate(r.created_at);
-      return `<div class="notice-item fu" data-nid="${r.id}" style="animation-delay:${i*.05}s">
-        <div class="notice-hd" onclick="toggleNotice('${r.id}')">
+      return `<div class="notice-item fu" data-nid="${esc(r.id)}" style="animation-delay:${i*.05}s">
+        <div class="notice-hd" onclick="toggleNotice('${esc(r.id)}')">
           <i class="msym msym-md flex-shrink-0 c-navy">notifications</i>
           <div class="flex-1 min-w-0"><p class="font-display fw-800 c-navy truncate" style="font-size:.96rem;letter-spacing:-.02em;margin:0;">${esc(titleText)}</p></div>
           <div class="d-flex flex-col align-end flex-shrink-0 gap-xs" style="margin-right:.35rem;">

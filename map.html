@@ -52,27 +52,27 @@
 }
 .map-content{
   max-width:1280px;margin:0 auto;
-  padding:0 clamp(1rem,3vw,1.5rem) 3.5rem;
+  padding:1rem clamp(1rem,3vw,1.5rem) 3.5rem;
   display:flex;flex-direction:column;gap:1.1rem;flex:1;
   position:relative;z-index:1;
   align-items:center;
 }
 .map-info{
-  display:flex;align-items:flex-start;gap:.65rem;
+  display:flex;align-items:center;gap:.65rem;
   background:var(--surface);border:1px solid var(--border-layer);
   border-left:3px solid var(--hufs-gold);border-radius:var(--r-lg);
   padding:.9rem 1.15rem;font-size:.82rem;color:var(--text-dim);line-height:1.85;
   transition:box-shadow .25s var(--ease),transform .25s var(--ease);
-  white-space:normal;
+  white-space:nowrap;
   box-sizing:border-box;
-  width:min(66.666%,854px);
+  width:min(100%,1040px);
 }
 .map-info:hover{box-shadow:var(--sh-card);transform:translateY(-2px);}
 .map-frame-wrap{
   position:relative;border-radius:var(--r-lg);overflow:hidden;
   box-shadow:var(--sh-card-hover);
   background:var(--surface-elev);
-  width:min(66.666%,854px);
+  width:min(100%,1040px);
   min-height:min(55vh,560px);
   max-height:min(55vh,560px);
 }
@@ -124,7 +124,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
   </div>
 </nav>
 
-<div class="map-page-hero map-reveal">
+<div class="map-page-hero map-reveal" style="padding-bottom:1.75rem;">
   <div class="map-title-row">
     <h1 class="map-main-title"><em>서버 지도</em></h1>
     <div class="map-controls">
@@ -155,9 +155,7 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 <footer class="site-footer">
   <div class="footer-i">
     <p>© 2026 외대.서버.한국. All rights reserved.</p>
-    <!-- Admin 링크: 공개 노출 시 불필요한 공격 표면이 될 수 있어 비표시 처리.
-         직접 접근이 필요하면 /admin.html 로 이동하세요. -->
-    <!-- <a href="admin.html" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:.72rem;text-decoration:none;">Admin</a> -->
+    <a href="admin.html">Admin</a>
   </div>
 </footer>
 
